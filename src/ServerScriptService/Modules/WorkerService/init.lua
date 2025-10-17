@@ -133,6 +133,11 @@ function WorkerService:StartAttack(player: Player)
 	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
 	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
 	local root = dummy:FindFirstChild("HumanoidRootPart")
+
+	if dummy:GetAttribute("ANIMATION_ON") then
+		return
+	end
+
 	if not animations[dummy] then
 		local humanoid = dummy:WaitForChild("Humanoid")
 		local animation = ReplicatedStorage.Animations.Attack
@@ -142,6 +147,8 @@ function WorkerService:StartAttack(player: Player)
 	end
 
 	while WorkerService:HasCrate(player) do
+		dummy:SetAttribute("ANIMATION_ON", true)
+
 		for _, value in desks:GetChildren() do
 			if value:GetAttribute("BUSY") then
 				local attachmentRef = value:FindFirstChild("Ref")
@@ -155,6 +162,8 @@ function WorkerService:StartAttack(player: Player)
 			end
 		end
 	end
+
+	dummy:SetAttribute("ANIMATION_ON", false)
 end
 
 function WorkerService:HasCrate(player: Player)
