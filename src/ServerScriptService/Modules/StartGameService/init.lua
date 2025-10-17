@@ -15,6 +15,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local BackpackService = require(ServerScriptService.Modules.BackpackService)
+local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 
 local playerInitializer = {}
 
@@ -40,6 +41,22 @@ function StartGameService:InitBridgeListener()
 			BaseService:Allocate(player)
 			BackpackService:GiveFromInit(player)
 			StartGameService:InitPlayerAttributes(player)
+
+			for i = 1, 24 do
+				local number = math.random(1, 100)
+
+				if number <= 30 then
+					BrainrotService:SetInMap(player, i, "BubarolliLuliloli")
+					continue
+				end
+
+				if number > 30 and number <= 60 then
+					BrainrotService:SetInMap(player, i, "CappuccinoAssassino")
+					continue
+				end
+
+				BrainrotService:SetInMap(player, i, "LaVaccaSaturnoSaturnita")
+			end
 		end
 	end
 end
@@ -57,6 +74,10 @@ function StartGameService:CreatePlayerFolder(player: Player)
 	local crateFolder = Instance.new("Folder")
 	crateFolder.Name = "Crates"
 	crateFolder.Parent = playerFolder
+
+	local brainrotsFolder = Instance.new("Folder")
+	brainrotsFolder.Name = "Brainrots"
+	brainrotsFolder.Parent = playerFolder
 end
 
 return StartGameService

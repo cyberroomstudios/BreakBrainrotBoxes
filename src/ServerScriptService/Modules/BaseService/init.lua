@@ -59,7 +59,7 @@ function BaseService:MoveToBase(player, baseSpawn)
 end
 
 function BaseService:GetBase(player: Player)
-	local places = workspace.Map.BaseMaps:GetChildren()
+	local places = workspace.Map.Plots:GetChildren()
 
 	for _, value in places do
 		if value.Name == player:GetAttribute("BASE") then

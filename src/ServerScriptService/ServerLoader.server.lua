@@ -93,6 +93,12 @@ local function ReplicatePlots()
 	workspace:SetAttribute("CONFIGURED_PLOTS", true)
 end
 
+local function configureFolders()
+	local brainrotsFolder = workspace:WaitForChild("Developer"):WaitForChild("Brainrots")
+	brainrotsFolder.Parent = ReplicatedStorage
+end
+configureFolders()
+
 ReplicatePlots()
 
 local function initializerBridge()
