@@ -27,31 +27,14 @@ local Crate = table.freeze({
 				Max = 5,
 			},
 		},
-
 		["Concrete"] = {
 			Name = "Concrete",
-			Price = 150,
+			Price = 100,
 			Rarity = "COMMON",
 			XPToOpen = 150,
 			Odd = 1,
 			GUI = {
-				Name = "Cardboard",
-				Order = 1,
-			},
-			Stock = {
-				Min = 1,
-				Max = 5,
-			},
-		},
-
-		["Pallet"] = {
-			Name = "Pallet",
-			Price = 250,
-			Rarity = "COMMON",
-			XPToOpen = 200,
-			Odd = 0.7,
-			GUI = {
-				Name = "Pallet",
+				Name = "Concrete",
 				Order = 2,
 			},
 			Stock = {
@@ -60,14 +43,14 @@ local Crate = table.freeze({
 			},
 		},
 
-		["Rustic"] = {
-			Name = "Rustic",
-			Price = 260,
-			Rarity = "UNCOMMON",
-			XPToOpen = 300,
+		["Ice"] = {
+			Name = "Ice",
+			Price = 100,
+			Rarity = "COMMON",
+			XPToOpen = 200,
 			Odd = 1,
 			GUI = {
-				Name = "Rustic",
+				Name = "Ice",
 				Order = 3,
 			},
 			Stock = {
@@ -78,10 +61,10 @@ local Crate = table.freeze({
 
 		["Metal"] = {
 			Name = "Metal",
-			Price = 300,
-			Rarity = "UNCOMMON",
-			XPToOpen = 400,
-			Odd = 0.5,
+			Price = 100,
+			Rarity = "COMMON",
+			XPToOpen = 200,
+			Odd = 1,
 			GUI = {
 				Name = "Metal",
 				Order = 4,
@@ -92,15 +75,31 @@ local Crate = table.freeze({
 			},
 		},
 
-		["Ice"] = {
-			Name = "Ice",
-			Price = 400,
-			Rarity = "RARE",
-			XPToOpen = 500,
+		["Pallet"] = {
+			Name = "Pallet",
+			Price = 100,
+			Rarity = "COMMON",
+			XPToOpen = 250,
 			Odd = 1,
 			GUI = {
-				Name = "Metal",
+				Name = "Pallet",
 				Order = 5,
+			},
+			Stock = {
+				Min = 1,
+				Max = 5,
+			},
+		},
+
+		["Rustic"] = {
+			Name = "Rustic",
+			Price = 100,
+			Rarity = "COMMON",
+			XPToOpen = 300,
+			Odd = 1,
+			GUI = {
+				Name = "Rustic",
+				Order = 6,
 			},
 			Stock = {
 				Min = 1,
@@ -110,13 +109,13 @@ local Crate = table.freeze({
 
 		["Volcanic"] = {
 			Name = "Volcanic",
-			Price = 500,
-			Rarity = "RARE",
-			XPToOpen = 600,
-			Odd = 0.1,
+			Price = 100,
+			Rarity = "COMMON",
+			XPToOpen = 350,
+			Odd = 1,
 			GUI = {
 				Name = "Volcanic",
-				Order = 6,
+				Order = 7,
 			},
 			Stock = {
 				Min = 1,

@@ -1,6 +1,7 @@
 local WorkerService = {}
 
 -- Init Bridg Net
+local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
@@ -11,6 +12,9 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
 local Crate = require(ReplicatedStorage.Enums.Crate)
+local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local ToolService = require(ServerScriptService.Modules.ToolService)
+local CrateService = require(ServerScriptService.Modules.CrateService)
 
 local animations = {}
 
@@ -22,17 +26,68 @@ function WorkerService:InitBridgeListener()
 	bridge.OnServerInvoke = function(player, data)
 		if data[actionIdentifier] == "PlaceAll" then
 			print("PlaceAll")
-			WorkerService:SetCrate(player, "Cardboard", 1)
-			WorkerService:SetCrate(player, "Concrete", 2)
-			WorkerService:StartAttack(player)
+			WorkerService:SetAllCrateBackpack(player)
 		end
 
 		if data[actionIdentifier] == "PlaceThis" then
-			print("PlaceThis")
+			WorkerService:SetCrateFromHand(player)
 		end
 	end
 end
 
+function WorkerService:SetCrateFromHand(player: Player)
+	local function getEquippedTool(player)
+		local character = player.Character
+		if not character then
+			return nil
+		end
+		return character:FindFirstChildWhichIsA("Tool")
+	end
+
+	local tool = getEquippedTool(player)
+	if tool then
+		local deskNumber = WorkerService:GetNextDeskNumberAvailable(player)
+		if deskNumber then
+			CrateService:Consume(player, tool.Name)
+			ToolService:Consume(player, "CRATE", tool.Name)
+			WorkerService:SetCrate(player, tool.Name, deskNumber)
+			WorkerService:StartAttack(player)
+		end
+	end
+end
+
+function WorkerService:SetAllCrateBackpack(player: Player)
+	local crates = PlayerDataHandler:Get(player, "cratesBackpack")
+	local putBox = false
+	for crateName, amount in crates do
+		for i = 1, amount do
+			local deskNumber = WorkerService:GetNextDeskNumberAvailable(player)
+			if deskNumber then
+				CrateService:Consume(player, crateName)
+				ToolService:Consume(player, "CRATE", crateName)
+				WorkerService:SetCrate(player, crateName, deskNumber)
+				putBox = true
+			end
+		end
+	end
+
+	if putBox then
+		WorkerService:StartAttack(player)
+	end
+end
+
+function WorkerService:GetNextDeskNumberAvailable(player: Player)
+	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
+	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
+	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
+
+	for _, value in desks:GetChildren() do
+		if not value:GetAttribute("BUSY") then
+			return tonumber(value.Name)
+		end
+	end
+end
 function WorkerService:StartAttack(player: Player)
 	local function lookCrate(root, attachmentRef)
 		local targetPos = attachmentRef.WorldPosition
@@ -137,7 +192,7 @@ function WorkerService:SetCrate(player: Player, crateType: string, deskNumber: s
 
 	for _, value in desks:GetChildren() do
 		if not value:GetAttribute("BUSY") then
-			local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateType)
+			local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateType):Clone()
 			crate.Name = deskNumber
 			crate.Parent = workspace.Runtime[player.UserId].Crates
 

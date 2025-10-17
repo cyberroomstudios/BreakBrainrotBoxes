@@ -11,7 +11,9 @@ function BackpackService:GiveFromInit(player: Player)
 	local crates = PlayerDataHandler:Get(player, "cratesBackpack")
 
 	for crateName, amount in crates do
-		ToolService:Give(player, "CRATE", crateName, amount)
+		if amount > 0 then
+			ToolService:Give(player, "CRATE", crateName, amount)
+		end
 	end
 end
 

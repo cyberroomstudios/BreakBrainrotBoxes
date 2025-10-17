@@ -103,7 +103,7 @@ function CrateShopScreenController:BuildScreen(stockItems)
 
 	-- Limpa tudo
 	for _, value in crateScrollingFrame:GetChildren() do
-		if value:IsA("Frame") and value.Name ~= "Item" and value.Name ~= "Buttons" then
+		if value:IsA("TextButton") and value.Name ~= "Item" and value.Name ~= "Buttons" then
 			value:Destroy()
 		end
 	end

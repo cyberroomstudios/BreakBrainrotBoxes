@@ -28,4 +28,19 @@ function CrateService:Give(player: Player, crateName: string)
 	ToolService:Give(player, "CRATE", crateName, 1)
 end
 
+function CrateService:Consume(player: Player, crateName: string)
+	if not Crate.CRATES[crateName] then
+		warn("CRATE NOT FOUND: " .. crateName)
+		return
+	end
+
+	PlayerDataHandler:Update(player, "cratesBackpack", function(current)
+		if current[crateName] > 0 then
+			current[crateName] = current[crateName] - 1
+		end
+
+		return current
+	end)
+end
+
 return CrateService

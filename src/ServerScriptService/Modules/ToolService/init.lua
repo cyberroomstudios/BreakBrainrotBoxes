@@ -3,6 +3,41 @@ local ToolService = {}
 
 function ToolService:Init() end
 
+function ToolService:Consume(player: Player, toolType: string, toolName: string)
+	if player.Backpack:FindFirstChild(toolName) then
+		local item = player.Backpack:FindFirstChild(toolName)
+
+		if item then
+			local amount = item:GetAttribute("AMOUNT") or 0
+			local newAmount = amount - 1
+
+			if newAmount == 0 then
+				item:Destroy()
+			end
+
+			item:SetAttribute("AMOUNT", newAmount)
+			return
+		end
+	end
+
+	local character = player.Character
+	if character then
+		local item = player.Character:FindFirstChild(toolName)
+
+		if item then
+			local amount = item:GetAttribute("AMOUNT") or 0
+			local newAmount = amount - 1
+
+			if newAmount == 0 then
+				item:Destroy()
+			end
+
+			item:SetAttribute("AMOUNT", newAmount)
+			return
+		end
+	end
+end
+
 function ToolService:Give(player: Player, toolType: string, toolName: string, amount: number)
 	if toolType == "CRATE" then
 		if not ReplicatedStorage.Tools.Crates:FindFirstChild(toolName) then
