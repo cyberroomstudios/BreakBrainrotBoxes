@@ -1,5 +1,5 @@
 local Crate = table.freeze({
-	["RARITYS"] = {
+	["RARITIES"] = {
 		["COMMON"] = {
 			Odd = 1,
 		},
@@ -16,9 +16,26 @@ local Crate = table.freeze({
 			Name = "Cardboard",
 			Price = 100,
 			Rarity = "COMMON",
+			XPToOpen = 100,
 			Odd = 1,
 			GUI = {
-				Name = "Cardboard Crate",
+				Name = "Cardboard",
+				Order = 1,
+			},
+			Stock = {
+				Min = 1,
+				Max = 5,
+			},
+		},
+
+		["Concrete"] = {
+			Name = "Concrete",
+			Price = 150,
+			Rarity = "COMMON",
+			XPToOpen = 150,
+			Odd = 1,
+			GUI = {
+				Name = "Cardboard",
 				Order = 1,
 			},
 			Stock = {
@@ -29,11 +46,12 @@ local Crate = table.freeze({
 
 		["Pallet"] = {
 			Name = "Pallet",
-			Price = 100,
+			Price = 250,
 			Rarity = "COMMON",
+			XPToOpen = 200,
 			Odd = 0.7,
 			GUI = {
-				Name = "Pallet Crate",
+				Name = "Pallet",
 				Order = 2,
 			},
 			Stock = {
@@ -44,11 +62,12 @@ local Crate = table.freeze({
 
 		["Rustic"] = {
 			Name = "Rustic",
-			Price = 100,
+			Price = 260,
 			Rarity = "UNCOMMON",
+			XPToOpen = 300,
 			Odd = 1,
 			GUI = {
-				Name = "Rustic Crate",
+				Name = "Rustic",
 				Order = 3,
 			},
 			Stock = {
@@ -59,11 +78,12 @@ local Crate = table.freeze({
 
 		["Metal"] = {
 			Name = "Metal",
-			Price = 100,
+			Price = 300,
 			Rarity = "UNCOMMON",
+			XPToOpen = 400,
 			Odd = 0.5,
 			GUI = {
-				Name = "Metal Crate",
+				Name = "Metal",
 				Order = 4,
 			},
 			Stock = {
@@ -74,11 +94,12 @@ local Crate = table.freeze({
 
 		["Ice"] = {
 			Name = "Ice",
-			Price = 100,
+			Price = 400,
 			Rarity = "RARE",
+			XPToOpen = 500,
 			Odd = 1,
 			GUI = {
-				Name = "Metal Crate",
+				Name = "Metal",
 				Order = 5,
 			},
 			Stock = {
@@ -89,11 +110,12 @@ local Crate = table.freeze({
 
 		["Volcanic"] = {
 			Name = "Volcanic",
-			Price = 100,
+			Price = 500,
 			Rarity = "RARE",
+			XPToOpen = 600,
 			Odd = 0.1,
 			GUI = {
-				Name = "Volcanic Crate",
+				Name = "Volcanic",
 				Order = 6,
 			},
 			Stock = {

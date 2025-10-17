@@ -9,6 +9,92 @@ local BridgeNet2 = require(ReplicatedStorage.Utility.BridgeNet2)
 
 PlayerDataHandler:Init()
 
+local positionsAndOrietations = {
+	[1] = {
+		Position = Vector3.new(19.542, 1.826, 120.716),
+		Orientation = Vector3.new(0, 0, 0),
+	},
+
+	[2] = {
+		Position = Vector3.new(19.542, 1.826, -38.784),
+		Orientation = Vector3.new(0, 0, 0),
+	},
+
+	[3] = {
+		Position = Vector3.new(19.542, 1.826, -197.284),
+		Orientation = Vector3.new(0, 0, 0),
+	},
+
+	[4] = {
+		Position = Vector3.new(-164.973, 1.826, 115.128),
+		Orientation = Vector3.new(0, 180, 0),
+	},
+
+	[5] = {
+		Position = Vector3.new(-164.973, 1.826, -38.784),
+		Orientation = Vector3.new(0, 180, 0),
+	},
+
+	[6] = {
+		Position = Vector3.new(-164.973, 1.826, -197.284),
+		Orientation = Vector3.new(0, 180, 0),
+	},
+}
+
+local function ReplicatePlots()
+	local plo1 = workspace:WaitForChild("Map"):WaitForChild("Plots"):WaitForChild("1")
+
+	task.spawn(function()
+		local dummy = plo1:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+		local humanoid = dummy:WaitForChild("Humanoid")
+
+		local animation = ReplicatedStorage.Animations.Iddle
+		local track = humanoid:LoadAnimation(animation)
+		track:Play()
+	end)
+
+	for i = 2, 6 do
+		local newPlot = plo1:Clone()
+		newPlot.Name = i
+
+		local posData = positionsAndOrietations[i]
+		local cf = CFrame.new(posData.Position)
+			* CFrame.Angles(
+				math.rad(posData.Orientation.X),
+				math.rad(posData.Orientation.Y),
+				math.rad(posData.Orientation.Z)
+			)
+
+		newPlot.Parent = workspace:WaitForChild("Map"):WaitForChild("Plots")
+		newPlot:SetPrimaryPartCFrame(cf)
+
+		-- Carregando Animação de Iddle
+		task.spawn(function()
+			local dummy = newPlot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+			local humanoid = dummy:WaitForChild("Humanoid")
+
+			local animation = ReplicatedStorage.Animations.Iddle
+			local track = humanoid:LoadAnimation(animation)
+			track:Play()
+		end)
+
+		-- Alterando o Conveyor
+
+		task.spawn(function()
+			local conveyor = newPlot:WaitForChild("Main"):WaitForChild("Conveyor")
+			if i == 2 or i == 3 then
+				conveyor.AssemblyLinearVelocity = Vector3.new(25, 0, 0)
+			else
+				conveyor.AssemblyLinearVelocity = Vector3.new(-25, 0, 0)
+			end
+		end)
+	end
+
+	workspace:SetAttribute("CONFIGURED_PLOTS", true)
+end
+
+ReplicatePlots()
+
 local function initializerBridge()
 	local bridge = BridgeNet2.ReferenceBridge("Level")
 end

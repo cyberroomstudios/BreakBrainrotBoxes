@@ -13,6 +13,8 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
 local BaseService = require(ServerScriptService.Modules.BaseService)
+local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local BackpackService = require(ServerScriptService.Modules.BackpackService)
 
 local playerInitializer = {}
 
@@ -33,10 +35,28 @@ function StartGameService:InitBridgeListener()
 			end
 
 			playerInitializer[player] = true
+			StartGameService:CreatePlayerFolder(player)
 
 			BaseService:Allocate(player)
+			BackpackService:GiveFromInit(player)
+			StartGameService:InitPlayerAttributes(player)
 		end
 	end
+end
+
+function StartGameService:InitPlayerAttributes(player: Player)
+	local money = PlayerDataHandler:Get(player, "money")
+	player:SetAttribute("MONEY", money)
+end
+
+function StartGameService:CreatePlayerFolder(player: Player)
+	local playerFolder = Instance.new("Folder")
+	playerFolder.Name = player.UserId
+	playerFolder.Parent = workspace.Runtime
+
+	local crateFolder = Instance.new("Folder")
+	crateFolder.Name = "Crates"
+	crateFolder.Parent = playerFolder
 end
 
 return StartGameService

@@ -28,6 +28,12 @@ end
 local cachedJoinTimestamps = {}
 local dataTemplate = {
 	totalPlaytime = 0,
+	money = 0,
+	cratesBackpack = {},
+	crateBreaker = {
+		Speed = 1,
+		Power = 1,
+	},
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

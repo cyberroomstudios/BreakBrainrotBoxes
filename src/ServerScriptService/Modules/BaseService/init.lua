@@ -11,6 +11,10 @@ local allocating = false
 function BaseService:Init() end
 
 function BaseService:Allocate(player: Player)
+	while not workspace:GetAttribute("CONFIGURED_PLOTS") do
+		task.wait(1)
+	end
+
 	if allocating then
 		return false
 	end

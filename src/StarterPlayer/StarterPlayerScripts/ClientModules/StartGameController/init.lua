@@ -5,6 +5,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
+local WorkerController = require(Players.LocalPlayer.PlayerScripts.ClientModules.WorkerController)
 local bridge = BridgeNet2.ReferenceBridge("StartGameService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -16,6 +17,8 @@ function StartGameController:Init(data)
 		[actionIdentifier] = "Start",
 		data = {},
 	})
+
+	WorkerController:InitProximityPrompt()
 end
 
 return StartGameController
