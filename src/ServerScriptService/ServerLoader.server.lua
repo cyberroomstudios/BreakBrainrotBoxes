@@ -11,32 +11,32 @@ PlayerDataHandler:Init()
 
 local positionsAndOrietations = {
 	[1] = {
-		Position = Vector3.new(19.542, 1.826, 120.716),
+		Position = Vector3.new(1522.683, 6.381, 148.578),
 		Orientation = Vector3.new(0, 0, 0),
 	},
 
 	[2] = {
-		Position = Vector3.new(19.542, 1.826, -38.784),
+		Position = Vector3.new(1635.847, 6.381, 147.997),
 		Orientation = Vector3.new(0, 0, 0),
 	},
 
 	[3] = {
-		Position = Vector3.new(19.542, 1.826, -197.284),
+		Position = Vector3.new(1747.223, 6.381, 147.997),
 		Orientation = Vector3.new(0, 0, 0),
 	},
 
 	[4] = {
-		Position = Vector3.new(-164.973, 1.826, 115.128),
+		Position = Vector3.new(1522.04, 6.381, -8.738),
 		Orientation = Vector3.new(0, 180, 0),
 	},
 
 	[5] = {
-		Position = Vector3.new(-164.973, 1.826, -38.784),
+		Position = Vector3.new(1635.847, 6.381, -8.738),
 		Orientation = Vector3.new(0, 180, 0),
 	},
 
 	[6] = {
-		Position = Vector3.new(-164.973, 1.826, -197.284),
+		Position = Vector3.new(1747.223, 6.381, -8.738),
 		Orientation = Vector3.new(0, 180, 0),
 	},
 }
@@ -81,12 +81,12 @@ local function ReplicatePlots()
 		-- Alterando o Conveyor
 
 		task.spawn(function()
-			local conveyor = newPlot:WaitForChild("Main"):WaitForChild("Conveyor")
-			if i == 2 or i == 3 then
-				conveyor.AssemblyLinearVelocity = Vector3.new(25, 0, 0)
-			else
-				conveyor.AssemblyLinearVelocity = Vector3.new(-25, 0, 0)
-			end
+			--		local conveyor = newPlot:WaitForChild("Main"):WaitForChild("Conveyor")
+			--		if i == 2 or i == 3 then
+			--			conveyor.AssemblyLinearVelocity = Vector3.new(25, 0, 0)
+			--		else
+			--			conveyor.AssemblyLinearVelocity = Vector3.new(-25, 0, 0)
+			--		end
 		end)
 	end
 

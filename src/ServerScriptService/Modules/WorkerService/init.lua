@@ -15,6 +15,8 @@ local Crate = require(ReplicatedStorage.Enums.Crate)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local ToolService = require(ServerScriptService.Modules.ToolService)
 local CrateService = require(ServerScriptService.Modules.CrateService)
+local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
+local PlotService = require(ServerScriptService.Modules.PlotService)
 
 local animations = {}
 
@@ -119,6 +121,8 @@ function WorkerService:StartAttack(player: Player)
 
 			if newCurrent <= 0 then
 				crate:Destroy()
+
+				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), desk.Ref)
 				desk:SetAttribute("BUSY", false)
 				return
 			end
@@ -166,6 +170,46 @@ function WorkerService:StartAttack(player: Player)
 	dummy:SetAttribute("ANIMATION_ON", false)
 end
 
+function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: Attachment)
+	--  Função para alterar a escala do modelo
+	local function setModelScale(model)
+		model:ScaleTo(0.01)
+		task.wait(0.005)
+		model:ScaleTo(0.2)
+		task.wait(0.005)
+		model:ScaleTo(0.5)
+		task.wait(0.005)
+		model:ScaleTo(0.7)
+	end
+
+	-- Escolhe um brainrot com base no tipo da caixa
+	local brainrotType = CrateService:DrawBrainrotFromCrate(crateType)
+
+	-- Obtem o Brainrot do modelo
+	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)
+
+	if brainrotModel then
+		-- Clona o modelo
+		local newBrainrot = brainrotModel:Clone()
+
+		-- Seta na pasta do jogador
+		newBrainrot.Parent = workspace.Runtime[player.UserId].BrainrotsFromCrate
+
+		-- Coloca o Brainrot na posição da caixa
+		newBrainrot:SetPrimaryPartCFrame(ref.WorldCFrame)
+
+		-- Cria a animação de crescer
+		setModelScale(newBrainrot)
+
+		-- Destroy o Brainrot
+		task.wait(1)
+		newBrainrot:Destroy()
+
+		-- Coloca no slot
+		PlotService:Set(player, brainrotType)
+	end
+end
+
 function WorkerService:HasCrate(player: Player)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
@@ -207,6 +251,7 @@ function WorkerService:SetCrate(player: Player, crateType: string, deskNumber: s
 
 			crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
 			crate:SetAttribute("CURRENT_XP", crateEnum.XPToOpen)
+			crate:SetAttribute("CRATE_TYPE", crateType)
 
 			crate:SetPrimaryPartCFrame(CFrame.new(value:FindFirstChild("Ref").WorldPosition))
 

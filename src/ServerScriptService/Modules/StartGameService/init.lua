@@ -16,6 +16,7 @@ local BaseService = require(ServerScriptService.Modules.BaseService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local BackpackService = require(ServerScriptService.Modules.BackpackService)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
+local PlotService = require(ServerScriptService.Modules.PlotService)
 
 local playerInitializer = {}
 
@@ -42,21 +43,35 @@ function StartGameService:InitBridgeListener()
 			BackpackService:GiveFromInit(player)
 			StartGameService:InitPlayerAttributes(player)
 
-			for i = 1, 24 do
-				local number = math.random(1, 100)
+			--PlotService:SetWithPlotNumber(player, 1, "CocofantoElefanto")
+			--PlotService:SetWithPlotNumber(player, 2, "Fluriflura")
+			--PlotService:SetWithPlotNumber(player, 3, "FrigoCamelo")
+			--PlotService:SetWithPlotNumber(player, 4, "GangsterFootera")
+			--PlotService:SetWithPlotNumber(player, 5, "GlorboFruttodrillo")
+			--PlotService:SetWithPlotNumber(player, 6, "LaVaccaSaturnoSaturnita")
+			--PlotService:SetWithPlotNumber(player, 7, "LirilìLarilà")
+			--PlotService:SetWithPlotNumber(player, 8, "OdinDinDinDun")
 
-				if number <= 30 then
-					BrainrotService:SetInMap(player, i, "BubarolliLuliloli")
-					continue
-				end
-
-				if number > 30 and number <= 60 then
-					BrainrotService:SetInMap(player, i, "CappuccinoAssassino")
-					continue
-				end
-
-				BrainrotService:SetInMap(player, i, "LaVaccaSaturnoSaturnita")
-			end
+			PlotService:SetWithPlotNumber(player, 1, "BananitaDolphinita")
+			PlotService:SetWithPlotNumber(player, 2, "BanditoBobritto")
+			PlotService:SetWithPlotNumber(player, 3, "BombardiroCrocodilo")
+			PlotService:SetWithPlotNumber(player, 4, "SpioniroGolubiro")
+			PlotService:SetWithPlotNumber(player, 5, "BombombiniGusini")
+			PlotService:SetWithPlotNumber(player, 6, "SvininaBombardino")
+			PlotService:SetWithPlotNumber(player, 7, "TaTaTaSahur")
+			PlotService:SetWithPlotNumber(player, 8, "BonecaAmbalabu")
+			PlotService:SetWithPlotNumber(player, 9, "BrrBrrPatapim")
+			PlotService:SetWithPlotNumber(player, 10, "BubarolliLuliloli")
+			PlotService:SetWithPlotNumber(player, 11, "CactoHipopotamo")
+			PlotService:SetWithPlotNumber(player, 12, "TimCheese")
+			PlotService:SetWithPlotNumber(player, 13, "TralaleroTralala")
+			PlotService:SetWithPlotNumber(player, 14, "CappuccinoAssassino")
+			PlotService:SetWithPlotNumber(player, 15, "CavalloVirtuoso")
+			PlotService:SetWithPlotNumber(player, 16, "ChefCrabracadabra")
+			PlotService:SetWithPlotNumber(player, 17, "TrippiTroppi")
+			PlotService:SetWithPlotNumber(player, 18, "TrulimeroTrulicina")
+			PlotService:SetWithPlotNumber(player, 19, "TungTungSahur")
+			PlotService:SetWithPlotNumber(player, 20, "ChimpanziniBananini")
 		end
 	end
 end
@@ -78,6 +93,10 @@ function StartGameService:CreatePlayerFolder(player: Player)
 	local brainrotsFolder = Instance.new("Folder")
 	brainrotsFolder.Name = "Brainrots"
 	brainrotsFolder.Parent = playerFolder
+
+	local BrainrotsFromCrateFolder = Instance.new("Folder")
+	BrainrotsFromCrateFolder.Name = "BrainrotsFromCrate"
+	BrainrotsFromCrateFolder.Parent = playerFolder
 end
 
 return StartGameService

@@ -2,12 +2,91 @@ local Crate = table.freeze({
 	["RARITIES"] = {
 		["COMMON"] = {
 			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0.8,
+				["UNCOMMON"] = 0.2,
+				["RARE"] = 0,
+				["LEGENDARY"] = 0,
+				["EPIC"] = 0,
+				["MYTHICAL"] = 0,
+				["GODLY"] = 0,
+			},
 		},
 		["UNCOMMON"] = {
-			Odd = 0.7,
+			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0.3,
+				["UNCOMMON"] = 0.7,
+				["RARE"] = 0.1,
+				["LEGENDARY"] = 0,
+				["EPIC"] = 0,
+				["MYTHICAL"] = 0,
+				["GODLY"] = 0,
+			},
 		},
 		["RARE"] = {
-			Odd = 0.3,
+			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0,
+				["UNCOMMON"] = 0.3,
+				["RARE"] = 0.6,
+				["LEGENDARY"] = 0.1,
+				["EPIC"] = 0,
+				["MYTHICAL"] = 0,
+				["GODLY"] = 0,
+			},
+		},
+
+		["LEGENDARY"] = {
+			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0,
+				["UNCOMMON"] = 0,
+				["RARE"] = 0,
+				["LEGENDARY"] = 0.8,
+				["EPIC"] = 0.15,
+				["MYTHICAL"] = 0.05,
+				["GODLY"] = 0,
+			},
+		},
+
+		["EPIC"] = {
+			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0,
+				["UNCOMMON"] = 0,
+				["RARE"] = 0,
+				["LEGENDARY"] = 0.2,
+				["EPIC"] = 0.7,
+				["MYTHICAL"] = 0.05,
+				["GODLY"] = 0.05,
+			},
+		},
+
+		["MYTHICAL"] = {
+			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0.8,
+				["UNCOMMON"] = 0.2,
+				["RARE"] = 0,
+				["LEGENDARY"] = 0,
+				["EPIC"] = 0.4,
+				["MYTHICAL"] = 0.5,
+				["GODLY"] = 0.1,
+			},
+		},
+
+		["GODLY"] = {
+			Odd = 1,
+			CratesCategoryOdds = {
+				["COMMON"] = 0.8,
+				["UNCOMMON"] = 0.2,
+				["RARE"] = 0,
+				["LEGENDARY"] = 0,
+				["EPIC"] = 0,
+				["MYTHICAL"] = 0.1,
+				["GODLY"] = 0.9,
+			},
 		},
 	},
 
@@ -16,7 +95,7 @@ local Crate = table.freeze({
 			Name = "Cardboard",
 			Price = 100,
 			Rarity = "COMMON",
-			XPToOpen = 100,
+			XPToOpen = 20,
 			Odd = 1,
 			GUI = {
 				Name = "Cardboard",
@@ -30,7 +109,7 @@ local Crate = table.freeze({
 		["Concrete"] = {
 			Name = "Concrete",
 			Price = 100,
-			Rarity = "COMMON",
+			Rarity = "UNCOMMON",
 			XPToOpen = 150,
 			Odd = 1,
 			GUI = {
@@ -46,7 +125,7 @@ local Crate = table.freeze({
 		["Ice"] = {
 			Name = "Ice",
 			Price = 100,
-			Rarity = "COMMON",
+			Rarity = "RARE",
 			XPToOpen = 200,
 			Odd = 1,
 			GUI = {
@@ -62,7 +141,7 @@ local Crate = table.freeze({
 		["Metal"] = {
 			Name = "Metal",
 			Price = 100,
-			Rarity = "COMMON",
+			Rarity = "LEGENDARY",
 			XPToOpen = 200,
 			Odd = 1,
 			GUI = {
@@ -78,7 +157,7 @@ local Crate = table.freeze({
 		["Pallet"] = {
 			Name = "Pallet",
 			Price = 100,
-			Rarity = "COMMON",
+			Rarity = "EPIC",
 			XPToOpen = 250,
 			Odd = 1,
 			GUI = {
@@ -94,7 +173,7 @@ local Crate = table.freeze({
 		["Rustic"] = {
 			Name = "Rustic",
 			Price = 100,
-			Rarity = "COMMON",
+			Rarity = "MYTHICAL",
 			XPToOpen = 300,
 			Odd = 1,
 			GUI = {
@@ -110,7 +189,7 @@ local Crate = table.freeze({
 		["Volcanic"] = {
 			Name = "Volcanic",
 			Price = 100,
-			Rarity = "COMMON",
+			Rarity = "GODLY",
 			XPToOpen = 350,
 			Odd = 1,
 			GUI = {
