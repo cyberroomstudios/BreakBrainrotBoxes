@@ -204,7 +204,6 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 		-- Destroy o Brainrot
 		task.wait(1)
 		newBrainrot:Destroy()
-
 		-- Coloca no slot
 		PlotService:Set(player, brainrotType)
 	end

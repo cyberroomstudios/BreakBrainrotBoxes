@@ -1,7 +1,7 @@
 return {
 	Name = script.Name,
-	Aliases = { "GiveMoney" },
-	Description = "Give Money to Player",
+	Aliases = { "SetBrainrotInMap" },
+	Description = "Set A Brainrot In Map",
 	Group = "Admin",
 	Args = {
 		{
