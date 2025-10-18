@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local WorkerController = require(Players.LocalPlayer.PlayerScripts.ClientModules.WorkerController)
+local PlotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.PlotController)
 local bridge = BridgeNet2.ReferenceBridge("StartGameService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -19,6 +20,7 @@ function StartGameController:Init(data)
 	})
 
 	WorkerController:InitProximityPrompt()
+	PlotController:StartTouchGetMoney()
 end
 
 return StartGameController

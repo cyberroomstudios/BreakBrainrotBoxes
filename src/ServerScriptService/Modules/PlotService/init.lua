@@ -1,13 +1,49 @@
+local PlotService = {}
+
+-- Init Bridg Net
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("PlotService")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
+
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
+local MoneyService = require(ServerScriptService.Modules.MoneyService)
 
-local PlotService = {}
+function PlotService:Init()
+	PlotService:InitBridgeListener()
+end
 
-function PlotService:Init() end
+function PlotService:InitBridgeListener()
+	bridge.OnServerInvoke = function(player, data)
+		if data[actionIdentifier] == "GetMoney" then
+			local plotNumber = data.data.PlotNumber
+			PlotService:GetMoneyFromBrainrotPlot(player, plotNumber)
+		end
+	end
+end
+
+function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number)
+	local base = BaseService:GetBase(player)
+	local main = base:WaitForChild("Main")
+	local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
+
+	local touchPart = slot:WaitForChild("TouchPart")
+	local billBoard = touchPart:WaitForChild("BillBoard")
+	billBoard.Cash.Text = "$0"
+
+	local value = slot:GetAttribute("AMOUNT_MONEY") or 0
+	slot:SetAttribute("AMOUNT_MONEY", 0)
+
+	MoneyService:GiveMoney(player, value)
+end
 
 function PlotService:GetNextAvailablePlot(player: Player)
 	local base = BaseService:GetBase(player)
@@ -68,21 +104,34 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		end
 	end
 
+	local function createPlotMoneyInformation(slot)
+		local touchPart = slot:WaitForChild("TouchPart")
+		local billBoard = touchPart:WaitForChild("BillBoard")
+		billBoard.Cash.Text = "$0"
+		billBoard.Enabled = true
+	end
+
 	if brainrotModel then
 		local base = BaseService:GetBase(player)
 		local main = base:WaitForChild("Main")
 		local slot = main.BrainrotPlots:FindFirstChild(slotNumber)
 
 		if slot then
-			slot:SetAttribute("BUSY", true)
-			local newBrainrot = brainrotModel:Clone()
+			pcall(function()
+				slot:SetAttribute("BUSY", true)
+				local newBrainrot = brainrotModel:Clone()
+				newBrainrot:SetAttribute("AMOUNT_MONEY", 0)
+				newBrainrot:SetAttribute("SLOT_NUMBER", slotNumber)
 
-			createInformations(newBrainrot)
+				createInformations(newBrainrot)
 
-			createAnimation(newBrainrot)
+				createAnimation(newBrainrot)
 
-			newBrainrot.Parent = workspace.Runtime[player.UserId].Brainrots
-			newBrainrot:SetPrimaryPartCFrame(slot.Attachment.WorldCFrame)
+				newBrainrot.Parent = workspace.Runtime[player.UserId].Brainrots
+				newBrainrot:SetPrimaryPartCFrame(slot.Attachment.WorldCFrame)
+
+				createPlotMoneyInformation(slot)
+			end)
 		end
 	end
 end

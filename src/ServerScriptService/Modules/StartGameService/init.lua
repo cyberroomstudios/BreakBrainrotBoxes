@@ -17,6 +17,7 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local BackpackService = require(ServerScriptService.Modules.BackpackService)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 local PlotService = require(ServerScriptService.Modules.PlotService)
+local ThreadService = require(ServerScriptService.Modules.ThreadService)
 
 local playerInitializer = {}
 
@@ -43,6 +44,7 @@ function StartGameService:InitBridgeListener()
 			BackpackService:GiveFromInit(player)
 			StartGameService:InitPlayerAttributes(player)
 			BrainrotService:InitBrainrotInMap(player)
+			ThreadService:StartFromPlayer(player)
 
 			--	PlotService:SetWithPlotNumber(player, 1, "BananitaDolphinita")
 			--	PlotService:SetWithPlotNumber(player, 2, "SpioniroGolubiro")
