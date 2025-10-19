@@ -17,6 +17,8 @@ local cooldowns = {}
 
 function PlotController:Init() end
 
+
+
 function PlotController:StartTouchGetMoney()
 	local baseNumber = player:GetAttribute("BASE")
 	local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
@@ -24,6 +26,7 @@ function PlotController:StartTouchGetMoney()
 	local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
 
 	for _, value in brainrotsPlots:GetChildren() do
+		local emitter = value.ParticlePart.ParticleEmitter
 		value.TouchPart.Touched:Connect(function(hit)
 			local character = hit:FindFirstAncestorOfClass("Model")
 			local touchPlayer = character and Players:GetPlayerFromCharacter(character)
@@ -48,6 +51,11 @@ function PlotController:StartTouchGetMoney()
 					PlotNumber = value.Name,
 				},
 			})
+
+			if result and result > 0 then
+				emitter:Emit(20)
+			end
+
 			task.delay(2, function()
 				cooldowns[value.TouchPart] = false
 			end)

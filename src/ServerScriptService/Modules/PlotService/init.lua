@@ -25,7 +25,7 @@ function PlotService:InitBridgeListener()
 	bridge.OnServerInvoke = function(player, data)
 		if data[actionIdentifier] == "GetMoney" then
 			local plotNumber = data.data.PlotNumber
-			PlotService:GetMoneyFromBrainrotPlot(player, plotNumber)
+			return PlotService:GetMoneyFromBrainrotPlot(player, plotNumber)
 		end
 	end
 end
@@ -43,6 +43,8 @@ function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number
 	slot:SetAttribute("AMOUNT_MONEY", 0)
 
 	MoneyService:GiveMoney(player, value)
+
+	return value
 end
 
 function PlotService:GetNextAvailablePlot(player: Player)
