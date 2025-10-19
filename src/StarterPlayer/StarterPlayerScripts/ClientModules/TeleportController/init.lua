@@ -26,4 +26,14 @@ function TeleportController:ToCrateStore()
 	end
 end
 
+function TeleportController:ToUpgradeShop()
+	local spawnCFrame = player:GetAttribute("UPGRADE_SHOP_CFRAME")
+
+	local character = player.Character
+
+	if spawnCFrame and character and character:FindFirstChild("HumanoidRootPart") then
+		character.HumanoidRootPart.CFrame = spawnCFrame
+	end
+end
+
 return TeleportController

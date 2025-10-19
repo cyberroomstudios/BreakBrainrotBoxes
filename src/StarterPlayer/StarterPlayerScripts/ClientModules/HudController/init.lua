@@ -7,6 +7,7 @@ local HudController = {}
 
 local myBaseButton
 local crateShopButton
+local upgradeShopButton
 
 function HudController:Init()
 	HudController:CreateReferences()
@@ -16,6 +17,7 @@ end
 function HudController:CreateReferences()
 	myBaseButton = UIReferences:GetReference("MY_BASE_BUTTON")
 	crateShopButton = UIReferences:GetReference("CRATE_SHOP_BUTTON")
+	upgradeShopButton = UIReferences:GetReference("UPGRADES_SHOP_BUTTON")
 end
 
 function HudController:InitButtonListerns()
@@ -25,6 +27,10 @@ function HudController:InitButtonListerns()
 
 	crateShopButton.MouseButton1Click:Connect(function()
 		TeleportController:ToCrateStore()
+	end)
+
+	upgradeShopButton.MouseButton1Click:Connect(function()
+		TeleportController:ToUpgradeShop()
 	end)
 end
 

@@ -177,9 +177,9 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 		task.wait(0.005)
 		model:ScaleTo(0.2)
 		task.wait(0.005)
-		model:ScaleTo(0.5)
+		model:ScaleTo(0.4)
 		task.wait(0.005)
-		model:ScaleTo(0.7)
+		model:ScaleTo(0.5)
 	end
 
 	-- Escolhe um brainrot com base no tipo da caixa

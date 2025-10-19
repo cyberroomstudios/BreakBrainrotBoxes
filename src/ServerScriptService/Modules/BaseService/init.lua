@@ -39,6 +39,7 @@ function BaseService:Allocate(player: Player)
 			player:SetAttribute("BASE", place.Name)
 			player:SetAttribute("BASE_CFRAME", place.Spawn.CFrame)
 			BaseService:CreateCrateShopCFrameAttribute(player)
+			BaseService:CreateUpgradesCFrameAttribute(player)
 			BaseService:MoveToBase(player, place.Spawn)
 
 			break
@@ -73,6 +74,14 @@ function BaseService:CreateCrateShopCFrameAttribute(player: Player)
 
 	if crateShop then
 		player:SetAttribute("CRATE_SHOP_CFRAME", crateShop.Spawn.CFrame)
+	end
+end
+
+function BaseService:CreateUpgradesCFrameAttribute(player: Player)
+	local upgradeShops = UtilService:WaitForDescendants(workspace, "Map", "Upgrade")
+
+	if upgradeShops then
+		player:SetAttribute("UPGRADE_SHOP_CFRAME", upgradeShops.Spawn.CFrame)
 	end
 end
 
