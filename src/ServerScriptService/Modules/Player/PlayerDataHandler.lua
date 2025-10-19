@@ -34,8 +34,9 @@ local dataTemplate = {
 	brainrotsBackpack = {},
 	brainrotsMap = {},
 	crateBreaker = {
-		Speed = 1,
 		Power = 1,
+		Speed = 1,
+		Capacity = 2,
 	},
 }
 
