@@ -12,6 +12,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 
 local Players = game:GetService("Players")
 
+local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 
@@ -23,14 +24,23 @@ local buyCapacityButton
 -- Power
 local currentPower
 local nextPower
+local maximumReachedPower
+local numberInformationPower
+local buyPowerFrame
 
 -- Speed
 local currentSpeed
 local nextSpeed
+local maximumReachedSpeed
+local numberInformationSpeed
+local buySpeedFrame
 
 -- Capacity
 local currentCapacity
 local nextCapacity
+local maximumReachedCapacity
+local numberInformationCapacity
+local buyCapacityFrame
 
 function UpgradesController:Init(data)
 	UpgradesController:CreateReferences()
@@ -53,12 +63,21 @@ function UpgradesController:CreateReferences()
 
 	currentPower = UIReferences:GetReference("CURRENT_POWER")
 	nextPower = UIReferences:GetReference("NEXT_POWER")
+	maximumReachedPower = UIReferences:GetReference("MAXIMUM_REACHED_POWER")
+	numberInformationPower = UIReferences:GetReference("NUMBER_INFORMATION_POWER")
+	buyPowerFrame = UIReferences:GetReference("BUY_POWER_FRAME")
 
 	currentSpeed = UIReferences:GetReference("CURRENT_SPEED")
 	nextSpeed = UIReferences:GetReference("NEXT_SPEED")
+	maximumReachedSpeed = UIReferences:GetReference("MAXIMUM_REACHED_SPEED")
+	numberInformationSpeed = UIReferences:GetReference("NUMBER_INFORMATION_SPEED")
+	buySpeedFrame = UIReferences:GetReference("BUY_SPEED_FRAME")
 
 	currentCapacity = UIReferences:GetReference("CURRENT_CAPACITY")
 	nextCapacity = UIReferences:GetReference("NEXT_CAPACITY")
+	maximumReachedCapacity = UIReferences:GetReference("MAXIMUM_REACHED_CAPACITY")
+	numberInformationCapacity = UIReferences:GetReference("NUMBER_INFORMATION_CAPACITY")
+	buyCapacityFrame = UIReferences:GetReference("BUY_CAPACITY_FRAME")
 end
 
 function UpgradesController:InitButtonListerns()
@@ -88,18 +107,46 @@ function UpgradesController:InitButtonListerns()
 end
 
 function UpgradesController:UpdatePowerText(value: number)
+	local item = Upgrades["Power"][value + 1]
+
+	if not item then
+		maximumReachedPower.Visible = true
+		numberInformationPower.Visible = false
+		buyPowerFrame.Visible = false
+		return
+	end
 	currentPower.Text = value
 	nextPower.Text = value + 1
+	buyPowerFrame.TextLabel.Text = ClientUtil:FormatToUSD(item)
 end
 
 function UpgradesController:UpdateSpeedText(value: number)
+	local item = Upgrades["Speed"][value + 1]
+
+	if not item then
+		maximumReachedSpeed.Visible = true
+		numberInformationSpeed.Visible = false
+		buySpeedFrame.Visible = false
+		return
+	end
+
 	currentSpeed.Text = value
 	nextSpeed.Text = value + 1
+	buySpeedFrame.TextLabel.Text = ClientUtil:FormatToUSD(item)
 end
 
 function UpgradesController:UpdateCapacityText(value: number)
+	local item = Upgrades["Capacity"][value + 1]
+
+	if not item then
+		maximumReachedCapacity.Visible = true
+		numberInformationCapacity.Visible = false
+		buyCapacityFrame.Visible = false
+		return
+	end
 	currentCapacity.Text = value
 	nextCapacity.Text = value + 1
+	buyCapacityFrame.TextLabel.Text = ClientUtil:FormatToUSD(item)
 end
 
 function UpgradesController:ConfigureProximityPrompt()
