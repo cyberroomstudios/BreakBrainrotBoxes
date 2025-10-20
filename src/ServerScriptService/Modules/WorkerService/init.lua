@@ -85,7 +85,7 @@ function WorkerService:GetNextDeskNumberAvailable(player: Player)
 	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
 
 	for _, value in desks:GetChildren() do
-		if not value:GetAttribute("BUSY") then
+		if value:GetAttribute("UNLOCK") and not value:GetAttribute("BUSY") then
 			return tonumber(value.Name)
 		end
 	end

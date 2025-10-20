@@ -46,7 +46,7 @@ function StartGameService:InitBridgeListener()
 			StartGameService:InitPlayerAttributes(player)
 			BrainrotService:InitBrainrotInMap(player)
 			ThreadService:StartFromPlayer(player)
-			UpgradeService:InitPlayerAttributes(player)
+			UpgradeService:InitPlayerUpgrade(player)
 		end
 	end
 end

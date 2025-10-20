@@ -61,13 +61,32 @@ function UpgradeService:Buy(player: Player, upgradeType: string)
 	end)
 
 	player:SetAttribute(upgradeType, newValue)
+
+	if upgradeType == "Capacity" then
+		UpgradeService:ConfigureWorkerCapacity(player)
+	end
 	return newValue
 end
 
-function UpgradeService:InitPlayerAttributes(player: Player)
+function UpgradeService:InitPlayerUpgrade(player: Player)
 	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")
 	player:SetAttribute("Power", crateBreaker.Power)
 	player:SetAttribute("Speed", crateBreaker.Speed)
 	player:SetAttribute("Capacity", crateBreaker.Capacity)
+
+	UpgradeService:ConfigureWorkerCapacity(player)
+end
+
+function UpgradeService:ConfigureWorkerCapacity(player: Player)
+	local capacity = player:GetAttribute("Capacity")
+	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
+	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
+	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
+
+	for _, value in desks:GetChildren() do
+		local deskNumber = tonumber(value.Name)
+		value:SetAttribute("UNLOCK", deskNumber <= capacity)
+	end
 end
 return UpgradeService
