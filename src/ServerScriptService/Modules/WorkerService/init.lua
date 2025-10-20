@@ -160,9 +160,18 @@ function WorkerService:StartAttack(player: Player)
 
 				animations[dummy]:Play()
 				animations[dummy].Stopped:Wait()
-				attackCreate(10, value)
 
-				task.wait(0.5)
+				local workerPower = player:GetAttribute("Power")
+				local workerSpeed = player:GetAttribute("Speed")
+
+				attackCreate(workerPower * 10, value)
+
+				local baseWait = 0.5
+				local reductionPerLevel = 0.05
+
+				local waitTime = math.max(0.1, baseWait - (workerSpeed - 1) * reductionPerLevel)
+				print(waitTime)
+				task.wait(waitTime)
 			end
 		end
 	end

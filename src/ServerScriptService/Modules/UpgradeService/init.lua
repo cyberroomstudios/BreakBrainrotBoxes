@@ -60,7 +60,14 @@ function UpgradeService:Buy(player: Player, upgradeType: string)
 		return current
 	end)
 
+	player:SetAttribute(upgradeType, newValue)
 	return newValue
 end
 
+function UpgradeService:InitPlayerAttributes(player: Player)
+	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")
+	player:SetAttribute("Power", crateBreaker.Power)
+	player:SetAttribute("Speed", crateBreaker.Speed)
+	player:SetAttribute("Capacity", crateBreaker.Capacity)
+end
 return UpgradeService

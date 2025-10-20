@@ -18,6 +18,7 @@ local BackpackService = require(ServerScriptService.Modules.BackpackService)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 local PlotService = require(ServerScriptService.Modules.PlotService)
 local ThreadService = require(ServerScriptService.Modules.ThreadService)
+local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
 
 local playerInitializer = {}
 
@@ -45,8 +46,7 @@ function StartGameService:InitBridgeListener()
 			StartGameService:InitPlayerAttributes(player)
 			BrainrotService:InitBrainrotInMap(player)
 			ThreadService:StartFromPlayer(player)
-
-			
+			UpgradeService:InitPlayerAttributes(player)
 		end
 	end
 end
