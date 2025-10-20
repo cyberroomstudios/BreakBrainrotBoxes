@@ -15,9 +15,45 @@ local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.Clien
 
 local cooldowns = {}
 
-function PlotController:Init() end
+function PlotController:Init()
+	PlotController:InitBridgeListener()
+end
 
+function PlotController:InitBridgeListener()
+	bridge:Connect(function(response)
+		if response[actionIdentifier] == "CreateProximityPrompt" then
+			PlotController:CreateProximityPrompt(response.data.Name, response.data.Plot)
+		end
+	end)
+end
 
+function PlotController:CreateProximityPrompt(name: string, plotNumber: number)
+	local found = false
+	while not found do
+		local runtimeFolder = workspace.Runtime
+		local playerFolder = runtimeFolder[player.UserId]
+		local brainrotsFolder = playerFolder.Brainrots
+
+		for _, value in brainrotsFolder:GetChildren() do
+			if value.Name == name and value:GetAttribute("SLOT_NUMBER") == plotNumber then
+				found = true
+				local humanoidRootPart = value:WaitForChild("HumanoidRootPart")
+
+				local proximityPrompt = humanoidRootPart.ProximityPrompt
+				proximityPrompt.Triggered:Connect(function()
+					local result = bridge:InvokeServerAsync({
+						[actionIdentifier] = "RemoveBrainrot",
+						data = {
+							Name = name,
+							PlotNumber = plotNumber,
+						},
+					})
+				end)
+			end
+		end
+		task.wait(1)
+	end
+end
 
 function PlotController:StartTouchGetMoney()
 	local baseNumber = player:GetAttribute("BASE")

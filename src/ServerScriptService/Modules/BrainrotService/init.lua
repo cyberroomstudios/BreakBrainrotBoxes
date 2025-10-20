@@ -67,4 +67,17 @@ function BrainrotService:DrawBrainrotFromRarity(rarityType: string)
 	return chooseCategory(brainrots)
 end
 
+function BrainrotService:RemoveBrainrotInMap(player: Player, name: string, plotNumber: string)
+	PlayerDataHandler:Update(player, "brainrotsMap", function(current)
+		local newCurrent = {}
+		for _, value in current do
+			if value.BrainrotName == name and value.SlotNumber == plotNumber then
+				continue
+			end
+			table.insert(newCurrent, value)
+		end
+		return newCurrent
+	end)
+end
+
 return BrainrotService

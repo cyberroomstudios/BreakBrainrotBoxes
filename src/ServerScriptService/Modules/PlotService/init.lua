@@ -27,9 +27,32 @@ function PlotService:InitBridgeListener()
 			local plotNumber = data.data.PlotNumber
 			return PlotService:GetMoneyFromBrainrotPlot(player, plotNumber)
 		end
+
+		if data[actionIdentifier] == "RemoveBrainrot" then
+			local name = data.data.Name
+			local plotNumber = data.data.PlotNumber
+			PlotService:RemoveBrainrot(player, name, plotNumber)
+		end
 	end
 end
 
+function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
+	local runtimeFolder = workspace.Runtime
+	local playerFolder = runtimeFolder[player.UserId]
+	local brainrotsFolder = playerFolder.Brainrots
+
+	for _, value in brainrotsFolder:GetChildren() do
+		if value.Name == name and value:GetAttribute("SLOT_NUMBER") == plotNumber then
+			value:Destroy()
+
+			local base = BaseService:GetBase(player)
+			local main = base:WaitForChild("Main")
+			local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
+			slot:SetAttribute("BUSY", false)
+			BrainrotService:RemoveBrainrotInMap(player, name, plotNumber)
+		end
+	end
+end
 function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number)
 	local base = BaseService:GetBase(player)
 	local main = base:WaitForChild("Main")
@@ -135,6 +158,14 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 				createPlotMoneyInformation(slot)
 			end)
 		end
+
+		bridge:Fire(player, {
+			[actionIdentifier] = "CreateProximityPrompt",
+			data = {
+				Name = brainrotModel.Name,
+				Plot = slotNumber,
+			},
+		})
 	end
 end
 
