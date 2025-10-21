@@ -90,6 +90,7 @@ function WorkerService:GetNextDeskNumberAvailable(player: Player)
 		end
 	end
 end
+
 function WorkerService:StartAttack(player: Player)
 	local function lookCrate(root, attachmentRef)
 		local targetPos = attachmentRef.WorldPosition

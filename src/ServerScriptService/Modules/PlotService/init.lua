@@ -50,6 +50,7 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 			local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
 			slot:SetAttribute("BUSY", false)
 			BrainrotService:RemoveBrainrotInMap(player, name, plotNumber)
+			BrainrotService:SaveBrainrotInBackpack(player, name)
 		end
 	end
 end
@@ -89,12 +90,14 @@ end
 
 function PlotService:Set(player: Player, brainrotType: string)
 	local slot = PlotService:GetNextAvailablePlot(player)
-
+	
 	if slot then
 		local slotNumber = tonumber(slot.Name)
 
 		BrainrotService:SaveBrainrotInMap(player, brainrotType, slotNumber)
 		PlotService:SetWithPlotNumber(player, slotNumber, brainrotType)
+	else
+		BrainrotService:SaveBrainrotInBackpack(player, brainrotType)
 	end
 end
 

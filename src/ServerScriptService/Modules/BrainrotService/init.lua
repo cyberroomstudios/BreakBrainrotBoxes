@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local ToolService = require(ServerScriptService.Modules.ToolService)
 
 local BrainrotService = {}
 
@@ -21,6 +22,19 @@ function BrainrotService:SaveBrainrotInMap(player: Player, brainrotName: string,
 	end)
 end
 
+function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: string, slotNumber: number)
+	local data = {
+		BrainrotName = brainrotName,
+	}
+
+	PlayerDataHandler:Update(player, "brainrotsBackpack", function(current)
+		table.insert(current, data)
+		return current
+	end)
+
+	ToolService:GiveBrainrotTool(player, brainrotName)
+end
+
 function BrainrotService:InitBrainrotInMap(player: Player)
 	local PlotService = require(ServerScriptService.Modules.PlotService)
 
@@ -28,6 +42,12 @@ function BrainrotService:InitBrainrotInMap(player: Player)
 		local brainrotName = value.BrainrotName
 		local slotNumber = value.SlotNumber
 		PlotService:SetWithPlotNumber(player, slotNumber, brainrotName)
+	end
+end
+
+function BrainrotService:InitBrainrotInBackpack(player: Player)
+	for _, value in PlayerDataHandler:Get(player, "brainrotsBackpack") do
+		ToolService:GiveBrainrotTool(player, value.BrainrotName)
 	end
 end
 

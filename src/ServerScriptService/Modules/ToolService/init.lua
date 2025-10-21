@@ -76,4 +76,12 @@ function ToolService:Give(player: Player, toolType: string, toolName: string, am
 	newToll.Parent = player.Backpack
 end
 
+function ToolService:GiveBrainrotTool(player: Player, brainrotName: string)
+	local newToll = ReplicatedStorage.Tools.Brainrots:FindFirstChild(brainrotName):Clone()
+	newToll:SetAttribute("ORIGINAL_NAME", brainrotName)
+
+	newToll.Name = brainrotName
+	newToll.Parent = player.Backpack
+end
+
 return ToolService
