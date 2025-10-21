@@ -32,6 +32,7 @@ local dataTemplate = {
 	cratesBackpack = {},
 	cratesMap = {},
 	brainrotsBackpack = {},
+	brainrotsBackpackId = 1,
 	brainrotsMap = {},
 	crateBreaker = {
 		Power = 1,

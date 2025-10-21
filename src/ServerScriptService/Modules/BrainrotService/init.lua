@@ -25,6 +25,7 @@ end
 function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: string, slotNumber: number)
 	local data = {
 		BrainrotName = brainrotName,
+		Id = PlayerDataHandler:Get(player, "brainrotsBackpackId"),
 	}
 
 	PlayerDataHandler:Update(player, "brainrotsBackpack", function(current)
@@ -32,6 +33,7 @@ function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: st
 		return current
 	end)
 
+	PlayerDataHandler:Set(player, "brainrotsBackpackId", data.Id + 1)
 	ToolService:GiveBrainrotTool(player, brainrotName)
 end
 

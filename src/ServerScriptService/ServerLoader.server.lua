@@ -45,12 +45,12 @@ local function ReplicatePlots()
 	local plo1 = workspace:WaitForChild("Map"):WaitForChild("Plots"):WaitForChild("1")
 
 	task.spawn(function()
-		local dummy = plo1:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-		local humanoid = dummy:WaitForChild("Humanoid")
+--		local dummy = plo1:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+--		local humanoid = dummy:WaitForChild("Humanoid")
 
-		local animation = ReplicatedStorage.Animations.Iddle
-		local track = humanoid:LoadAnimation(animation)
-		track:Play()
+--		local animation = ReplicatedStorage.Animations.Iddle
+--		local track = humanoid:LoadAnimation(animation)
+--		track:Play()
 	end)
 
 	for i = 2, 6 do
@@ -70,12 +70,12 @@ local function ReplicatePlots()
 
 		-- Carregando Animação de Iddle
 		task.spawn(function()
-			local dummy = newPlot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-			local humanoid = dummy:WaitForChild("Humanoid")
+	--		local dummy = newPlot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+	--		local humanoid = dummy:WaitForChild("Humanoid")
 
-			local animation = ReplicatedStorage.Animations.Iddle
-			local track = humanoid:LoadAnimation(animation)
-			track:Play()
+	--		local animation = ReplicatedStorage.Animations.Iddle
+	--		local track = humanoid:LoadAnimation(animation)
+	--		track:Play()
 		end)
 
 		-- Alterando o Conveyor

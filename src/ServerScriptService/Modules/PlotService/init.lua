@@ -127,8 +127,8 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		local humanoid = newBrainrot:WaitForChild("Humanoid")
 		local animation = ReplicatedStorage.Animations.Brainrots:FindFirstChild(newBrainrot.Name)
 		if animation then
-			local track = humanoid:LoadAnimation(animation)
-			track:Play()
+	--		local track = humanoid:LoadAnimation(animation)
+	--		track:Play()
 		end
 	end
 

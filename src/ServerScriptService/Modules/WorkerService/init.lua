@@ -144,11 +144,11 @@ function WorkerService:StartAttack(player: Player)
 	end
 
 	if not animations[dummy] then
-		local humanoid = dummy:WaitForChild("Humanoid")
-		local animation = ReplicatedStorage.Animations.Attack
-		local track = humanoid:LoadAnimation(animation)
+	--	local humanoid = dummy:WaitForChild("Humanoid")
+	--	local animation = ReplicatedStorage.Animations.Attack
+	--	local track = humanoid:LoadAnimation(animation)
 
-		animations[dummy] = track
+	--	animations[dummy] = track
 	end
 
 	while WorkerService:HasCrate(player) do
@@ -159,8 +159,8 @@ function WorkerService:StartAttack(player: Player)
 				local attachmentRef = value:FindFirstChild("Ref")
 				lookCrate(root, attachmentRef)
 
-				animations[dummy]:Play()
-				animations[dummy].Stopped:Wait()
+				--animations[dummy]:Play()
+				--animations[dummy].Stopped:Wait()
 
 				local workerPower = player:GetAttribute("Power")
 				local workerSpeed = player:GetAttribute("Speed")
