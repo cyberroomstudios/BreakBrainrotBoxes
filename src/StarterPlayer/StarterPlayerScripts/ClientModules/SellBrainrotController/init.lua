@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 local bridge = BridgeNet2.ReferenceBridge("SellService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -46,18 +47,30 @@ function SellBrainrotController:InitProximity()
 	local proximityPrompt = proximityPart.ProximityPrompt
 
 	proximityPrompt.PromptShown:Connect(function()
-		screen.Visible = true
-
-		local result = bridge:InvokeServerAsync({
-			[actionIdentifier] = "Get",
-		})
-
-		SellBrainrotController:BuildScreen(result)
+		UIStateManager:Open("SELL")
 	end)
 
 	proximityPrompt.PromptHidden:Connect(function()
-		screen.Visible = false
+		UIStateManager:Close("SELL")
 	end)
+end
+
+function SellBrainrotController:Open()
+	screen.Visible = true
+
+	local result = bridge:InvokeServerAsync({
+		[actionIdentifier] = "Get",
+	})
+
+	SellBrainrotController:BuildScreen(result)
+end
+
+function SellBrainrotController:Close()
+	screen.Visible = false
+end
+
+function SellBrainrotController:GetScreen()
+	return screen
 end
 
 function SellBrainrotController:ClearScreen()

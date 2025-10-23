@@ -15,6 +15,7 @@ local Players = game:GetService("Players")
 local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
 local screen
 local buyPowerButton
@@ -155,14 +156,24 @@ function UpgradesController:ConfigureProximityPrompt()
 	local proximityPrompt = proximityPart.ProximityPrompt
 
 	proximityPrompt.PromptShown:Connect(function()
-		screen.Visible = true
-
-		--CrateShopScreenController:BuildScreen(result)
+		UIStateManager:Open("UPGRADES")
 	end)
 
 	proximityPrompt.PromptHidden:Connect(function()
-		screen.Visible = false
+		UIStateManager:Close("UPGRADES")
 	end)
+end
+
+function UpgradesController:Open()
+	screen.Visible = true
+end
+
+function UpgradesController:Close()
+	screen.Visible = false
+end
+
+function UpgradesController:GetScreen()
+	return screen
 end
 
 return UpgradesController

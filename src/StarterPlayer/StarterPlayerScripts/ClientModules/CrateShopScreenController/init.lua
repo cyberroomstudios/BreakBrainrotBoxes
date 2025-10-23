@@ -17,6 +17,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
 local Crate = require(ReplicatedStorage.Enums.Crate)
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
 --GUI
 local screen -- Tela
@@ -45,17 +46,29 @@ function CrateShopScreenController:ConfigureProximityPrompt()
 	local proximityPrompt = proximityPart.ProximityPrompt
 
 	proximityPrompt.PromptShown:Connect(function()
-		screen.Visible = true
-		local result = bridge:InvokeServerAsync({
-			[actionIdentifier] = "GetStock",
-		})
-
-		CrateShopScreenController:BuildScreen(result)
+		UIStateManager:Open("CRATES")
 	end)
 
 	proximityPrompt.PromptHidden:Connect(function()
-		screen.Visible = false
+		UIStateManager:Close("CRATES")
 	end)
+end
+
+function CrateShopScreenController:Open()
+	screen.Visible = true
+	local result = bridge:InvokeServerAsync({
+		[actionIdentifier] = "GetStock",
+	})
+
+	CrateShopScreenController:BuildScreen(result)
+end
+
+function CrateShopScreenController:Close()
+	screen.Visible = false
+end
+
+function CrateShopScreenController:GetScreen()
+	return screen
 end
 
 function CrateShopScreenController:InitAttributeListener()
