@@ -16,6 +16,7 @@ local BaseService = require(ServerScriptService.Modules.BaseService)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
+local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 
 function PlotService:Init()
 	PlotService:InitBridgeListener()
@@ -54,6 +55,53 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 		end
 	end
 end
+
+function PlotService:RelesePlot(player: Player, plotNumber: number)
+	local base = BaseService:GetBase(player)
+	local main = base:WaitForChild("Main")
+
+	local slotBase = main.BrainrotPlots:FindFirstChild(1)
+	local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
+
+	if slot then
+		slot:SetAttribute("BUSY", false)
+		slot:SetAttribute("UNLOCK", true)
+		slot.TouchPart.Color = slotBase.TouchPart.Color
+		slot.StandingPart.BillboardGui.Enabled = false
+	end
+end
+
+function PlotService:InitRebirth(player: Player)
+	local releaseSlotIndex = PlayerDataHandler:Get(player, "releaseSlotIndex")
+
+	if releaseSlotIndex > 10 then
+		for i = 11, releaseSlotIndex do
+			PlotService:RelesePlot(player, i)
+		end
+	end
+
+end
+
+function PlotService:RemoveAll(player: Player)
+	local runtimeFolder = workspace.Runtime
+	local playerFolder = runtimeFolder[player.UserId]
+	local brainrotsFolder = playerFolder.Brainrots
+	local base = BaseService:GetBase(player)
+	local main = base:WaitForChild("Main")
+
+	for plotNumber = 1, 20 do
+		for _, value in brainrotsFolder:GetChildren() do
+			if value:GetAttribute("SLOT_NUMBER") == plotNumber then
+				value:Destroy()
+
+				local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
+				slot:SetAttribute("BUSY", false)
+			end
+		end
+	end
+	BrainrotService:RemoveAll(player)
+end
+
 function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number)
 	local base = BaseService:GetBase(player)
 	local main = base:WaitForChild("Main")
@@ -82,7 +130,7 @@ function PlotService:GetNextAvailablePlot(player: Player)
 	end)
 
 	for _, value in slots do
-		if not value:GetAttribute("BUSY") then
+		if value:GetAttribute("UNLOCK") and not value:GetAttribute("BUSY") then
 			return value
 		end
 	end
@@ -90,7 +138,7 @@ end
 
 function PlotService:Set(player: Player, brainrotType: string)
 	local slot = PlotService:GetNextAvailablePlot(player)
-	
+
 	if slot then
 		local slotNumber = tonumber(slot.Name)
 
@@ -127,8 +175,8 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		local humanoid = newBrainrot:WaitForChild("Humanoid")
 		local animation = ReplicatedStorage.Animations.Brainrots:FindFirstChild(newBrainrot.Name)
 		if animation then
-	--		local track = humanoid:LoadAnimation(animation)
-	--		track:Play()
+			--		local track = humanoid:LoadAnimation(animation)
+			--		track:Play()
 		end
 	end
 

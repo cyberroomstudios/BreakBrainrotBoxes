@@ -19,6 +19,7 @@ local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 local PlotService = require(ServerScriptService.Modules.PlotService)
 local ThreadService = require(ServerScriptService.Modules.ThreadService)
 local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
+local RebirthService = require(ServerScriptService.Modules.RebirthService)
 
 local playerInitializer = {}
 
@@ -48,6 +49,7 @@ function StartGameService:InitBridgeListener()
 			BrainrotService:InitBrainrotInBackpack(player)
 			ThreadService:StartFromPlayer(player)
 			UpgradeService:InitPlayerUpgrade(player)
+			RebirthService:InitRebirth(player)
 		end
 	end
 end

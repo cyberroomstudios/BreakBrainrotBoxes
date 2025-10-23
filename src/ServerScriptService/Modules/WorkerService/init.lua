@@ -27,7 +27,6 @@ end
 function WorkerService:InitBridgeListener()
 	bridge.OnServerInvoke = function(player, data)
 		if data[actionIdentifier] == "PlaceAll" then
-			print("PlaceAll")
 			WorkerService:SetAllCrateBackpack(player)
 		end
 
@@ -144,11 +143,11 @@ function WorkerService:StartAttack(player: Player)
 	end
 
 	if not animations[dummy] then
-	--	local humanoid = dummy:WaitForChild("Humanoid")
-	--	local animation = ReplicatedStorage.Animations.Attack
-	--	local track = humanoid:LoadAnimation(animation)
+		--	local humanoid = dummy:WaitForChild("Humanoid")
+		--	local animation = ReplicatedStorage.Animations.Attack
+		--	local track = humanoid:LoadAnimation(animation)
 
-	--	animations[dummy] = track
+		--	animations[dummy] = track
 	end
 
 	while WorkerService:HasCrate(player) do
@@ -214,6 +213,7 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 		-- Destroy o Brainrot
 		task.wait(1)
 		newBrainrot:Destroy()
+
 		-- Coloca no slot
 		PlotService:Set(player, brainrotType)
 	end

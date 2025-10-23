@@ -102,4 +102,8 @@ function BrainrotService:RemoveBrainrotInMap(player: Player, name: string, plotN
 	end)
 end
 
+function BrainrotService:RemoveAll(player: Player)
+	PlayerDataHandler:Set(player, "brainrotsMap", {})
+end
+
 return BrainrotService
