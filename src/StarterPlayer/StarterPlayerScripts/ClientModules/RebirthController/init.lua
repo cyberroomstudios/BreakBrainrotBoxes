@@ -120,12 +120,14 @@ function RebirthController:BuildScreen()
 		end
 	end
 
+	infoCurrentRebirth.Text = "Rebirth: " .. player:GetAttribute("CURRENT_REBIRTH")
+
 	if not rebirthEnum then
 		screen.Main.Main.Visible = false
 		screen.Main.NoRebirth.Visible = true
+		return
 	end
 
-	infoCurrentRebirth.Text = "Rebirth: " .. player:GetAttribute("CURRENT_REBIRTH")
 	screen.Main.Main.Visible = true
 	screen.Main.NoRebirth.Visible = false
 	buildRequirements()

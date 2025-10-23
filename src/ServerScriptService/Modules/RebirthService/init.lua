@@ -10,14 +10,18 @@ local Rebirths = require(ReplicatedStorage.Enums.Rebirths)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
-local MoneyService = require(ServerScriptService.Modules.MoneyService)
-local PlotService = require(ServerScriptService.Modules.PlotService)
-local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
 local bridge = BridgeNet2.ReferenceBridge("RebirthService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
+
+local MoneyService = require(ServerScriptService.Modules.MoneyService)
+local PlotService = require(ServerScriptService.Modules.PlotService)
+local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
+local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
+local CrateService = require(ServerScriptService.Modules.CrateService)
+local WorkerService = require(ServerScriptService.Modules.WorkerService)
 
 function RebirthService:Init()
 	RebirthService:InitBridgeListener()
@@ -41,8 +45,15 @@ function RebirthService:HasAllRequeriments(player: Player, rebirth)
 		end
 
 		if requirement.Type == "BRAINROT" then
-			local index = PlayerDataHandler:Get(player, "index")
-			if not index[requirement.Name] then
+			local brainrotsMap = PlayerDataHandler:Get(player, "brainrotsMap")
+			local hasBrainrot = false
+			for _, value in brainrotsMap do
+				if value.BrainrotName == requirement.Name then
+					hasBrainrot = true
+				end
+			end
+
+			if not hasBrainrot then
 				return false
 			end
 		end
@@ -54,7 +65,7 @@ end
 function RebirthService:GiveAllAwards(player: Player, rebirth)
 	for _, award in rebirth.Awards do
 		if award.Type == "PLOT" then
-			--BaseService:CreateMoreFloor(player)
+			RebirthService:GiveRebirthPlot(player)
 		end
 
 		if award.Type == "MONEY" then
@@ -63,9 +74,24 @@ function RebirthService:GiveAllAwards(player: Player, rebirth)
 	end
 end
 
+function RebirthService:GiveRebirthPlot(player: Player)
+	local currentRebirth = PlayerDataHandler:Get(player, "rebirth")
+	local releaseSlotIndex = PlayerDataHandler:Get(player, "releaseSlotIndex")
+
+	-- Libera o Plot
+	PlotService:RelesePlot(player, releaseSlotIndex + 1)
+
+	-- Atualiza a base do jogador
+	PlayerDataHandler:Set(player, "rebirth", currentRebirth + 1)
+	PlayerDataHandler:Set(player, "releaseSlotIndex", releaseSlotIndex + 1)
+end
+
 function RebirthService:ClearAllItems(player: Players)
 	PlotService:RemoveAll(player)
 	MoneyService:ConsumeAllMoney(player)
+	BrainrotService:ConsumeAllInHand(player)
+	CrateService:ConsumeAllInHand(player)
+	WorkerService:ClearAllCrates(player)
 end
 
 function RebirthService:UpdateRebirth(player: Player)
@@ -93,8 +119,8 @@ function RebirthService:GetRebirth(player: Player)
 			RebirthService:GiveAllAwards(player, nextRebirth)
 
 			-- Atualiza o Indicador de Rebirth do jogador
-			PlayerDataHandler:Set(player, "rebirth", nextRebirth)
-			player:SetAttribute("CURRENT_REBIRTH", nextRebirth)
+			PlayerDataHandler:Set(player, "rebirth", currentRebirthNumber + 1)
+			player:SetAttribute("CURRENT_REBIRTH", currentRebirthNumber + 1)
 			GameNotificationService:SendSuccessNotification(player, "Congratulations. You've achieved a Rebirth.")
 
 			return
@@ -108,4 +134,5 @@ function RebirthService:InitRebirth(player: Player)
 	player:SetAttribute("CURRENT_REBIRTH", PlayerDataHandler:Get(player, "rebirth"))
 	PlotService:InitRebirth(player)
 end
+
 return RebirthService

@@ -44,6 +44,14 @@ function CrateService:Consume(player: Player, crateName: string)
 	end)
 end
 
+function CrateService:ConsumeAllInHand(player: Player)
+	PlayerDataHandler:Update(player, "cratesBackpack", function(current)
+		return {}
+	end)
+
+	ToolService:ConsumeAllCrates(player, "CRATE")
+end
+
 function CrateService:DrawBrainrotFromCrate(crateType: string)
 	local function chooseCategory(oddsTable)
 		-- Soma total das probabilidades

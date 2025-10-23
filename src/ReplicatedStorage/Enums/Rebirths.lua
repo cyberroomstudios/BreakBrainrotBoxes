@@ -3,12 +3,12 @@ local Rebirths = table.freeze({
 		Requirements = {
 			{
 				Type = "MONEY",
-				Amount = 1000,
+				Amount = 100,
 			},
 
 			{
 				Type = "BRAINROT",
-				Name = 0,
+				Name = "BombardiroCrocodilo",
 			},
 		},
 		Awards = {

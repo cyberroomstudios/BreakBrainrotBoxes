@@ -271,4 +271,21 @@ function WorkerService:SetCrate(player: Player, crateType: string, deskNumber: s
 	end
 end
 
+function WorkerService:ClearAllCrates(player: Player)
+	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
+	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
+	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
+	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
+
+	local crate = workspace.Runtime[player.UserId].Crates
+
+	for _, value in crate:GetChildren() do
+		value:Destroy()
+	end
+
+	for _, value in desks:GetChildren() do
+		value:SetAttribute("BUSY", false)
+	end
+end
+
 return WorkerService

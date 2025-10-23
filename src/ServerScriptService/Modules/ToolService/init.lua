@@ -3,6 +3,24 @@ local ToolService = {}
 
 function ToolService:Init() end
 
+function ToolService:ConsumeAllCrates(player: Player, toolType)
+	local items = player.Backpack:GetChildren()
+
+	for _, valeu in items do
+		if valeu:GetAttribute("TOOL_TYPE") == toolType then
+			valeu:Destroy()
+		end
+	end
+
+	local itemsFromCharecter = player.Character:GetChildren()
+
+	for _, value in itemsFromCharecter do
+		if value:GetAttribute("TOOL_TYPE") == toolType then
+			value:Destroy()
+		end
+	end
+end
+
 function ToolService:Consume(player: Player, toolType: string, toolName: string)
 	if player.Backpack:FindFirstChild(toolName) then
 		local item = player.Backpack:FindFirstChild(toolName)

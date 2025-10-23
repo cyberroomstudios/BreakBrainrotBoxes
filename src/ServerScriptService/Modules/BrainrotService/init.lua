@@ -106,4 +106,12 @@ function BrainrotService:RemoveAll(player: Player)
 	PlayerDataHandler:Set(player, "brainrotsMap", {})
 end
 
+function BrainrotService:ConsumeAllInHand(player: Player)
+	PlayerDataHandler:Update(player, "brainrotsBackpack", function(current)
+		return {}
+	end)
+
+	ToolService:ConsumeAllCrates(player, "BRAINROT")
+end
+
 return BrainrotService
