@@ -3,6 +3,7 @@ local UpgradeService = {}
 -- Init Bridg Net
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
@@ -14,6 +15,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 
 local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
+local WorkerService = require(ServerScriptService.Modules.WorkerService)
 
 function UpgradeService:Init()
 	UpgradeService:InitBridgeListener()
@@ -79,14 +81,11 @@ end
 
 function UpgradeService:ConfigureWorkerCapacity(player: Player)
 	local capacity = player:GetAttribute("Capacity")
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
-
-	for _, value in desks:GetChildren() do
-		local deskNumber = tonumber(value.Name)
-		value:SetAttribute("UNLOCK", deskNumber <= capacity)
+	if capacity > 1 then
+		for i = 1, capacity do
+			WorkerService:EnableWorker(player, i)
+		end
 	end
 end
+
 return UpgradeService

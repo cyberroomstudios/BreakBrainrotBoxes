@@ -48,8 +48,9 @@ end
 
 function WorkerController:InitProximityPrompt()
 	local plot = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", player:GetAttribute("BASE"))
+	local proximyPart = ClientUtil:WaitForDescendants(plot, "Main", "WorkerArea", "ProximityPart")
+	local proximity = ClientUtil:WaitForDescendants(proximyPart, "ProximityPrompt")
 
-	local proximity = ClientUtil:WaitForDescendants(plot, "Main", "Worker", "Docker", "ProximyPart", "ProximityPrompt")
 	proximity.PromptShown:Connect(function()
 		placeButtons.Visible = true
 	end)
@@ -58,7 +59,5 @@ function WorkerController:InitProximityPrompt()
 		placeButtons.Visible = false
 	end)
 end
-
-
 
 return WorkerController

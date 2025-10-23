@@ -5,18 +5,16 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
+local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local CrateService = require(ServerScriptService.Modules.CrateService)
+local ToolService = require(ServerScriptService.Modules.ToolService)
+local Crate = require(ReplicatedStorage.Enums.Crate)
+local PlotService = require(ServerScriptService.Modules.PlotService)
 local bridge = BridgeNet2.ReferenceBridge("WorkerService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
-
-local Crate = require(ReplicatedStorage.Enums.Crate)
-local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
-local ToolService = require(ServerScriptService.Modules.ToolService)
-local CrateService = require(ServerScriptService.Modules.CrateService)
-local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
-local PlotService = require(ServerScriptService.Modules.PlotService)
 
 local animations = {}
 
@@ -29,31 +27,6 @@ function WorkerService:InitBridgeListener()
 		if data[actionIdentifier] == "PlaceAll" then
 			WorkerService:SetAllCrateBackpack(player)
 		end
-
-		if data[actionIdentifier] == "PlaceThis" then
-			WorkerService:SetCrateFromHand(player)
-		end
-	end
-end
-
-function WorkerService:SetCrateFromHand(player: Player)
-	local function getEquippedTool(player)
-		local character = player.Character
-		if not character then
-			return nil
-		end
-		return character:FindFirstChildWhichIsA("Tool")
-	end
-
-	local tool = getEquippedTool(player)
-	if tool then
-		local deskNumber = WorkerService:GetNextDeskNumberAvailable(player)
-		if deskNumber then
-			CrateService:Consume(player, tool.Name)
-			ToolService:Consume(player, "CRATE", tool.Name)
-			WorkerService:SetCrate(player, tool.Name, deskNumber)
-			WorkerService:StartAttack(player)
-		end
 	end
 end
 
@@ -62,121 +35,103 @@ function WorkerService:SetAllCrateBackpack(player: Player)
 	local putBox = false
 	for crateName, amount in crates do
 		for i = 1, amount do
-			local deskNumber = WorkerService:GetNextDeskNumberAvailable(player)
-			if deskNumber then
+			local worker = WorkerService:GetNextWorkerAvailable(player)
+			if worker then
+				print(worker.Name)
 				CrateService:Consume(player, crateName)
 				ToolService:Consume(player, "CRATE", crateName)
-				WorkerService:SetCrate(player, crateName, deskNumber)
-				putBox = true
+				worker:SetAttribute("BUSY", true)
+				WorkerService:SetCrate(player, crateName, worker.Name)
+				continue
 			end
+			print("Sem Espaço")
 		end
-	end
-
-	if putBox then
-		WorkerService:StartAttack(player)
 	end
 end
 
-function WorkerService:GetNextDeskNumberAvailable(player: Player)
+function WorkerService:GetNextWorkerAvailable(player: Player)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
+	local workersFolder = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+	local workers = workersFolder:GetChildren()
+	table.sort(workers, function(a, b)
+		return tonumber(a.Name) < tonumber(b.Name)
+	end)
 
-	for _, value in desks:GetChildren() do
+	for _, value in workers do
 		if value:GetAttribute("UNLOCK") and not value:GetAttribute("BUSY") then
-			return tonumber(value.Name)
+			return value
 		end
 	end
 end
 
-function WorkerService:StartAttack(player: Player)
-	local function lookCrate(root, attachmentRef)
-		local targetPos = attachmentRef.WorldPosition
-		local currentPos = root.Position
+function WorkerService:UpdateCrateBillboardGui(crate: Model)
+	local center = crate.Center
+	local billboardGui = center.BillboardGui
+	local textLabel = billboardGui.Frame.TextLabel
 
-		-- Mantém a mesma altura Y, se quiser que ele só gire horizontalmente
-		targetPos = Vector3.new(targetPos.X, currentPos.Y, targetPos.Z)
+	local currentXp = crate:GetAttribute("CURRENT_XP")
+	local maxXp = crate:GetAttribute("MAX_XP")
 
-		root.CFrame = CFrame.lookAt(currentPos, targetPos)
-	end
+	textLabel.Text = currentXp .. "/" .. maxXp
+end
 
-	local function updateCrateBillboardGui(crate: Model)
-		local center = crate.Center
-		local billboardGui = center.BillboardGui
-		local textLabel = billboardGui.Frame.TextLabel
+function WorkerService:SetCrate(player: Player, crateName: string, workerNumber: number)
+	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
+	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
+	local workersFolder = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+	local worker = workersFolder:FindFirstChild(workerNumber)
+	local crateEnum = Crate.CRATES[crateName]
 
-		local currentXp = crate:GetAttribute("CURRENT_XP")
-		local maxXp = crate:GetAttribute("MAX_XP")
-
-		textLabel.Text = currentXp .. "/" .. maxXp
-	end
-
-	local function attackCreate(attackValue: number, desk: Model)
-		local crate = workspace.Runtime[player.UserId].Crates:FindFirstChild(desk.Name)
+	if worker then
+		local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateName):Clone()
 
 		if crate then
-			local current = crate:GetAttribute("CURRENT_XP")
-			local newCurrent = current - attackValue
+			crate.Parent = workspace.Runtime[player.UserId].Crates
 
-			if newCurrent <= 0 then
+			-- Atributos
+			crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
+			crate:SetAttribute("CURRENT_XP", crateEnum.XPToOpen)
+			crate:SetAttribute("CRATE_TYPE", crateName)
+
+			crate:SetPrimaryPartCFrame(CFrame.new(worker.CrateRef.WorldPosition))
+
+			task.spawn(function()
+				if not animations[worker] then
+					local humanoid = worker:WaitForChild("Humanoid")
+					local animation = ReplicatedStorage.Animations.Worker.Attack
+					local track = humanoid:LoadAnimation(animation)
+
+					animations[worker] = track
+				end
+
+				local currentXP = crate:GetAttribute("CURRENT_XP")
+
+				while crate.Parent and tonumber(crate:GetAttribute("CURRENT_XP")) > 0 do
+					animations[worker]:Play()
+					local workerPower = player:GetAttribute("Power")
+					local workerSpeed = player:GetAttribute("Speed")
+
+					-- Obtem o XP atual da caixa
+					local currentXp = crate:GetAttribute("CURRENT_XP")
+					local newCurrent = currentXp - (workerPower * 10)
+					crate:SetAttribute("CURRENT_XP", newCurrent)
+
+					local baseWait = 0.5
+					local reductionPerLevel = 0.05
+					local waitTime = math.max(0.1, baseWait - (workerSpeed - 1) * reductionPerLevel)
+					task.wait(waitTime)
+
+					WorkerService:UpdateCrateBillboardGui(crate)
+				end
+
 				crate:Destroy()
 
-				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), desk.Ref)
-				desk:SetAttribute("BUSY", false)
-				return
-			end
-			crate:SetAttribute("CURRENT_XP", newCurrent)
-
-			updateCrateBillboardGui(crate)
+				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), worker.CrateRef)
+				worker:SetAttribute("BUSY", false)
+			end)
 		end
 	end
-
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
-	local root = dummy:FindFirstChild("HumanoidRootPart")
-
-	if dummy:GetAttribute("ANIMATION_ON") then
-		return
-	end
-
-	if not animations[dummy] then
-		--	local humanoid = dummy:WaitForChild("Humanoid")
-		--	local animation = ReplicatedStorage.Animations.Attack
-		--	local track = humanoid:LoadAnimation(animation)
-
-		--	animations[dummy] = track
-	end
-
-	while WorkerService:HasCrate(player) do
-		dummy:SetAttribute("ANIMATION_ON", true)
-
-		for _, value in desks:GetChildren() do
-			if value:GetAttribute("BUSY") then
-				local attachmentRef = value:FindFirstChild("Ref")
-				lookCrate(root, attachmentRef)
-
-				--animations[dummy]:Play()
-				--animations[dummy].Stopped:Wait()
-
-				local workerPower = player:GetAttribute("Power")
-				local workerSpeed = player:GetAttribute("Speed")
-
-				attackCreate(workerPower * 10, value)
-
-				local baseWait = 0.5
-				local reductionPerLevel = 0.05
-
-				local waitTime = math.max(0.1, baseWait - (workerSpeed - 1) * reductionPerLevel)
-				print(waitTime)
-				task.wait(waitTime)
-			end
-		end
-	end
-
-	dummy:SetAttribute("ANIMATION_ON", false)
 end
 
 function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: Attachment)
@@ -219,63 +174,10 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 	end
 end
 
-function WorkerService:HasCrate(player: Player)
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
-
-	for _, value in desks:GetChildren() do
-		if value:GetAttribute("BUSY") then
-			return true
-		end
-	end
-
-	return false
-end
-
-function WorkerService:SetCrate(player: Player, crateType: string, deskNumber: string)
-	local function updateCrateBillboardGui(crate: Model)
-		local center = crate.Center
-		local billboardGui = center.BillboardGui
-		local textLabel = billboardGui.Frame.TextLabel
-
-		local currentXp = crate:GetAttribute("CURRENT_XP")
-		local maxXp = crate:GetAttribute("MAX_XP")
-
-		textLabel.Text = currentXp .. "/" .. maxXp
-	end
-
-	local crateEnum = Crate.CRATES[crateType]
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
-
-	for _, value in desks:GetChildren() do
-		if not value:GetAttribute("BUSY") then
-			local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateType):Clone()
-			crate.Name = deskNumber
-			crate.Parent = workspace.Runtime[player.UserId].Crates
-
-			crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
-			crate:SetAttribute("CURRENT_XP", crateEnum.XPToOpen)
-			crate:SetAttribute("CRATE_TYPE", crateType)
-
-			crate:SetPrimaryPartCFrame(CFrame.new(value:FindFirstChild("Ref").WorldPosition))
-
-			updateCrateBillboardGui(crate)
-			value:SetAttribute("BUSY", true)
-			return
-		end
-	end
-end
-
 function WorkerService:ClearAllCrates(player: Player)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local dummy = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-	local desks = plot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Desks")
+	local desks = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
 
 	local crate = workspace.Runtime[player.UserId].Crates
 
@@ -285,6 +187,69 @@ function WorkerService:ClearAllCrates(player: Player)
 
 	for _, value in desks:GetChildren() do
 		value:SetAttribute("BUSY", false)
+	end
+end
+
+function WorkerService:EnableWorker(player: Player, workerNumber: number)
+	local function safe(fn)
+		local ok, err = pcall(fn)
+		if not ok then
+			warn(err)
+		end
+	end
+
+	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
+	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
+	local desks = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+
+	local worker = desks:FindFirstChild(workerNumber)
+
+	if worker then
+		worker:SetAttribute("UNLOCK", true)
+
+		-- Ativar Visualmente
+
+		for _, v in ipairs(worker:GetDescendants()) do
+			if v:IsA("BasePart") then
+				safe(function()
+					v.Transparency = 0
+					v.CanCollide = true
+					v.CanTouch = true
+					v.CanQuery = true
+					if v.CastShadow ~= nil then
+						v.CastShadow = true
+					end
+				end)
+			elseif v:IsA("Decal") or v:IsA("Texture") then
+				safe(function()
+					v.Transparency = 0
+				end)
+			elseif v:IsA("BillboardGui") or v:IsA("SurfaceGui") then
+				safe(function()
+					v.Enabled = true
+				end)
+			elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then
+				safe(function()
+					v.Enabled = true
+				end)
+			elseif v:IsA("PointLight") or v:IsA("SpotLight") or v:IsA("SurfaceLight") then
+				safe(function()
+					v.Enabled = true
+				end)
+			elseif v:IsA("ProximityPrompt") then
+				safe(function()
+					v.Enabled = true
+				end)
+			elseif v:IsA("ClickDetector") then
+				safe(function()
+					v.MaxActivationDistance = 32
+				end) -- distância padrão
+			elseif v:IsA("Sound") then
+				safe(function()
+					v.Volume = 1
+				end)
+			end
+		end
 	end
 end
 
