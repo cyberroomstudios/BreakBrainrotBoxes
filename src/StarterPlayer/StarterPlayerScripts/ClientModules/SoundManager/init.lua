@@ -1,0 +1,110 @@
+local SoundManager = {}
+
+-- Init Bridg Net
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SoundService = game:GetService("SoundService")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("SoundManager")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
+
+local sounds = {
+	UI_CLICK = "",
+	UI_OPEN_SCREEN = "",
+	MONEY_COMING_IN = "",
+	MONEY_COMING_OUT = "",
+}
+
+local soundLooped = {}
+
+function SoundManager:Init()
+	SoundManager:InitRef()
+	SoundManager:InitBridgeListener()
+end
+
+function SoundManager:InitRef()
+	sounds["UI_CLICK"] = SoundService.GUI.Click
+	sounds["UI_OPEN_SCREEN"] = SoundService.GUI.OpenScreen
+	sounds["MONEY_COMING_IN"] = SoundService.GUI.MoneyComingIn
+	sounds["MONEY_COMING_OUT"] = SoundService.GUI.MoneyComingOut
+end
+
+function SoundManager:StartOrPauseBGM()
+	local settingsMusicTheme = Players.LocalPlayer:GetAttribute("SETTINGS_MUSIC_THEME")
+	if settingsMusicTheme then
+		sounds["BGM"]:Play()
+	else
+		sounds["BGM"]:Stop()
+	end
+end
+function SoundManager:Play(sondName: string)
+	local settingsSoundEffect = Players.LocalPlayer:GetAttribute("SETTINGS_SOUND_EFFECT")
+
+	if not settingsSoundEffect then
+		--	return
+	end
+	local sound = sounds[sondName]:Clone()
+	sound.Parent = script.Parent
+	sound:Play()
+
+	sound.Ended:Connect(function()
+		sound:Destroy()
+	end)
+end
+
+function SoundManager:PlayWithLooped(sondName: string)
+	if not soundLooped[sondName] then
+		local sound = sounds[sondName]:Clone()
+		sound.Parent = script.Parent
+		sound:Play()
+		soundLooped[sondName] = sound
+
+		return
+	end
+
+	soundLooped[sondName]:Play()
+end
+
+function SoundManager:StopWithLooped(sondName: string)
+	if soundLooped[sondName] then
+		soundLooped[sondName]:Stop()
+	end
+end
+
+function SoundManager:PlayProgrammerSound(soundName: string, model: Model)
+	local programmersSounds = {
+		KEYBOARD_1 = "",
+		KEYBOARD_2 = "",
+		KEYBOARD_3 = "",
+		SAHUR = "",
+		CONSOLE_CONTROLLER = "",
+		GAME_SPACE = "",
+	}
+	programmersSounds["KEYBOARD_1"] = SoundService.Programmers.KeyBoard1
+	programmersSounds["KEYBOARD_2"] = SoundService.Programmers.KeyBoard2
+	programmersSounds["KEYBOARD_3"] = SoundService.Programmers.KeyBoard3
+	programmersSounds["SAHUR"] = SoundService.Programmers.Sahur
+	programmersSounds["GAME_SPACE"] = SoundService.Programmers.GameSpace
+	programmersSounds["CONSOLE_CONTROLLER"] = SoundService.Programmers.ConsoleController
+
+	local sound = programmersSounds[soundName]
+	if sound then
+		local newSound = sound:Clone()
+		newSound.Parent = model.PrimaryPart
+		newSound:Play()
+	end
+end
+
+function SoundManager:InitBridgeListener()
+	bridge:Connect(function(response)
+		if response[actionIdentifier] == "Play" then
+			SoundManager:Play(response.data)
+		end
+	end)
+end
+
+return SoundManager

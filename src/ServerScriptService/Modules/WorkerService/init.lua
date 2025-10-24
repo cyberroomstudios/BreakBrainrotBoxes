@@ -10,6 +10,7 @@ local CrateService = require(ServerScriptService.Modules.CrateService)
 local ToolService = require(ServerScriptService.Modules.ToolService)
 local Crate = require(ReplicatedStorage.Enums.Crate)
 local PlotService = require(ServerScriptService.Modules.PlotService)
+local IndexService = require(ServerScriptService.Modules.IndexService)
 local bridge = BridgeNet2.ReferenceBridge("WorkerService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -165,6 +166,7 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 		-- Cria a animação de crescer
 		setModelScale(newBrainrot)
 
+		IndexService:AddCommon(player, brainrotType)
 		-- Destroy o Brainrot
 		task.wait(1)
 		newBrainrot:Destroy()

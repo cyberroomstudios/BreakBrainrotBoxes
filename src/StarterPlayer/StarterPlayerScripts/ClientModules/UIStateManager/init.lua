@@ -7,6 +7,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local MobileVibrationController = require(Players.LocalPlayer.PlayerScripts.ClientModules.MobileVibrationController)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 
 local screens = {}
 local originalSizeScreen = {}
@@ -31,11 +32,13 @@ function UIStateManager:LoadModules()
 		local CrateShopScreenController = require(clientModules.CrateShopScreenController)
 		local SellBrainrotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.SellBrainrotController)
 		local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.UpgradeController)
+		local IndexController = require(Players.LocalPlayer.PlayerScripts.ClientModules.IndexController)
 
 		screens = {
 			["CRATES"] = CrateShopScreenController,
 			["SELL"] = SellBrainrotController,
 			["UPGRADES"] = UpgradeController,
+			["INDEX"] = IndexController,
 		}
 
 		for screenName, screen in screens do
@@ -59,7 +62,7 @@ function UIStateManager:Open(screenName: string)
 	UIStateManager:AddBluer()
 	task.spawn(function()
 		MobileVibrationController:Start()
-		--SoundManager:Play("UI_OPEN_SCREEN")
+		SoundManager:Play("UI_OPEN_SCREEN")
 		screens[screenName]:Open()
 	end)
 
@@ -139,7 +142,7 @@ function UIStateManager:ConfigureCloseButton()
 
 	for _, button in taggedObjects do
 		button.MouseButton1Click:Connect(function()
-			--SoundManager:Play("UI_CLICK")
+			SoundManager:Play("UI_CLICK")
 
 			UIStateManager:Close(button:GetAttribute("Screen"))
 		end)

@@ -4,12 +4,14 @@ local Players = game:GetService("Players")
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 
 local player = Players.LocalPlayer
 
 local moneyLabel
 local historyMoney
 local oldMoney = nil
+
 function MoneyController:Init(data)
 	MoneyController:CreateReferences()
 	MoneyController:InitAttributeListener()
@@ -32,11 +34,13 @@ function MoneyController:InitAttributeListener()
 		if oldMoney and oldMoney < money then
 			local diference = money - oldMoney
 			MoneyController:AddHistory(true, diference)
+			SoundManager:Play("MONEY_COMING_IN")
 		end
 
 		if oldMoney and oldMoney > money then
 			local diference = oldMoney - money
 			MoneyController:AddHistory(false, diference)
+			SoundManager:Play("MONEY_COMING_OUT")
 		end
 
 		oldMoney = money
