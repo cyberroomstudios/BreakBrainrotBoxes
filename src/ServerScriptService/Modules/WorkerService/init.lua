@@ -172,7 +172,7 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 		newBrainrot:Destroy()
 
 		-- Coloca no slot
-		PlotService:Set(player, brainrotType)
+		PlotService:Set(player, brainrotType, "COMMON")
 	end
 end
 

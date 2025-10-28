@@ -10,10 +10,16 @@ local BrainrotService = {}
 
 function BrainrotService:Init() end
 
-function BrainrotService:SaveBrainrotInMap(player: Player, brainrotName: string, slotNumber: number)
+function BrainrotService:SaveBrainrotInMap(
+	player: Player,
+	brainrotName: string,
+	mutationType: string,
+	slotNumber: number
+)
 	local data = {
 		BrainrotName = brainrotName,
 		SlotNumber = slotNumber,
+		MutationType = mutationType,
 	}
 
 	PlayerDataHandler:Update(player, "brainrotsMap", function(current)
@@ -22,10 +28,11 @@ function BrainrotService:SaveBrainrotInMap(player: Player, brainrotName: string,
 	end)
 end
 
-function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: string, slotNumber: number)
+function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: string, mutationType: string)
 	local data = {
-		BrainrotName = brainrotName,
 		Id = PlayerDataHandler:Get(player, "brainrotsBackpackId"),
+		BrainrotName = brainrotName,
+		MutationType = mutationType,
 	}
 
 	PlayerDataHandler:Update(player, "brainrotsBackpack", function(current)
@@ -43,7 +50,8 @@ function BrainrotService:InitBrainrotInMap(player: Player)
 	for _, value in PlayerDataHandler:Get(player, "brainrotsMap") do
 		local brainrotName = value.BrainrotName
 		local slotNumber = value.SlotNumber
-		PlotService:SetWithPlotNumber(player, slotNumber, brainrotName)
+		local mutationType = value.MutationType
+		PlotService:SetWithPlotNumber(player, slotNumber, brainrotName, mutationType)
 	end
 end
 

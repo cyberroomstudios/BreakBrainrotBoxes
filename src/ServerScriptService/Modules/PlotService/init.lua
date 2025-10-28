@@ -44,6 +44,7 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 
 	for _, value in brainrotsFolder:GetChildren() do
 		if value.Name == name and value:GetAttribute("SLOT_NUMBER") == plotNumber then
+			local mutationType = value:GetAttribute("MUTATION_TYPE")
 			value:Destroy()
 
 			local base = BaseService:GetBase(player)
@@ -51,7 +52,7 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 			local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
 			slot:SetAttribute("BUSY", false)
 			BrainrotService:RemoveBrainrotInMap(player, name, plotNumber)
-			BrainrotService:SaveBrainrotInBackpack(player, name)
+			BrainrotService:SaveBrainrotInBackpack(player, name, mutationType)
 		end
 	end
 end
@@ -79,7 +80,6 @@ function PlotService:InitRebirth(player: Player)
 			PlotService:RelesePlot(player, i)
 		end
 	end
-
 end
 
 function PlotService:RemoveAll(player: Player)
@@ -136,20 +136,20 @@ function PlotService:GetNextAvailablePlot(player: Player)
 	end
 end
 
-function PlotService:Set(player: Player, brainrotType: string)
+function PlotService:Set(player: Player, brainrotType: string, mutationType: string)
 	local slot = PlotService:GetNextAvailablePlot(player)
 
 	if slot then
 		local slotNumber = tonumber(slot.Name)
 
-		BrainrotService:SaveBrainrotInMap(player, brainrotType, slotNumber)
-		PlotService:SetWithPlotNumber(player, slotNumber, brainrotType)
+		BrainrotService:SaveBrainrotInMap(player, brainrotType, mutationType, slotNumber)
+		PlotService:SetWithPlotNumber(player, slotNumber, brainrotType, mutationType)
 	else
-		BrainrotService:SaveBrainrotInBackpack(player, brainrotType)
+		BrainrotService:SaveBrainrotInBackpack(player, brainrotType, mutationType)
 	end
 end
 
-function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brainrotType: string)
+function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brainrotType: string, mutationType: string)
 	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)
 
 	local function createInformations(newBrainrot: Model)
@@ -198,6 +198,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 				local newBrainrot = brainrotModel:Clone()
 				newBrainrot:SetAttribute("AMOUNT_MONEY", 0)
 				newBrainrot:SetAttribute("SLOT_NUMBER", slotNumber)
+				newBrainrot:SetAttribute("MUTATION_TYPE", mutationType)
 
 				createInformations(newBrainrot)
 
