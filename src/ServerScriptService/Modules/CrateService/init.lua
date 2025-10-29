@@ -8,6 +8,11 @@ local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 
 local CrateService = {}
 
+local mutationOdds = {
+	["NORMAL"] = 0.40,
+	["GOLDEN"] = 0.30,
+	["DIAMOND"] = 0.30,
+}
 function CrateService:Init() end
 
 function CrateService:Give(player: Player, crateName: string)
@@ -53,6 +58,17 @@ function CrateService:ConsumeAllInHand(player: Player)
 end
 
 function CrateService:DrawBrainrotFromCrate(crateType: string)
+	local function chooseMutation()
+		local randomValue = math.random()
+		local cumulativeChance = 0
+
+		for rarity, chance in pairs(mutationOdds) do
+			cumulativeChance += chance
+			if randomValue <= cumulativeChance then
+				return rarity
+			end
+		end
+	end
 	local function chooseCategory(oddsTable)
 		-- Soma total das probabilidades
 		local total = 0
@@ -99,7 +115,8 @@ function CrateService:DrawBrainrotFromCrate(crateType: string)
 
 			local rarity = chooseCategory(raritiestypes)
 
-			return BrainrotService:DrawBrainrotFromRarity(rarity)
+			local mutation = chooseMutation()
+			return BrainrotService:DrawBrainrotFromRarity(rarity), mutation
 		end
 	end
 end

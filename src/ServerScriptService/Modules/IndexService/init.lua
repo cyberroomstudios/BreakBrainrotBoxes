@@ -22,20 +22,34 @@ end
 
 function IndexService:InitBridgeListener()
 	bridge.OnServerInvoke = function(player, data)
-		if data[actionIdentifier] == "GetCommonIndex" then
-			return PlayerDataHandler:Get(player, "commonIndex")
+		if data[actionIdentifier] == "GetNormalIndex" then
+			return PlayerDataHandler:Get(player, "normalIndex")
+		end
+
+		if data[actionIdentifier] == "GetGoldenIndex" then
+			return PlayerDataHandler:Get(player, "goldenIndex")
+		end
+
+		if data[actionIdentifier] == "GetDiamondIndex" then
+			return PlayerDataHandler:Get(player, "diamondIndex")
 		end
 	end
 end
 
-function IndexService:AddCommon(player: Player, itemName: string)
+function IndexService:Add(player: Player, itemName: string, mutationType: string)
 	local itemEnum = Brainrots[itemName]
+
+	local playerDataKey = {
+		["NORMAL"] = "normalIndex",
+		["GOLDEN"] = "goldenIndex",
+		["DIAMOND"] = "diamondIndex",
+	}
 
 	if not itemName then
 		return
 	end
 
-	PlayerDataHandler:Update(player, "commonIndex", function(current)
+	PlayerDataHandler:Update(player, playerDataKey[mutationType], function(current)
 		if current[itemName] then
 			GameNotificationService:SendWarnNotification(player, "You Found The " .. itemEnum.GUI.Label)
 			return current

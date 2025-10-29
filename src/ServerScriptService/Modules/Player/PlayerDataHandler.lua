@@ -35,7 +35,10 @@ local dataTemplate = {
 	brainrotsBackpackId = 1,
 	brainrotsMap = {},
 	rebirth = 0,
-	commonIndex = {},
+	normalIndex = {},
+	goldenIndex = {},
+	diamondIndex = {},
+
 	releaseSlotIndex = 10,
 	crateBreaker = {
 		Power = 1,

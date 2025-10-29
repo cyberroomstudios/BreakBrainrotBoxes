@@ -148,7 +148,7 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 	end
 
 	-- Escolhe um brainrot com base no tipo da caixa
-	local brainrotType = CrateService:DrawBrainrotFromCrate(crateType)
+	local brainrotType, mutationType = CrateService:DrawBrainrotFromCrate(crateType)
 
 	-- Obtem o Brainrot do modelo
 	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)
@@ -166,13 +166,13 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 		-- Cria a animação de crescer
 		setModelScale(newBrainrot)
 
-		IndexService:AddCommon(player, brainrotType)
+		IndexService:Add(player, brainrotType, mutationType)
 		-- Destroy o Brainrot
 		task.wait(1)
 		newBrainrot:Destroy()
 
 		-- Coloca no slot
-		PlotService:Set(player, brainrotType, "COMMON")
+		PlotService:Set(player, brainrotType, mutationType)
 	end
 end
 
