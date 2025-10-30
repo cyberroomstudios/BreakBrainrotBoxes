@@ -14,6 +14,7 @@ local Players = game:GetService("Players")
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
+local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 
 local screen
 local normalIndexScrolling
@@ -114,7 +115,7 @@ function IndexController:BuildScreen(items, viewType)
 	}
 
 	for _, value in viewStates[viewType]:GetChildren() do
-		if value:IsA("Frame") and value.Name ~= "Item" then
+		if value:IsA("Frame") and value.Name ~= "Item" and value.Name ~= "Space" then
 			value:Destroy()
 		end
 	end
@@ -125,10 +126,25 @@ function IndexController:BuildScreen(items, viewType)
 		newItem.Name = name
 		newItem.Parent = viewStates[viewType]
 
-		if items[name] then
-			newItem.Content.Visible = true
-		else
-			newItem.Content.Visible = false
+		local viewPort = ReplicatedStorage.GUI.ViewPortFrames[viewType]:FindFirstChild(name)
+
+		if viewPort then
+			local newViewPort = viewPort:Clone()
+			newViewPort.Parent = newItem.Content
+			local itemName = Brainrots[name].GUI.Label
+			local value = Brainrots[name].MoneyPerSecond
+
+			if items[name] then
+				newItem.Content.ItemName.Text = itemName
+				newItem.Content.ItemValue.Text = ClientUtil:FormatToUSD(value) .. "/s"
+			else
+				newItem.Content.ItemName.Visible = false
+				newItem.Content.ItemValue.Visible = false
+
+				newViewPort.Ambient = Color3.new(0, 0, 0)
+				newViewPort.LightColor = Color3.new(0, 0, 0)
+				newViewPort.LightDirection = Vector3.new(0, 0, -1)
+			end
 		end
 	end
 end

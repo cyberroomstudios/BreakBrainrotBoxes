@@ -38,7 +38,6 @@ local dataTemplate = {
 	normalIndex = {},
 	goldenIndex = {},
 	diamondIndex = {},
-
 	releaseSlotIndex = 10,
 	crateBreaker = {
 		Power = 1,

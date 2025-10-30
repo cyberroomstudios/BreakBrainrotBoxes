@@ -150,6 +150,26 @@ function PlotService:Set(player: Player, brainrotType: string, mutationType: str
 end
 
 function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brainrotType: string, mutationType: string)
+	local mutationColors = {
+		["GOLDEN"] = {
+			[1] = Color3.fromRGB(237, 178, 0),
+			[2] = Color3.fromRGB(237, 194, 86),
+			[3] = Color3.fromRGB(215, 111, 1),
+			[4] = Color3.fromRGB(139, 74, 0),
+			[5] = Color3.fromRGB(255, 164, 164),
+			[6] = Color3.fromRGB(255, 244, 190),
+		},
+
+		["DIAMOND"] = {
+			[1] = Color3.fromRGB(37, 196, 254),
+			[2] = Color3.fromRGB(116, 212, 254),
+			[3] = Color3.fromRGB(28, 137, 254),
+			[4] = Color3.fromRGB(21, 64, 254),
+			[5] = Color3.fromRGB(160, 162, 254),
+			[6] = Color3.fromRGB(176, 255, 252),
+		},
+	}
+
 	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)
 
 	local function createInformations(newBrainrot: Model)
@@ -187,6 +207,16 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		billBoard.Enabled = true
 	end
 
+	local function applyMutation(brainrot: Model)
+		if mutationType == "GOLDEN" or mutationType == "DIAMOND" then
+			for _, value in brainrot:GetDescendants() do
+				if value:GetAttribute("Color") then
+					value.Color = mutationColors[mutationType][value:GetAttribute("Color")]
+				end
+			end
+		end
+	end
+
 	if brainrotModel then
 		local base = BaseService:GetBase(player)
 		local main = base:WaitForChild("Main")
@@ -203,6 +233,8 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 				createInformations(newBrainrot)
 
 				createAnimation(newBrainrot)
+
+				applyMutation(newBrainrot)
 
 				newBrainrot.Parent = workspace.Runtime[player.UserId].Brainrots
 				newBrainrot:SetPrimaryPartCFrame(slot.Attachment.WorldCFrame)
