@@ -16,6 +16,7 @@ local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
+local Breakers = require(ReplicatedStorage.Enums.Breakers)
 
 local screen
 local buyPowerButton
@@ -43,10 +44,18 @@ local maximumReachedCapacity
 local numberInformationCapacity
 local buyCapacityFrame
 
+local upgradeFrame
+local breakersFrame
+local openUpgradesButton
+local openBreakersButton
+
+local selectBreakerItem
+
 function UpgradesController:Init(data)
 	UpgradesController:CreateReferences()
 	UpgradesController:InitButtonListerns()
 	UpgradesController:FillScreen(data)
+	UpgradesController:CreateBreakerViewPort()
 end
 
 function UpgradesController:FillScreen(data)
@@ -58,6 +67,13 @@ end
 
 function UpgradesController:CreateReferences()
 	screen = UIReferences:GetReference("UPGRADES_SCREEN")
+
+	upgradeFrame = UIReferences:GetReference("UPGRADES_FRAME")
+	breakersFrame = UIReferences:GetReference("BREAKERS_FRAME")
+
+	openUpgradesButton = UIReferences:GetReference("OPEN_UPGRADES_BUTTON")
+	openBreakersButton = UIReferences:GetReference("OPEN_BREAKERS_BUTTON")
+
 	buyPowerButton = UIReferences:GetReference("BUY_POWER")
 	buySpeedButton = UIReferences:GetReference("BUY_SPEED")
 	buyCapacityButton = UIReferences:GetReference("BUY_CAPACITY")
@@ -81,7 +97,123 @@ function UpgradesController:CreateReferences()
 	buyCapacityFrame = UIReferences:GetReference("BUY_CAPACITY_FRAME")
 end
 
+function UpgradesController:UpdateBreakers()
+	local result = bridge:InvokeServerAsync({
+		[actionIdentifier] = "GetBreakers",
+	})
+
+	local models = {
+		"Baseball",
+		"Ninja",
+		"Noob",
+		"Soldier",
+		"Warrior",
+	}
+
+	for _, modelName in models do
+		local item = breakersFrame:WaitForChild("Items"):WaitForChild(modelName)
+		local display = item:WaitForChild("Display")
+		local priceAndStatus = display:WaitForChild("PriceAndStatus")
+
+		priceAndStatus.Equiped.Visible = false
+		priceAndStatus.Purchased.Visible = false
+		priceAndStatus.Price.Visible = false
+
+		if result.Purchaseds[modelName] then
+			if result.Equiped == modelName then
+				item:SetAttribute("HAS_ITEM", true)
+				item:SetAttribute("EQUIPED", true)
+				priceAndStatus.Equiped.Visible = true
+				continue
+			end
+			item:SetAttribute("HAS_ITEM", true)
+			item:SetAttribute("EQUIPED", false)
+
+			priceAndStatus.Purchased.Visible = true
+			continue
+		end
+
+		item:SetAttribute("EQUIPED", false)
+		priceAndStatus.Price.Visible = true
+	end
+end
+
+function UpgradesController:InitBreakersButtons()
+	local function updateLayoutOrder(layoutOrderBase: number)
+		for _, value in breakersFrame:WaitForChild("Items"):GetChildren() do
+			if value:IsA("Frame") and value.LayoutOrder > layoutOrderBase then
+				value.LayoutOrder = value.LayoutOrder + 1
+			end
+		end
+	end
+
+	local breakers = {
+		"Baseball",
+		"Ninja",
+		"Noob",
+		"Soldier",
+		"Warrior",
+	}
+
+	for _, value in breakers do
+		local item = breakersFrame:WaitForChild("Items"):WaitForChild(value)
+		item.MouseButton1Click:Connect(function()
+			if item:GetAttribute("EQUIPED") then
+				return
+			end
+
+			selectBreakerItem = value
+
+			if item:GetAttribute("HAS_ITEM") then
+				breakersFrame:WaitForChild("Items").Buttons.Display.Equip.Visible = true
+				breakersFrame:WaitForChild("Items").Buttons.Display.Buy.Visible = false
+				breakersFrame:WaitForChild("Items").Buttons.Display.BuyWithRobux.Visible = false
+			end
+
+			breakersFrame:WaitForChild("Items").Buttons.Visible = true
+			updateLayoutOrder(item.LayoutOrder)
+			breakersFrame:WaitForChild("Items").Buttons.LayoutOrder = item.LayoutOrder + 1
+		end)
+	end
+
+	local buttonsFrame = breakersFrame:WaitForChild("Items"):WaitForChild("Buttons")
+
+	if buttonsFrame then
+		local buyButton = buttonsFrame:WaitForChild("Display"):WaitForChild("Buy")
+		local equipButton = buttonsFrame:WaitForChild("Display"):WaitForChild("Equip")
+
+		buyButton.Button.MouseButton1Click:Connect(function()
+			local result = bridge:InvokeServerAsync({
+				[actionIdentifier] = "BuyBreaker",
+				data = {
+					BreakerName = selectBreakerItem,
+				},
+			})
+
+			if result then
+				breakersFrame:WaitForChild("Items").Buttons.Visible = false
+				UpgradesController:UpdateBreakers()
+			end
+		end)
+
+		equipButton.Button.MouseButton1Click:Connect(function()
+			local result = bridge:InvokeServerAsync({
+				[actionIdentifier] = "EquipBreaker",
+				data = {
+					BreakerName = selectBreakerItem,
+				},
+			})
+
+			if result then
+				breakersFrame:WaitForChild("Items").Buttons.Visible = false
+				UpgradesController:UpdateBreakers()
+			end
+		end)
+	end
+end
+
 function UpgradesController:InitButtonListerns()
+	UpgradesController:InitBreakersButtons()
 	buyPowerButton.MouseButton1Click:Connect(function()
 		local result = bridge:InvokeServerAsync({
 			[actionIdentifier] = "BuyPower",
@@ -104,6 +236,16 @@ function UpgradesController:InitButtonListerns()
 		})
 
 		UpgradesController:UpdateCapacityText(result)
+	end)
+
+	openUpgradesButton.MouseButton1Click:Connect(function()
+		upgradeFrame.Visible = true
+		breakersFrame.Visible = false
+	end)
+
+	openBreakersButton.MouseButton1Click:Connect(function()
+		upgradeFrame.Visible = false
+		breakersFrame.Visible = true
 	end)
 end
 
@@ -164,8 +306,102 @@ function UpgradesController:ConfigureProximityPrompt()
 	end)
 end
 
+function UpgradesController:CreateBreakerViewPort()
+	local function centralizeModel(viewPort: ViewportFrame, model: Model)
+		if not model:IsA("Model") then
+			warn("O objeto passado não é um Model válido.")
+			return
+		end
+
+		-- Garante que só o conteúdo do Model será considerado
+		local parts = {}
+		for _, obj in ipairs(model:GetDescendants()) do
+			if obj:IsA("BasePart") then
+				table.insert(parts, obj)
+			end
+		end
+
+		if #parts == 0 then
+			warn("O modelo não possui partes físicas (BasePart) para calcular o enquadramento.")
+			return
+		end
+
+		-- Define PrimaryPart se ainda não existir
+		if not model.PrimaryPart then
+			model.PrimaryPart = parts[1]
+		end
+
+		-- Cria e configura a câmera
+		local camera = Instance.new("Camera")
+		camera.Parent = viewPort
+		viewPort.CurrentCamera = camera
+
+		-- Calcula o centro e tamanho do modelo
+		local cf, size = model:GetBoundingBox()
+		local maxAxis = math.max(size.X, size.Y, size.Z)
+
+		-- Calcula a distância ideal da câmera com base no FOV
+		local fov = math.rad(camera.FieldOfView)
+		local distancia = (maxAxis / 2) / math.tan(fov / 2)
+
+		-- Posiciona a câmera olhando para o centro
+		local cameraPosition = cf.Position + Vector3.new(0, size.Y * 0.4, distancia * 1.2)
+		camera.CFrame = CFrame.lookAt(cameraPosition, cf.Position)
+	end
+
+	local models = {
+		"Baseball",
+		"Ninja",
+		"Noob",
+		"Soldier",
+		"Warrior",
+	}
+
+	for _, modelName in models do
+		local model = ClientUtil:WaitForDescendants(ReplicatedStorage, "Breakers", modelName)
+
+		if model then
+			local newItem = model:Clone()
+
+			local item = breakersFrame:WaitForChild("Items"):WaitForChild(modelName)
+
+			-- Atualizando as Informações
+			-- Boosts
+			local breakersEnum = Breakers[modelName]
+
+			if not breakersEnum then
+				return
+			end
+
+			item.Display.InfoItem.Frame.Power.Text = "+" .. breakersEnum.Boosts.Power
+			item.Display.InfoItem.Frame.Speed.Text = "+" .. breakersEnum.Boosts.Speed
+			item.Display.PriceAndStatus.Price.Text = ClientUtil:FormatToUSD(breakersEnum.Price)
+
+			local viewPort = item:WaitForChild("Display"):WaitForChild("Breaker")
+			newItem.Parent = viewPort.WorldModel
+
+			local humanoid = newItem:WaitForChild("Humanoid")
+			local animation = ReplicatedStorage.Animations.Worker.Iddle
+
+			local track = humanoid:LoadAnimation(animation)
+			track:Play()
+
+			local rotation = CFrame.Angles(0, math.rad(-180), 0)
+			newItem:ScaleTo(0.9)
+			newItem:SetPrimaryPartCFrame(CFrame.new(Vector3.new(0, -3, 0)))
+			newItem:SetPrimaryPartCFrame(newItem.PrimaryPart.CFrame * rotation)
+
+			centralizeModel(viewPort, newItem)
+		end
+	end
+end
+
 function UpgradesController:Open()
 	screen.Visible = true
+	upgradeFrame.Visible = true
+	breakersFrame.Visible = false
+
+	UpgradesController:UpdateBreakers()
 end
 
 function UpgradesController:Close()

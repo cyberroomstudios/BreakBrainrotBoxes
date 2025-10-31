@@ -1,6 +1,7 @@
 local UpgradeService = {}
 
 -- Init Bridg Net
+local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -16,6 +17,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
+local Breakers = require(ReplicatedStorage.Enums.Breakers)
 
 function UpgradeService:Init()
 	UpgradeService:InitBridgeListener()
@@ -33,7 +35,71 @@ function UpgradeService:InitBridgeListener()
 		if data[actionIdentifier] == "BuyCapacity" then
 			return UpgradeService:Buy(player, "Capacity")
 		end
+
+		if data[actionIdentifier] == "BuyBreaker" then
+			local breakerType = data.data.BreakerName
+			return UpgradeService:BuyBreaker(player, breakerType)
+		end
+
+		if data[actionIdentifier] == "GetBreakers" then
+			return UpgradeService:GetBreakersFromPlayer(player)
+		end
+
+		if data[actionIdentifier] == "EquipBreaker" then
+			local breakerType = data.data.BreakerName
+
+			return UpgradeService:EquipBreaker(player, breakerType)
+		end
 	end
+end
+
+function UpgradeService:EquipBreaker(player: Player, breakerType: string)
+	local breakers = PlayerDataHandler:Get(player, "breakers")
+
+	if not breakers[breakerType] then
+		return false
+	end
+
+	PlayerDataHandler:Update(player, "crateBreaker", function(current)
+		current.Equiped = breakerType
+		return current
+	end)
+
+	return true
+end
+function UpgradeService:GetBreakersFromPlayer(player: Player)
+	local data = {
+		Equiped = PlayerDataHandler:Get(player, "crateBreaker").Equiped,
+		Purchaseds = PlayerDataHandler:Get(player, "breakers"),
+	}
+
+	return data
+end
+
+function UpgradeService:BuyBreaker(player: Player, breakerType: string)
+	local breaakerEnum = Breakers[breakerType]
+	if not breaakerEnum then
+		return
+	end
+
+	-- Verifica se tem dinheiro
+	if not MoneyService:HasMoney(player, breaakerEnum.Price) then
+		return
+	end
+
+	MoneyService:ConsumeMoney(player, breaakerEnum.Price)
+
+	PlayerDataHandler:Update(player, "breakers", function(current)
+		current[breakerType] = true
+		return current
+	end)
+
+	PlayerDataHandler:Update(player, "crateBreaker", function(current)
+		current.Equiped = breakerType
+		return current
+	end)
+
+	return true
 end
 
 function UpgradeService:Buy(player: Player, upgradeType: string)

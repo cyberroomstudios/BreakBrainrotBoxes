@@ -116,6 +116,9 @@ end
 local function configureFolders()
 	local brainrotsFolder = workspace:WaitForChild("Developer"):WaitForChild("Brainrots")
 	brainrotsFolder.Parent = ReplicatedStorage
+
+	local workersFolder = workspace:WaitForChild("Developer"):WaitForChild("Breakers")
+	workersFolder.Parent = ReplicatedStorage
 end
 
 local function configureViewPorts()

@@ -43,6 +43,10 @@ local dataTemplate = {
 		Power = 1,
 		Speed = 1,
 		Capacity = 2,
+		Equiped = "Noob",
+	},
+	breakers = {
+		["Noob"] = true,
 	},
 }
 
