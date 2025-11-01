@@ -31,6 +31,8 @@ local dataTemplate = {
 	money = 0,
 	cratesBackpack = {},
 	cratesMap = {},
+	cratesOffline = {},
+	crateOfflineId = 0,
 	brainrotsBackpack = {},
 	brainrotsBackpackId = 1,
 	brainrotsMap = {},
@@ -39,6 +41,7 @@ local dataTemplate = {
 	goldenIndex = {},
 	diamondIndex = {},
 	releaseSlotIndex = 10,
+	timeLeftGame = 0,
 	crateBreaker = {
 		Power = 1,
 		Speed = 1,
@@ -157,14 +160,24 @@ function PlayerDataHandler:Init()
 	end)
 
 	Players.PlayerRemoving:Connect(function(player)
+		player:SetAttribute("EXIT", true)
 		local joinTimestamp = cachedJoinTimestamps[player]
 		local leaveTimestamp = os.time()
 		local playtime = leaveTimestamp - joinTimestamp
+
+		local BaseService = require(ServerScriptService.Modules.BaseService)
+		local WorkerService = require(ServerScriptService.Modules.WorkerService)
+
+		WorkerService:SaveOfflineCrate(player)
+		BaseService:CleanBase(player)
 
 		PlayerDataHandler:Update(player, "totalPlaytime", function(currentPlaytime)
 			local totalPlaytime = currentPlaytime + playtime
 			return totalPlaytime
 		end)
+
+		-- Guarda a Hora que o jogador saiu do jogo
+		PlayerDataHandler:Set(player, "timeLeftGame", os.time())
 
 		if Profiles[player] then
 			Profiles[player]:Release()

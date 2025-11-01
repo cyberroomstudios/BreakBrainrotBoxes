@@ -64,14 +64,9 @@ local positionsAndOrietations = {
 local function ReplicatePlots()
 	local plo1 = workspace:WaitForChild("Map"):WaitForChild("Plots"):WaitForChild("1")
 
-	task.spawn(function()
-		--		local dummy = plo1:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-		--		local humanoid = dummy:WaitForChild("Humanoid")
-
-		--		local animation = ReplicatedStorage.Animations.Iddle
-		--		local track = humanoid:LoadAnimation(animation)
-		--		track:Play()
-	end)
+	local plotBase = plo1:Clone()
+	plotBase.Parent = ReplicatedStorage.Model.Plot
+	plotBase.Name = "PlotBase"
 
 	for i = 2, 6 do
 		local newPlot = plo1:Clone()

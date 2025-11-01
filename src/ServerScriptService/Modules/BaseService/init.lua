@@ -1,5 +1,6 @@
 local BaseService = {}
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local UtilService = require(ServerScriptService.Modules.UtilService)
@@ -83,6 +84,22 @@ function BaseService:CreateUpgradesCFrameAttribute(player: Player)
 	if upgradeShops then
 		player:SetAttribute("UPGRADE_SHOP_CFRAME", upgradeShops.Spawn.CFrame)
 	end
+end
+
+function BaseService:CleanBase(player: Player)
+	local runtimeFolder = workspace.Runtime[player.UserId]
+	if runtimeFolder then
+		runtimeFolder:Destroy()
+	end
+
+	local base = BaseService:GetBase(player)
+
+	local newBase = ReplicatedStorage.Model.Plot.PlotBase:Clone()
+	newBase.Parent = base.Parent
+	newBase.Name = base.Name
+	newBase:SetPrimaryPartCFrame(base.PrimaryPart.CFrame)
+
+	base:Destroy()
 end
 
 return BaseService
