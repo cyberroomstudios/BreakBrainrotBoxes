@@ -18,6 +18,7 @@ local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
 local Breakers = require(ReplicatedStorage.Enums.Breakers)
+local BaseService = require(ServerScriptService.Modules.BaseService)
 
 function UpgradeService:Init()
 	UpgradeService:InitBridgeListener()
@@ -65,6 +66,7 @@ function UpgradeService:EquipBreaker(player: Player, breakerType: string)
 		return current
 	end)
 
+	UpgradeService:ChangeBreakers(player)
 	return true
 end
 function UpgradeService:GetBreakersFromPlayer(player: Player)
@@ -99,6 +101,7 @@ function UpgradeService:BuyBreaker(player: Player, breakerType: string)
 		return current
 	end)
 
+	UpgradeService:ChangeBreakers(player)
 	return true
 end
 
@@ -147,11 +150,10 @@ end
 
 function UpgradeService:ConfigureWorkerCapacity(player: Player)
 	local capacity = player:GetAttribute("Capacity")
-	if capacity > 1 then
-		for i = 1, capacity do
-			WorkerService:EnableWorker(player, i)
-		end
+	for i = 1, capacity do
+		WorkerService:EnableWorker(player, i)
 	end
 end
+
 
 return UpgradeService

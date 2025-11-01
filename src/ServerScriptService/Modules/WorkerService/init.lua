@@ -11,6 +11,7 @@ local ToolService = require(ServerScriptService.Modules.ToolService)
 local Crate = require(ReplicatedStorage.Enums.Crate)
 local PlotService = require(ServerScriptService.Modules.PlotService)
 local IndexService = require(ServerScriptService.Modules.IndexService)
+local BaseService = require(ServerScriptService.Modules.BaseService)
 local bridge = BridgeNet2.ReferenceBridge("WorkerService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -53,8 +54,10 @@ end
 function WorkerService:GetNextWorkerAvailable(player: Player)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local workersFolder = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+	local workersFolder =
+		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
 	local workers = workersFolder:GetChildren()
+
 	table.sort(workers, function(a, b)
 		return tonumber(a.Name) < tonumber(b.Name)
 	end)
@@ -80,7 +83,8 @@ end
 function WorkerService:SetCrate(player: Player, crateName: string, workerNumber: number)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local workersFolder = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+	local workersFolder =
+		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
 	local worker = workersFolder:FindFirstChild(workerNumber)
 	local crateEnum = Crate.CRATES[crateName]
 
@@ -179,7 +183,8 @@ end
 function WorkerService:ClearAllCrates(player: Player)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local desks = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+	local desks =
+		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
 
 	local crate = workspace.Runtime[player.UserId].Crates
 
@@ -193,64 +198,38 @@ function WorkerService:ClearAllCrates(player: Player)
 end
 
 function WorkerService:EnableWorker(player: Player, workerNumber: number)
-	local function safe(fn)
-		local ok, err = pcall(fn)
-		if not ok then
-			warn(err)
-		end
-	end
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local refFolder = containersFolder:FindFirstChild("Refs")
+	local attachment = refFolder:FindFirstChild(workerNumber)
+	local currentBreaker = PlayerDataHandler:Get(player, "crateBreaker").Equiped
 
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local desks = plot:WaitForChild("Main"):WaitForChild("WorkerArea"):WaitForChild("Workers")
+	if attachment then
+		-- Cria o Suporte
+		local newContainer = ReplicatedStorage.Model.Breakers.Container:Clone()
+		newContainer.Name = workerNumber
+		newContainer.Parent = containersFolder.Bases
+		newContainer:SetPrimaryPartCFrame(attachment.WorldCFrame)
 
-	local worker = desks:FindFirstChild(workerNumber)
+		-- Obtem o tipo do quebrador
+		local breaker = ReplicatedStorage.Breakers:FindFirstChild(currentBreaker)
 
-	if worker then
-		worker:SetAttribute("UNLOCK", true)
+		if breaker then
+			-- Cria o Quebrador
+			local newBreaker = breaker:Clone()
+			newBreaker.Parent = newContainer.Breaker
+			newBreaker:SetPrimaryPartCFrame(newContainer.Breaker.Attachment.WorldCFrame)
+			newBreaker.Name = "Breaker"
 
-		-- Ativar Visualmente
+			-- Tirando nome
+			local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
+			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 
-		for _, v in ipairs(worker:GetDescendants()) do
-			if v:IsA("BasePart") then
-				safe(function()
-					v.Transparency = 0
-					v.CanCollide = true
-					v.CanTouch = true
-					v.CanQuery = true
-					if v.CastShadow ~= nil then
-						v.CastShadow = true
-					end
-				end)
-			elseif v:IsA("Decal") or v:IsA("Texture") then
-				safe(function()
-					v.Transparency = 0
-				end)
-			elseif v:IsA("BillboardGui") or v:IsA("SurfaceGui") then
-				safe(function()
-					v.Enabled = true
-				end)
-			elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then
-				safe(function()
-					v.Enabled = true
-				end)
-			elseif v:IsA("PointLight") or v:IsA("SpotLight") or v:IsA("SurfaceLight") then
-				safe(function()
-					v.Enabled = true
-				end)
-			elseif v:IsA("ProximityPrompt") then
-				safe(function()
-					v.Enabled = true
-				end)
-			elseif v:IsA("ClickDetector") then
-				safe(function()
-					v.MaxActivationDistance = 32
-				end) -- distância padrão
-			elseif v:IsA("Sound") then
-				safe(function()
-					v.Volume = 1
-				end)
-			end
+			local animation = ReplicatedStorage.Animations.Worker.Iddle
+			local track = humanoid:LoadAnimation(animation)
+			track:Play()
 		end
 	end
 end

@@ -87,27 +87,6 @@ local function ReplicatePlots()
 
 		newPlot.Parent = workspace:WaitForChild("Map"):WaitForChild("Plots")
 		newPlot:SetPrimaryPartCFrame(cf)
-
-		-- Carregando Animação de Iddle
-		task.spawn(function()
-			--		local dummy = newPlot:WaitForChild("Main"):WaitForChild("Worker"):WaitForChild("Dummy")
-			--		local humanoid = dummy:WaitForChild("Humanoid")
-
-			--		local animation = ReplicatedStorage.Animations.Iddle
-			--		local track = humanoid:LoadAnimation(animation)
-			--		track:Play()
-		end)
-
-		-- Alterando o Conveyor
-
-		task.spawn(function()
-			--		local conveyor = newPlot:WaitForChild("Main"):WaitForChild("Conveyor")
-			--		if i == 2 or i == 3 then
-			--			conveyor.AssemblyLinearVelocity = Vector3.new(25, 0, 0)
-			--		else
-			--			conveyor.AssemblyLinearVelocity = Vector3.new(-25, 0, 0)
-			--		end
-		end)
 	end
 
 	workspace:SetAttribute("CONFIGURED_PLOTS", true)

@@ -48,7 +48,7 @@ end
 
 function WorkerController:InitProximityPrompt()
 	local plot = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", player:GetAttribute("BASE"))
-	local proximyPart = ClientUtil:WaitForDescendants(plot, "Main", "WorkerArea", "ProximityPart")
+	local proximyPart = ClientUtil:WaitForDescendants(plot, "Main", "BreakersArea", "ProximityPart")
 	local proximity = ClientUtil:WaitForDescendants(proximyPart, "ProximityPrompt")
 
 	proximity.PromptShown:Connect(function()
