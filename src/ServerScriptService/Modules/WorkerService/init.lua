@@ -83,12 +83,13 @@ end
 function WorkerService:SetCrate(player: Player, crateName: string, workerNumber: number)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local workersFolder =
+	local basesFolder =
 		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
-	local worker = workersFolder:FindFirstChild(workerNumber)
+	local breakerMain = basesFolder:FindFirstChild(workerNumber)
+	local breaker = breakerMain:FindFirstChild("Breaker"):FindFirstChild("Breaker")
 	local crateEnum = Crate.CRATES[crateName]
 
-	if worker then
+	if breaker then
 		local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateName):Clone()
 
 		if crate then
@@ -99,21 +100,27 @@ function WorkerService:SetCrate(player: Player, crateName: string, workerNumber:
 			crate:SetAttribute("CURRENT_XP", crateEnum.XPToOpen)
 			crate:SetAttribute("CRATE_TYPE", crateName)
 
-			crate:SetPrimaryPartCFrame(CFrame.new(worker.CrateRef.WorldPosition))
+			crate:SetPrimaryPartCFrame(CFrame.new(breakerMain.CrateRef.WorldPosition))
 
 			task.spawn(function()
-				if not animations[worker] then
-					local humanoid = worker:WaitForChild("Humanoid")
-					local animation = ReplicatedStorage.Animations.Worker.Attack
-					local track = humanoid:LoadAnimation(animation)
-
-					animations[worker] = track
-				end
-
 				local currentXP = crate:GetAttribute("CURRENT_XP")
 
 				while crate.Parent and tonumber(crate:GetAttribute("CURRENT_XP")) > 0 do
-					animations[worker]:Play()
+					if player:GetAttribute("CHANGE_BREAKER") then
+						player:SetAttribute("CHANGE_BREAKER", false)
+						breakerMain = basesFolder:FindFirstChild(workerNumber)
+						breaker = breakerMain:FindFirstChild("Breaker"):FindFirstChild("Breaker")
+					end
+
+					if not animations[breaker] then
+						local humanoid = breaker:WaitForChild("Humanoid")
+						local animation = ReplicatedStorage.Animations.Worker.Attack
+						local track = humanoid:LoadAnimation(animation)
+
+						animations[breaker] = track
+					end
+
+					animations[breaker]:Play()
 					local workerPower = player:GetAttribute("Power")
 					local workerSpeed = player:GetAttribute("Speed")
 
@@ -132,8 +139,8 @@ function WorkerService:SetCrate(player: Player, crateName: string, workerNumber:
 
 				crate:Destroy()
 
-				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), worker.CrateRef)
-				worker:SetAttribute("BUSY", false)
+				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), breakerMain.CrateRef)
+				breakerMain:SetAttribute("BUSY", false)
 			end)
 		end
 	end
@@ -231,6 +238,18 @@ function WorkerService:EnableWorker(player: Player, workerNumber: number)
 			local track = humanoid:LoadAnimation(animation)
 			track:Play()
 		end
+	end
+end
+
+function WorkerService:DeleteAllBreakers(player: Player)
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local bases = containersFolder:FindFirstChild("Bases")
+
+	for _, value in bases:GetChildren() do
+		value:Destroy()
 	end
 end
 

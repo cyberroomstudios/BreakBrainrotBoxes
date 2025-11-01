@@ -66,7 +66,7 @@ function UpgradeService:EquipBreaker(player: Player, breakerType: string)
 		return current
 	end)
 
-	UpgradeService:ChangeBreakers(player)
+	UpgradeService:UpdateBreakers(player)
 	return true
 end
 function UpgradeService:GetBreakersFromPlayer(player: Player)
@@ -101,7 +101,7 @@ function UpgradeService:BuyBreaker(player: Player, breakerType: string)
 		return current
 	end)
 
-	UpgradeService:ChangeBreakers(player)
+	UpgradeService:UpdateBreakers(player)
 	return true
 end
 
@@ -155,5 +155,10 @@ function UpgradeService:ConfigureWorkerCapacity(player: Player)
 	end
 end
 
+function UpgradeService:UpdateBreakers(player: Player)
+	WorkerService:DeleteAllBreakers(player)
+	UpgradeService:ConfigureWorkerCapacity(player)
+	player:SetAttribute("CHANGE_BREAKER", true)
+end
 
 return UpgradeService
