@@ -29,19 +29,12 @@ end
 function WorkerController:CreateReferences()
 	placeButtons = UIReferences:GetReference("PLACE_BUTTONS")
 	placeAllButton = UIReferences:GetReference("PLACE_ALL_BUTTON")
-	placeThisButton = UIReferences:GetReference("PLACE_THIS_BUTTON")
 end
 
 function WorkerController:InitButtonListerns()
 	placeAllButton.MouseButton1Click:Connect(function()
 		local result = bridge:InvokeServerAsync({
 			[actionIdentifier] = "PlaceAll",
-		})
-	end)
-
-	placeThisButton.MouseButton1Click:Connect(function()
-		local result = bridge:InvokeServerAsync({
-			[actionIdentifier] = "PlaceThis",
 		})
 	end)
 end

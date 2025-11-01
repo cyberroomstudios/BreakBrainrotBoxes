@@ -21,6 +21,7 @@ local ThreadService = require(ServerScriptService.Modules.ThreadService)
 local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
 local RebirthService = require(ServerScriptService.Modules.RebirthService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
+local OfflineMoneyService = require(ServerScriptService.Modules.OfflineMoneyService)
 
 local playerInitializer = {}
 
@@ -52,6 +53,7 @@ function StartGameService:InitBridgeListener()
 			UpgradeService:InitPlayerUpgrade(player)
 			RebirthService:InitRebirth(player)
 			WorkerService:StartCratesFromOffline(player)
+			OfflineMoneyService:StartOfflineMoney(player)
 		end
 	end
 end

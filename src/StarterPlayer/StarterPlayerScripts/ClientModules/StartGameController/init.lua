@@ -13,7 +13,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 local WorkerController = require(Players.LocalPlayer.PlayerScripts.ClientModules.WorkerController)
 local PlotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.PlotController)
 local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.UpgradeController)
-
+local OfflineMoneyController = require(Players.LocalPlayer.PlayerScripts.ClientModules.OfflineMoneyController)
 
 function StartGameController:Init(data)
 	local result = bridge:InvokeServerAsync({
@@ -24,6 +24,7 @@ function StartGameController:Init(data)
 	WorkerController:InitProximityPrompt()
 	UpgradeController:ConfigureProximityPrompt()
 	PlotController:StartTouchGetMoney()
+	OfflineMoneyController:Open()
 end
 
 return StartGameController
