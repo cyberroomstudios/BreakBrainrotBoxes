@@ -42,7 +42,7 @@ local dataTemplate = {
 	crateBreaker = {
 		Power = 1,
 		Speed = 1,
-		Capacity = 2,
+		Capacity = 1,
 		Equiped = "Noob",
 	},
 	breakers = {

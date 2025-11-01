@@ -77,8 +77,8 @@ local Crate = table.freeze({
 			MutationOdds = {
 				NORMAL = 0.7,
 				GOLD = 0.2,
-				DIAMOND = 0.1
-			}
+				DIAMOND = 0.1,
+			},
 		},
 
 		["GODLY"] = {
@@ -131,7 +131,7 @@ local Crate = table.freeze({
 			Name = "Ice",
 			Price = 100,
 			Rarity = "RARE",
-			XPToOpen = 200,
+			XPToOpen = 20000,
 			Odd = 1,
 			GUI = {
 				Name = "Ice",

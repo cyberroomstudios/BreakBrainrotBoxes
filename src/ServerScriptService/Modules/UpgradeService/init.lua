@@ -141,8 +141,13 @@ end
 
 function UpgradeService:InitPlayerUpgrade(player: Player)
 	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")
-	player:SetAttribute("Power", crateBreaker.Power)
-	player:SetAttribute("Speed", crateBreaker.Speed)
+	local equipedBreaker = crateBreaker.Equiped
+
+	local breakerPowerBost = Breakers[equipedBreaker].Boosts.Power
+	local breakerSpeedBost = Breakers[equipedBreaker].Boosts.Speed
+
+	player:SetAttribute("Power", (crateBreaker.Power * 10) + breakerPowerBost)
+	player:SetAttribute("Speed", crateBreaker.Speed + breakerSpeedBost)
 	player:SetAttribute("Capacity", crateBreaker.Capacity)
 
 	UpgradeService:ConfigureWorkerCapacity(player)
@@ -159,6 +164,15 @@ function UpgradeService:UpdateBreakers(player: Player)
 	WorkerService:DeleteAllBreakers(player)
 	UpgradeService:ConfigureWorkerCapacity(player)
 	player:SetAttribute("CHANGE_BREAKER", true)
+
+	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")
+	local equipedBreaker = crateBreaker.Equiped
+
+	local breakerPowerBost = Breakers[equipedBreaker].Boosts.Power
+	local breakerSpeedBost = Breakers[equipedBreaker].Boosts.Speed
+
+	player:SetAttribute("Power", (crateBreaker.Power * 10) + breakerPowerBost)
+	player:SetAttribute("Speed", crateBreaker.Speed + breakerSpeedBost)
 end
 
 return UpgradeService

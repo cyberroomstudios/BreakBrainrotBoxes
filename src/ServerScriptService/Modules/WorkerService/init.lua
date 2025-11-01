@@ -126,7 +126,7 @@ function WorkerService:SetCrate(player: Player, crateName: string, workerNumber:
 
 					-- Obtem o XP atual da caixa
 					local currentXp = crate:GetAttribute("CURRENT_XP")
-					local newCurrent = currentXp - (workerPower * 10)
+					local newCurrent = currentXp - (workerPower)
 					crate:SetAttribute("CURRENT_XP", newCurrent)
 
 					local baseWait = 0.5
@@ -138,6 +138,11 @@ function WorkerService:SetCrate(player: Player, crateName: string, workerNumber:
 				end
 
 				crate:Destroy()
+
+				if not breakerMain:FindFirstChild("CrateRef") then
+					breakerMain = basesFolder:FindFirstChild(workerNumber)
+					breaker = breakerMain:FindFirstChild("Breaker"):FindFirstChild("Breaker")
+				end
 
 				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), breakerMain.CrateRef)
 				breakerMain:SetAttribute("BUSY", false)

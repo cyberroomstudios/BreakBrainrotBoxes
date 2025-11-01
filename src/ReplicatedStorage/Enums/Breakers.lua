@@ -13,7 +13,7 @@ local Breakers = table.freeze({
 		Price = 200000,
 		Boosts = {
 			Speed = 5,
-			Power = 10,
+			Power = 1000,
 		},
 	},
 
