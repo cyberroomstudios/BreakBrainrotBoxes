@@ -169,8 +169,8 @@ function UpgradeService:EnableCrates(player)
 end
 
 function UpgradeService:UpdateBreakers(player: Player)
-	WorkerService:DeleteAllBreakers(player)
-	UpgradeService:EnableCrates(player)
+	WorkerService:ChangeWorker(player)
+	
 	player:SetAttribute("CHANGE_BREAKER", true)
 
 	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")

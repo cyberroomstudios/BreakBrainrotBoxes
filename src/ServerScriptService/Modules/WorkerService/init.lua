@@ -298,16 +298,43 @@ function WorkerService:EnableWorker(player: Player)
 	end
 end
 
-function WorkerService:DeleteAllBreakers(player: Player)
+function WorkerService:ChangeWorker(player: Player)
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
 	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
 	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
-	local bases = containersFolder:FindFirstChild("Bases")
-
-	for _, value in bases:GetChildren() do
-		value:Destroy()
+	local worker = containersFolder:FindFirstChild("Worker")
+	local breakerFolder = worker:FindFirstChild("Breaker")
+	local breakerModel = breakerFolder:FindFirstChild("Breaker")
+	local parent
+	if breakerModel then
+		parent = breakerModel.Parent
+		breakerModel:Destroy()
 	end
+
+	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")
+	local currentBreaker = crateBreaker.Equiped
+
+	local breaker = ReplicatedStorage.Breakers:FindFirstChild(currentBreaker)
+
+	if breaker then
+		-- Cria o Quebrador
+		local newBreaker = breaker:Clone()
+		newBreaker.Parent = parent
+		newBreaker:SetPrimaryPartCFrame(worker.Breaker.Attachment.WorldCFrame)
+		newBreaker.Name = "Breaker"
+
+		-- Tirando nome
+		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+
+		local animation = ReplicatedStorage.Animations.Worker.Iddle
+		local track = humanoid:LoadAnimation(animation)
+		track:Play()
+	end
+
+	local capacity = player:GetAttribute("Capacity")
+	WorkerService:ScaleBreaker(player, capacity)
 end
 
 function WorkerService:SaveOfflineCrate(player: Player)
