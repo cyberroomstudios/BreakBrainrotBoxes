@@ -41,7 +41,7 @@ function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: st
 	end)
 
 	PlayerDataHandler:Set(player, "brainrotsBackpackId", data.Id + 1)
-	ToolService:GiveBrainrotTool(player, brainrotName)
+	ToolService:GiveBrainrotTool(player, brainrotName, mutationType)
 end
 
 function BrainrotService:InitBrainrotInMap(player: Player)
@@ -57,7 +57,7 @@ end
 
 function BrainrotService:InitBrainrotInBackpack(player: Player)
 	for _, value in PlayerDataHandler:Get(player, "brainrotsBackpack") do
-		ToolService:GiveBrainrotTool(player, value.BrainrotName)
+		ToolService:GiveBrainrotTool(player, value.BrainrotName, value.MutationType)
 	end
 end
 

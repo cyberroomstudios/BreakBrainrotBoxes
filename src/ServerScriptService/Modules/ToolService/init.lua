@@ -1,7 +1,25 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ToolService = {}
 
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Init Bridg Net
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("BackpackService")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
+
 function ToolService:Init() end
+
+function ToolService:UpdateBackpack(player: Player)
+	bridge:Fire(player, {
+		[actionIdentifier] = "UpdateBackpack",
+	})
+end
 
 function ToolService:ConsumeAllCrates(player: Player, toolType)
 	local items = player.Backpack:GetChildren()
@@ -19,38 +37,29 @@ function ToolService:ConsumeAllCrates(player: Player, toolType)
 			value:Destroy()
 		end
 	end
+
+	ToolService:UpdateBackpack(player)
 end
 
 function ToolService:Consume(player: Player, toolType: string, toolName: string)
-	if player.Backpack:FindFirstChild(toolName) then
-		local item = player.Backpack:FindFirstChild(toolName)
-
-		if item then
-			local amount = item:GetAttribute("AMOUNT") or 0
-			local newAmount = amount - 1
-
-			if newAmount == 0 then
-				item:Destroy()
-			end
-
-			item:SetAttribute("AMOUNT", newAmount)
-			return
-		end
-	end
-
 	local character = player.Character
 	if character then
 		local item = player.Character:FindFirstChild(toolName)
 
 		if item then
-			local amount = item:GetAttribute("AMOUNT") or 0
-			local newAmount = amount - 1
+			item:Destroy()
 
-			if newAmount == 0 then
-				item:Destroy()
-			end
+			ToolService:UpdateBackpack(player)
+			return
+		end
+	end
 
-			item:SetAttribute("AMOUNT", newAmount)
+	if player.Backpack:FindFirstChild(toolName) then
+		local item = player.Backpack:FindFirstChild(toolName)
+
+		if item then
+			item:Destroy()
+			ToolService:UpdateBackpack(player)
 			return
 		end
 	end
@@ -63,43 +72,27 @@ function ToolService:Give(player: Player, toolType: string, toolName: string, am
 		end
 	end
 
-	if player.Backpack:FindFirstChild(toolName) then
-		local item = player.Backpack:FindFirstChild(toolName)
-
-		if item then
-			local amount = item:GetAttribute("AMOUNT") or 0
-			item:SetAttribute("AMOUNT", amount + 1)
-			return
-		end
-		return
-	end
-
-	local character = player.Character
-	if character then
-		local item = player.Character:FindFirstChild(toolName)
-
-		if item then
-			local amount = item:GetAttribute("AMOUNT") or 0
-			item:SetAttribute("AMOUNT", amount + 1)
-			return
-		end
-	end
-
+	player:SetAttribute("TOOL_ID", (player:GetAttribute("TOOL_ID") or 0) + 1)
 	local newToll = ReplicatedStorage.Tools.Crates:FindFirstChild(toolName):Clone()
 	newToll:SetAttribute("ORIGINAL_NAME", toolName)
 	newToll:SetAttribute("AMOUNT", amount)
 	newToll:SetAttribute("TOOL_TYPE", toolType)
+	newToll:SetAttribute("ID", player:GetAttribute("TOOL_ID"))
 
 	newToll.Name = toolName
 	newToll.Parent = player.Backpack
+	ToolService:UpdateBackpack(player)
 end
 
-function ToolService:GiveBrainrotTool(player: Player, brainrotName: string)
+function ToolService:GiveBrainrotTool(player: Player, brainrotName: string, mutationType: string)
+	player:SetAttribute("TOOL_ID", (player:GetAttribute("TOOL_ID") or 0) + 1)
 	local newToll = ReplicatedStorage.Tools.Brainrots:FindFirstChild(brainrotName):Clone()
 	newToll:SetAttribute("ORIGINAL_NAME", brainrotName)
-	newToll:SetAttribute("TOOL_TYPE", "BRAINROT")
+	newToll:SetAttribute("TOOL_TYPE", mutationType .. "_BRAINROT")
 	newToll.Name = brainrotName
 	newToll.Parent = player.Backpack
+	newToll:SetAttribute("ID", player:GetAttribute("TOOL_ID"))
+	ToolService:UpdateBackpack(player)
 end
 
 function ToolService:ConsumeBrainrotTool(player: Player, brainrotName: string)
@@ -108,6 +101,7 @@ function ToolService:ConsumeBrainrotTool(player: Player, brainrotName: string)
 
 		if item then
 			item:Destroy()
+			ToolService:UpdateBackpack(player)
 			return
 		end
 	end
@@ -118,6 +112,7 @@ function ToolService:ConsumeBrainrotTool(player: Player, brainrotName: string)
 
 		if item then
 			item:Destroy()
+			ToolService:UpdateBackpack(player)
 			return
 		end
 	end

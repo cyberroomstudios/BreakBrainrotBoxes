@@ -186,15 +186,34 @@ local function configureViewPorts()
 		EnquadrarModel(newViewPort, newItem)
 	end
 
+	local function createCrate(viewPort, crate)
+		local newViewPort = viewPort:Clone()
+		newViewPort.Name = crate.Name
+		newViewPort.Parent = ReplicatedStorage.GUI.ViewPortFrames.CRATES
+
+		local newItem = crate:Clone()
+		local rotation = CFrame.Angles(50, 90, 20)
+		newItem:ScaleTo(0.9)
+		newItem:SetPrimaryPartCFrame(CFrame.new(Vector3.new(0, 0, 0)))
+		newItem:SetPrimaryPartCFrame(newItem.PrimaryPart.CFrame * rotation)
+
+		newItem.Parent = newViewPort
+	end
+
 	--// Exemplo de uso
 
 	local brainrotsFolder = ReplicatedStorage.Brainrots
+	local cratesFolder = ReplicatedStorage.Model.Crates
 	local viewPort = ReplicatedStorage.GUI.ViewPortFrames.ViewPort
 
 	for _, value in brainrotsFolder:GetChildren() do
 		createNormal(viewPort, value)
 		createGolden(viewPort, value)
 		createDiamond(viewPort, value)
+	end
+
+	for _, value in cratesFolder:GetChildren() do
+		createCrate(viewPort, value)
 	end
 end
 configureFolders()
