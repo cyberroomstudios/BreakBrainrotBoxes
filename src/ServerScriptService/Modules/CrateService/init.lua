@@ -5,6 +5,7 @@ local Crate = require(ReplicatedStorage.Enums.Crate)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local ToolService = require(ServerScriptService.Modules.ToolService)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
+local LuckService = require(ServerScriptService.Modules.LuckService)
 
 local CrateService = {}
 
@@ -57,7 +58,9 @@ function CrateService:ConsumeAllInHand(player: Player)
 	ToolService:ConsumeAllCrates(player, "CRATE")
 end
 
-function CrateService:DrawBrainrotFromCrate(crateType: string)
+function CrateService:DrawBrainrotFromCrate(player: Player, crateType: string)
+	local luck = LuckService:GetLuckFromPlayer(player) or 1
+
 	local function chooseMutation()
 		local randomValue = math.random()
 		local cumulativeChance = 0
@@ -69,19 +72,25 @@ function CrateService:DrawBrainrotFromCrate(crateType: string)
 			end
 		end
 	end
-	local function chooseCategory(oddsTable)
-		-- Soma total das probabilidades
-		local total = 0
-		for _, chance in pairs(oddsTable) do
-			total += chance
-		end
 
-		-- Número aleatório entre 0 e total
-		local randomValue = math.random()
-		local cumulative = 0
+	local function chooseCategory(oddsTable)
+		-- Ajusta as probabilidades com base na sorte
+		local adjustedChances = {}
+		local total = 0
 
 		for category, chance in pairs(oddsTable) do
-			cumulative += chance / total -- normaliza
+			-- Quanto maior o luck, mais as raridades menores são favorecidas
+			local adjustedChance = chance ^ (1 / luck)
+			adjustedChances[category] = adjustedChance
+			total += adjustedChance
+		end
+
+		-- Número aleatório proporcional ao total ajustado
+		local randomValue = math.random() * total
+		local cumulative = 0
+
+		for category, adjustedChance in pairs(adjustedChances) do
+			cumulative += adjustedChance
 			if randomValue <= cumulative then
 				return category
 			end
@@ -105,18 +114,18 @@ function CrateService:DrawBrainrotFromCrate(crateType: string)
 			local cratesCategoryOdds = rarityDef.CratesCategoryOdds
 
 			-- Somente as raridades acima de 0
-			local raritiestypes = {}
+			local raritiesTypes = {}
 
-			for categoryName, categoryOdd in cratesCategoryOdds do
+			for categoryName, categoryOdd in pairs(cratesCategoryOdds) do
 				if categoryOdd > 0 then
-					raritiestypes[categoryName] = categoryOdd
+					raritiesTypes[categoryName] = categoryOdd
 				end
 			end
 
-			local rarity = chooseCategory(raritiestypes)
-
+			local rarity = chooseCategory(raritiesTypes)
 			local mutation = chooseMutation()
-			return BrainrotService:DrawBrainrotFromRarity(rarity), mutation
+
+			return BrainrotService:DrawBrainrotFromRarity(player, rarity), mutation
 		end
 	end
 end

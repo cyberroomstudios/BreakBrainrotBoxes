@@ -15,9 +15,15 @@ local upgradeShopButton
 local rebirthButton
 local indexButton
 
-function HudController:Init()
+-- Label
+local yourLuckText
+local checkLuck
+local infoLuck
+
+function HudController:Init(data)
 	HudController:CreateReferences()
 	HudController:InitButtonListerns()
+	HudController:UpdadeLabelLuck(data.luck)
 end
 
 function HudController:CreateReferences()
@@ -26,6 +32,13 @@ function HudController:CreateReferences()
 	upgradeShopButton = UIReferences:GetReference("UPGRADES_SHOP_BUTTON")
 	rebirthButton = UIReferences:GetReference("REBIRTH_HUD")
 	indexButton = UIReferences:GetReference("INDEX_HUD")
+	yourLuckText = UIReferences:GetReference("YOUR_LUCK")
+	checkLuck = UIReferences:GetReference("CHECK_LUCK")
+	infoLuck = UIReferences:GetReference("INFO_LUCK")
+end
+
+function HudController:UpdadeLabelLuck(luck: number)
+	yourLuckText.Text = "Your Luck x" .. luck
 end
 
 function HudController:InitButtonListerns()
@@ -47,6 +60,14 @@ function HudController:InitButtonListerns()
 
 	indexButton.MouseButton1Click:Connect(function()
 		UIStateManager:Open("INDEX")
+	end)
+
+	checkLuck.MouseEnter:Connect(function()
+		infoLuck.Visible = true
+	end)
+
+	checkLuck.MouseLeave:Connect(function()
+		infoLuck.Visible = false
 	end)
 end
 

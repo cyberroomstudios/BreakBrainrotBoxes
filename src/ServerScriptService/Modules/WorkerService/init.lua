@@ -171,7 +171,7 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 	end
 
 	-- Escolhe um brainrot com base no tipo da caixa
-	local brainrotType, mutationType = CrateService:DrawBrainrotFromCrate(crateType)
+	local brainrotType, mutationType = CrateService:DrawBrainrotFromCrate(player, crateType)
 
 	-- Obtem o Brainrot do modelo
 	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)

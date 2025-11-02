@@ -51,6 +51,7 @@ local dataTemplate = {
 	breakers = {
 		["Noob"] = true,
 	},
+	luck = 1,
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

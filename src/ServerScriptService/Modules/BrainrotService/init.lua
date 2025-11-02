@@ -5,6 +5,7 @@ local BaseService = require(ServerScriptService.Modules.BaseService)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local ToolService = require(ServerScriptService.Modules.ToolService)
+local LuckService = require(ServerScriptService.Modules.LuckService)
 
 local BrainrotService = {}
 
@@ -73,20 +74,27 @@ function BrainrotService:GetBrainrotFromRarity(rarityType: string)
 	return selectedBrainrots
 end
 
-function BrainrotService:DrawBrainrotFromRarity(rarityType: string)
-	local function chooseCategory(oddsTable)
-		-- Soma total das probabilidades
-		local total = 0
-		for _, chance in pairs(oddsTable) do
-			total += chance
-		end
+function BrainrotService:DrawBrainrotFromRarity(player: Player, rarityType: string)
+	local luck = LuckService:GetLuckFromPlayer(player) or 1
 
-		-- Número aleatório entre 0 e total
-		local randomValue = math.random()
-		local cumulative = 0
+	local function chooseCategory(oddsTable)
+		-- Calcula o total ajustado com base na sorte
+		local total = 0
+		local adjustedChances = {}
 
 		for item, chance in pairs(oddsTable) do
-			cumulative += chance / total -- normaliza
+			-- Quanto maior o luck, mais a chance de itens raros aumenta
+			local adjustedChance = chance ^ (1 / luck)
+			adjustedChances[item] = adjustedChance
+			total += adjustedChance
+		end
+
+		-- Gera um número aleatório proporcional ao total
+		local randomValue = math.random() * total
+		local cumulative = 0
+
+		for item, adjustedChance in pairs(adjustedChances) do
+			cumulative += adjustedChance
 			if randomValue <= cumulative then
 				return item
 			end
