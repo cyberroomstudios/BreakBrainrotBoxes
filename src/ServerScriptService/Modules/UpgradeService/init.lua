@@ -134,7 +134,7 @@ function UpgradeService:Buy(player: Player, upgradeType: string)
 	player:SetAttribute(upgradeType, newValue)
 
 	if upgradeType == "Capacity" then
-		UpgradeService:ConfigureWorkerCapacity(player)
+		UpgradeService:EnableCrates(player)
 	end
 	return newValue
 end
@@ -154,15 +154,23 @@ function UpgradeService:InitPlayerUpgrade(player: Player)
 end
 
 function UpgradeService:ConfigureWorkerCapacity(player: Player)
+	WorkerService:EnableWorker(player)
+	UpgradeService:EnableCrates(player)
+end
+
+function UpgradeService:EnableCrates(player)
 	local capacity = player:GetAttribute("Capacity")
+
 	for i = 1, capacity do
-		WorkerService:EnableWorker(player, i)
+		WorkerService:EnableCrate(player, i)
 	end
+
+	WorkerService:ScaleBreaker(player, capacity)
 end
 
 function UpgradeService:UpdateBreakers(player: Player)
 	WorkerService:DeleteAllBreakers(player)
-	UpgradeService:ConfigureWorkerCapacity(player)
+	UpgradeService:EnableCrates(player)
 	player:SetAttribute("CHANGE_BREAKER", true)
 
 	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")

@@ -19,6 +19,8 @@ local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
+local MAX_BREAKER_SCALE = 5
+
 local animations = {}
 
 function WorkerService:Init()
@@ -216,40 +218,83 @@ function WorkerService:ClearAllCrates(player: Player)
 	end
 end
 
-function WorkerService:EnableWorker(player: Player, workerNumber: number)
+function WorkerService:ScaleBreaker(player: Player, scaleValue: number)
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
 	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
 	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
-	local refFolder = containersFolder:FindFirstChild("Refs")
-	local attachment = refFolder:FindFirstChild(workerNumber)
-	local currentBreaker = PlayerDataHandler:Get(player, "crateBreaker").Equiped
+	local worker = containersFolder:FindFirstChild("Worker")
+	local breakerFolder = worker:FindFirstChild("Breaker")
+	local breakerModel = breakerFolder:FindFirstChild("Breaker")
+
+	if not breakerModel then
+		warn("Breaker não encontrado.")
+		return
+	end
+
+	-- Escalas mínimas e máximas
+	local MIN_SCALE = 1
+	local MAX_SCALE = MAX_BREAKER_SCALE
+
+	if scaleValue <= 1 then
+		breakerModel:ScaleTo(MIN_SCALE)
+		return
+	end
+
+	if scaleValue >= 10 then
+		breakerModel:ScaleTo(MAX_SCALE)
+		return
+	end
+
+	-- Interpolação linear entre 1 e 10
+	local normalized = (scaleValue - 1) / (10 - 1)
+	local scaledValue = MIN_SCALE + (MAX_SCALE - MIN_SCALE) * normalized
+
+	breakerModel:ScaleTo(scaledValue)
+end
+function WorkerService:EnableCrate(player: Player, crateRefNumber: number)
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local worker = containersFolder:FindFirstChild("Worker")
+	local crateRef = worker:FindFirstChild("CrateRef")
+	local attachment = crateRef:FindFirstChild(crateRefNumber)
 
 	if attachment then
-		-- Cria o Suporte
-		local newContainer = ReplicatedStorage.Model.Breakers.Container:Clone()
-		newContainer.Name = workerNumber
-		newContainer.Parent = containersFolder.Bases
-		newContainer:SetPrimaryPartCFrame(attachment.WorldCFrame)
+		attachment:SetAttribute("UNLOCK", true)
+	end
+end
 
-		-- Obtem o tipo do quebrador
-		local breaker = ReplicatedStorage.Breakers:FindFirstChild(currentBreaker)
+function WorkerService:EnableWorker(player: Player)
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local currentBreaker = PlayerDataHandler:Get(player, "crateBreaker").Equiped
 
-		if breaker then
-			-- Cria o Quebrador
-			local newBreaker = breaker:Clone()
-			newBreaker.Parent = newContainer.Breaker
-			newBreaker:SetPrimaryPartCFrame(newContainer.Breaker.Attachment.WorldCFrame)
-			newBreaker.Name = "Breaker"
+	local newContainer = ReplicatedStorage.Model.Breakers.Container:Clone()
+	newContainer.Name = "Worker"
+	newContainer.Parent = containersFolder
+	newContainer:SetPrimaryPartCFrame(containersFolder.Attachment.WorldCFrame)
 
-			-- Tirando nome
-			local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
-			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	-- Obtem o tipo do quebrador
+	local breaker = ReplicatedStorage.Breakers:FindFirstChild(currentBreaker)
 
-			local animation = ReplicatedStorage.Animations.Worker.Iddle
-			local track = humanoid:LoadAnimation(animation)
-			track:Play()
-		end
+	if breaker then
+		-- Cria o Quebrador
+		local newBreaker = breaker:Clone()
+		newBreaker.Parent = newContainer.Breaker
+		newBreaker:SetPrimaryPartCFrame(newContainer.Breaker.Attachment.WorldCFrame)
+		newBreaker.Name = "Breaker"
+
+		-- Tirando nome
+		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+
+		local animation = ReplicatedStorage.Animations.Worker.Iddle
+		local track = humanoid:LoadAnimation(animation)
+		track:Play()
 	end
 end
 

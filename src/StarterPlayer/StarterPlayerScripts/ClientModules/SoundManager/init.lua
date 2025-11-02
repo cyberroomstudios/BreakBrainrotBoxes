@@ -48,11 +48,11 @@ function SoundManager:Play(sondName: string)
 		--	return
 	end
 	local sound = sounds[sondName]:Clone()
-	sound.Parent = script.Parent
-	sound:Play()
+	--sound.Parent = script.Parent
+	--	sound:Play()
 
 	sound.Ended:Connect(function()
-		sound:Destroy()
+		--		sound:Destroy()
 	end)
 end
 
