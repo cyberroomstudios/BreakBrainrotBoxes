@@ -10,9 +10,9 @@ local LuckService = require(ServerScriptService.Modules.LuckService)
 local CrateService = {}
 
 local mutationOdds = {
-	["NORMAL"] = 0.40,
-	["GOLDEN"] = 0.30,
-	["DIAMOND"] = 0.30,
+	["NORMAL"] = 0.85,
+	["GOLDEN"] = 0.1,
+	["DIAMOND"] = 0.05,
 }
 function CrateService:Init() end
 
@@ -62,15 +62,29 @@ function CrateService:DrawBrainrotFromCrate(player: Player, crateType: string)
 	local luck = LuckService:GetLuckFromPlayer(player) or 1
 
 	local function chooseMutation()
-		local randomValue = math.random()
-		local cumulativeChance = 0
+		local adjustedChances = {}
+		local total = 0
 
+		-- Ajusta as chances das mutações pelo luck
 		for rarity, chance in pairs(mutationOdds) do
-			cumulativeChance += chance
-			if randomValue <= cumulativeChance then
+			local adjustedChance = chance ^ (1 / luck)
+			adjustedChances[rarity] = adjustedChance
+			total += adjustedChance
+		end
+
+		-- Número aleatório proporcional ao total ajustado
+		local randomValue = math.random() * total
+		local cumulative = 0
+
+		for rarity, adjustedChance in pairs(adjustedChances) do
+			cumulative += adjustedChance
+			if randomValue <= cumulative then
 				return rarity
 			end
 		end
+
+		-- Fallback
+		return "COMMON"
 	end
 
 	local function chooseCategory(oddsTable)
