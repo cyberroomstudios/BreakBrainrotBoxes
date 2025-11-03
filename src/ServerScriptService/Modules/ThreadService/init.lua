@@ -1,15 +1,18 @@
+local ThreadService = {}
+
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
+local WorkerService = require(ServerScriptService.Modules.WorkerService)
 
-local ThreadService = {}
+local animations = {}
 
 function ThreadService:Init() end
 
-function ThreadService:StartFromPlayer(player: Player)
+function ThreadService:StartBrainrotsMoney(player: Player)
 	local function updatePlotMoney(plotNumber: number, moneyPerSecond: number)
 		local base = BaseService:GetBase(player)
 		local main = base:WaitForChild("Main")
@@ -47,4 +50,127 @@ function ThreadService:StartFromPlayer(player: Player)
 	end)
 end
 
+function ThreadService:StartBreaker(player: Player)
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local worker = containersFolder:FindFirstChild("Worker")
+	local breakerFolder = worker:FindFirstChild("Breaker")
+	local breakerModel = breakerFolder:FindFirstChild("Breaker")
+	local crateRefFolder = worker:WaitForChild("CrateRef")
+
+	local function updateCrateBillboardGui(crate: Model)
+		if not player.Parent then
+			return
+		end
+
+		if crate.Parent then
+			local center = crate.Center
+			local billboardGui = center.BillboardGui
+			local textLabel = billboardGui.Frame.TextLabel
+
+			local currentXp = crate:GetAttribute("CURRENT_XP")
+			local maxXp = crate:GetAttribute("MAX_XP")
+
+			textLabel.Text = currentXp .. "/" .. maxXp
+		end
+	end
+
+	local function getAnimation()
+		if not player.Parent then
+			return
+		end
+
+		if not animations[breakerModel] then
+			local humanoid = breakerModel:WaitForChild("Humanoid")
+			local animation = ReplicatedStorage.Animations.Worker.Attack
+			local track = humanoid:LoadAnimation(animation)
+
+			animations[breakerModel] = track
+		end
+
+		return animations[breakerModel]
+	end
+
+	local function damageAllCrate()
+		if not player.Parent then
+			return
+		end
+
+		local workerPower = player:GetAttribute("Power")
+
+		local crates = workspace.Runtime[player.UserId].Crates
+
+		for _, crate in crates:GetChildren() do
+			local currentXp = crate:GetAttribute("CURRENT_XP")
+			local newCurrent = currentXp - workerPower
+			crate:SetAttribute("CURRENT_XP", newCurrent)
+			updateCrateBillboardGui(crate)
+
+			if crate:GetAttribute("CURRENT_XP") <= 0 then
+				local crateType = crate:GetAttribute("CRATE_TYPE")
+				local positionNumber = crate:GetAttribute("POSITION_NUMBER")
+				local crateRefPosition = crateRefFolder:FindFirstChild(positionNumber)
+
+				if crateRefPosition then
+					crateRefPosition:SetAttribute("BUSY", false)
+					crate:Destroy()
+					WorkerService:CreateBrainrot(player, crateType, crateRefPosition)
+				end
+
+				continue
+			end
+		end
+	end
+
+	local function hasCrate()
+		if not player.Parent then
+			return
+		end
+
+		local crates = workspace.Runtime[player.UserId].Crates
+
+		for _, crate in crates:GetChildren() do
+			return true
+		end
+
+		return false
+	end
+
+	local function waitNextCycle()
+		if not player.Parent then
+			return
+		end
+
+		local workerSpeed = player:GetAttribute("Speed")
+		local baseWait = 0.5
+		local reductionPerLevel = 0.05
+		local waitTime = math.max(0.1, baseWait - (workerSpeed - 1) * reductionPerLevel)
+		task.wait(waitTime)
+	end
+
+	task.spawn(function()
+		while player.Parent do
+			-- Verifica se tem alguma caixa para quebrar
+
+			local hasCrate = hasCrate()
+
+			if hasCrate then
+				-- Roda a animação
+				local animation = getAnimation()
+				animation:Play()
+
+				-- Espera a animação acabar
+				animation.Stopped:Wait()
+
+				-- Dar o dano em todas as caixas
+				damageAllCrate()
+			end
+
+			-- Aguarda o temo para o proximo ciclo
+			waitNextCycle()
+		end
+	end)
+end
 return ThreadService

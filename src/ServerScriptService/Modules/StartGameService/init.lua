@@ -49,11 +49,13 @@ function StartGameService:InitBridgeListener()
 			StartGameService:InitPlayerAttributes(player)
 			BrainrotService:InitBrainrotInMap(player)
 			BrainrotService:InitBrainrotInBackpack(player)
-			ThreadService:StartFromPlayer(player)
+			ThreadService:StartBrainrotsMoney(player)
+
 			UpgradeService:InitPlayerUpgrade(player)
 			RebirthService:InitRebirth(player)
 			WorkerService:StartCratesFromOffline(player)
 			OfflineMoneyService:StartOfflineMoney(player)
+			ThreadService:StartBreaker(player)
 		end
 	end
 end

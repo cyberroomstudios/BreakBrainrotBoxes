@@ -40,13 +40,12 @@ function WorkerService:SetAllCrateBackpack(player: Player)
 	local putBox = false
 	for crateName, amount in crates do
 		for i = 1, amount do
-			local worker = WorkerService:GetNextWorkerAvailable(player)
-			if worker then
-				print(worker.Name)
+			local crateRef = WorkerService:GetNextAvailableCrateReF(player)
+			if crateRef then
 				CrateService:Consume(player, crateName)
 				ToolService:Consume(player, "CRATE", crateName)
-				worker:SetAttribute("BUSY", true)
-				WorkerService:SetCrate(player, crateName, worker.Name, nil)
+				crateRef:SetAttribute("BUSY", true)
+				WorkerService:SetCrate(player, crateName, crateRef.Name, nil)
 				continue
 			end
 			print("Sem Espaço")
@@ -54,18 +53,22 @@ function WorkerService:SetAllCrateBackpack(player: Player)
 	end
 end
 
-function WorkerService:GetNextWorkerAvailable(player: Player)
+function WorkerService:GetNextAvailableCrateReF(player: Player)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local workersFolder =
-		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
-	local workers = workersFolder:GetChildren()
+	local crateRef = plot:WaitForChild("Main")
+		:WaitForChild("BreakersArea")
+		:WaitForChild("Containers")
+		:WaitForChild("Worker")
+		:WaitForChild("CrateRef")
 
-	table.sort(workers, function(a, b)
+	local refs = crateRef:GetChildren()
+
+	table.sort(refs, function(a, b)
 		return tonumber(a.Name) < tonumber(b.Name)
 	end)
 
-	for _, value in workers do
+	for _, value in refs do
 		if value:GetAttribute("UNLOCK") and not value:GetAttribute("BUSY") then
 			return value
 		end
@@ -85,7 +88,37 @@ function WorkerService:UpdateCrateBillboardGui(crate: Model)
 	end
 end
 
-function WorkerService:SetCrate(player: Player, crateName: string, workerNumber: number, currentXp: number)
+function WorkerService:SetCrate(player: Player, crateName: string, positionRef: number, currentXp: number)
+	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
+	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
+
+	local crateRefFolder = plot:WaitForChild("Main")
+		:WaitForChild("BreakersArea")
+		:WaitForChild("Containers")
+		:WaitForChild("Worker")
+		:WaitForChild("CrateRef")
+
+	local crateRef = crateRefFolder:FindFirstChild(positionRef)
+
+	if not crateRef then
+		return
+	end
+
+	local crateEnum = Crate.CRATES[crateName]
+
+	local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateName):Clone()
+
+	crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
+	crate:SetAttribute("CURRENT_XP", currentXp and currentXp or crateEnum.XPToOpen)
+	crate:SetAttribute("CRATE_TYPE", crateName)
+	crate:SetAttribute("POSITION_NUMBER", positionRef)
+
+	crate:SetPrimaryPartCFrame(CFrame.new(crateRef.WorldPosition))
+
+	crate.Parent = workspace.Runtime[player.UserId].Crates
+end
+
+function WorkerService:SetCrate2(player: Player, crateName: string, workerNumber: number, currentXp: number)
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
 	local basesFolder =
@@ -100,6 +133,9 @@ function WorkerService:SetCrate(player: Player, crateName: string, workerNumber:
 		if crate then
 			crate.Parent = workspace.Runtime[player.UserId].Crates
 
+			if 1 == 1 then
+				return
+			end
 			-- Atributos
 			crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
 			crate:SetAttribute("CURRENT_XP", currentXp and currentXp or crateEnum.XPToOpen)
@@ -406,12 +442,12 @@ function WorkerService:StartCratesFromOffline(player: Player)
 	for _, crate in offlineCrates do
 		local crateName = crate.CrateName
 		local currentXp = crate.CurrentXp
-		local worker = WorkerService:GetNextWorkerAvailable(player)
-		if worker then
-			worker:SetAttribute("BUSY", true)
+		local crateRef = WorkerService:GetNextAvailableCrateReF(player)
+		if crateRef then
+			crateRef:SetAttribute("BUSY", true)
 			-- Atualiza o tempo que quebrou offline
 			currentXp = WorkerService:GetXPOfflineCrate(player, currentXp)
-			WorkerService:SetCrate(player, crateName, worker.Name, currentXp)
+			WorkerService:SetCrate(player, crateName, crateRef.Name, currentXp)
 			continue
 		end
 	end
