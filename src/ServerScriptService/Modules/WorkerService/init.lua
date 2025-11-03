@@ -424,7 +424,7 @@ function WorkerService:GetXPOfflineCrate(player: Player, currentXP: number)
 		-- quantas vezes ele teria causado dano
 		local amountDamage = math.floor(secondsPassed / waitTime)
 
-		-- aplicar dano total de uma vez (sem loop)
+		-- aplicar dano total de uma vez
 		local totalDamage = amountDamage * workerPower
 
 		local newXp = math.max(0, currentXP - totalDamage)

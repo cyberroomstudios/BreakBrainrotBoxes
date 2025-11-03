@@ -82,12 +82,18 @@ function ThreadService:StartBreaker(player: Player)
 			return
 		end
 
+		if not breakerModel.Parent then
+			breakerModel = breakerFolder:WaitForChild("Breaker")
+		end
+
 		if not animations[breakerModel] then
+			print("Iniciando Carregamento")
 			local humanoid = breakerModel:WaitForChild("Humanoid")
 			local animation = ReplicatedStorage.Animations.Worker.Attack
 			local track = humanoid:LoadAnimation(animation)
 
 			animations[breakerModel] = track
+			print("Carregamento Concluido")
 		end
 
 		return animations[breakerModel]
@@ -152,23 +158,30 @@ function ThreadService:StartBreaker(player: Player)
 
 	task.spawn(function()
 		while player.Parent do
-			-- Verifica se tem alguma caixa para quebrar
+			pcall(function()
+				-- Verifica se tem alguma caixa para quebrar
+				local hasCrate = hasCrate()
 
-			local hasCrate = hasCrate()
+				if hasCrate then
+					-- Roda a animação
+					local animation = getAnimation()
 
-			if hasCrate then
-				-- Roda a animação
-				local animation = getAnimation()
-				animation:Play()
+					if not animation then
+						return
+					end
 
-				-- Espera a animação acabar
-				animation.Stopped:Wait()
+					animation:Play()
 
-				-- Dar o dano em todas as caixas
-				damageAllCrate()
-			end
+					-- Espera a animação acabar
+					animation.Stopped:Wait()
 
-			-- Aguarda o temo para o proximo ciclo
+					-- Dar o dano em todas as caixas
+					damageAllCrate()
+				end
+
+				-- Aguarda o temo para o proximo ciclo
+			end)
+
 			waitNextCycle()
 		end
 	end)
