@@ -86,6 +86,22 @@ function PlotController:EnableInsertItemProximityPrompt(plotNumber: number)
 	end
 end
 
+function PlotController:DisableInsertItemProximityPrompt(plotNumber: number)
+	local baseNumber = player:GetAttribute("BASE")
+	local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
+	local main = ClientUtil:WaitForDescendants(base, "Main")
+	local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
+
+	local plot = brainrotsPlots:FindFirstChild(plotNumber)
+
+	if plot then
+		local touchPart = ClientUtil:WaitForDescendants(plot, "TouchPart")
+		if touchPart then
+			touchPart.InsertItemProximityPart.Enabled = false
+		end
+	end
+end
+
 function PlotController:CreateProximityPrompt(name: string, plotNumber: number)
 	local found = false
 	while not found do
@@ -96,6 +112,7 @@ function PlotController:CreateProximityPrompt(name: string, plotNumber: number)
 		for _, value in brainrotsFolder:GetChildren() do
 			if value.Name == name and value:GetAttribute("SLOT_NUMBER") == plotNumber then
 				found = true
+				PlotController:DisableInsertItemProximityPrompt(plotNumber)
 				local humanoidRootPart = value:WaitForChild("HumanoidRootPart")
 
 				local proximityPrompt = humanoidRootPart.ProximityPrompt

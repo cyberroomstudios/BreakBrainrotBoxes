@@ -1,3 +1,5 @@
+local BrainrotService = {}
+
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -7,7 +9,6 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local ToolService = require(ServerScriptService.Modules.ToolService)
 local LuckService = require(ServerScriptService.Modules.LuckService)
 
-local BrainrotService = {}
 
 function BrainrotService:Init() end
 

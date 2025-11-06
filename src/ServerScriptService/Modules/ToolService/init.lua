@@ -13,6 +13,26 @@ local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
+local mutationColors = {
+	["GOLDEN"] = {
+		[1] = Color3.fromRGB(237, 178, 0),
+		[2] = Color3.fromRGB(237, 194, 86),
+		[3] = Color3.fromRGB(215, 111, 1),
+		[4] = Color3.fromRGB(139, 74, 0),
+		[5] = Color3.fromRGB(255, 164, 164),
+		[6] = Color3.fromRGB(255, 244, 190),
+	},
+
+	["DIAMOND"] = {
+		[1] = Color3.fromRGB(37, 196, 254),
+		[2] = Color3.fromRGB(116, 212, 254),
+		[3] = Color3.fromRGB(28, 137, 254),
+		[4] = Color3.fromRGB(21, 64, 254),
+		[5] = Color3.fromRGB(160, 162, 254),
+		[6] = Color3.fromRGB(176, 255, 252),
+	},
+}
+
 function ToolService:Init() end
 
 function ToolService:UpdateBackpack(player: Player)
@@ -87,6 +107,13 @@ end
 function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainrotName: string, mutationType: string)
 	player:SetAttribute("TOOL_ID", (player:GetAttribute("TOOL_ID") or 0) + 1)
 	local newToll = ReplicatedStorage.Tools.Brainrots:FindFirstChild(brainrotName):Clone()
+
+	for _, value in newToll:GetDescendants() do
+		if value:GetAttribute("Color") then
+			value.Color = mutationColors[mutationType][value:GetAttribute("Color")]
+		end
+	end
+
 	newToll:SetAttribute("ORIGINAL_NAME", brainrotName)
 	newToll:SetAttribute("TOOL_TYPE", mutationType .. "_BRAINROT")
 	newToll:SetAttribute("MUTATION_TYPE", mutationType)
