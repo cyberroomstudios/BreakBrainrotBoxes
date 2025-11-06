@@ -27,6 +27,65 @@ function PlotController:InitBridgeListener()
 	end)
 end
 
+function PlotController:ConfigureInsertItemProximityPrompt()
+	local baseNumber = player:GetAttribute("BASE")
+	local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
+	local main = ClientUtil:WaitForDescendants(base, "Main")
+	local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
+
+	for _, value in brainrotsPlots:GetChildren() do
+		local touchPart = ClientUtil:WaitForDescendants(value, "TouchPart")
+		if touchPart then
+			touchPart.InsertItemProximityPart.Triggered:Connect(function(player)
+				local result = bridge:InvokeServerAsync({
+					[actionIdentifier] = "InsertBrainrot",
+					data = {
+						PlotName = value.Name,
+					},
+				})
+
+				if result then
+					touchPart.InsertItemProximityPart.Enabled = false
+				end
+			end)
+		end
+	end
+
+	local result = bridge:InvokeServerAsync({
+		[actionIdentifier] = "GetItemsToActivateInsertItemProximityPrompt",
+	})
+
+	if result then
+		for _, value in result do
+			local plot = brainrotsPlots:FindFirstChild(value)
+
+			if plot then
+				local touchPart = ClientUtil:WaitForDescendants(plot, "TouchPart")
+				if touchPart then
+					touchPart.InsertItemProximityPart.Enabled = true
+				end
+			end
+		end
+		print(result)
+	end
+end
+
+function PlotController:EnableInsertItemProximityPrompt(plotNumber: number)
+	local baseNumber = player:GetAttribute("BASE")
+	local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
+	local main = ClientUtil:WaitForDescendants(base, "Main")
+	local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
+
+	local plot = brainrotsPlots:FindFirstChild(plotNumber)
+
+	if plot then
+		local touchPart = ClientUtil:WaitForDescendants(plot, "TouchPart")
+		if touchPart then
+			touchPart.InsertItemProximityPart.Enabled = true
+		end
+	end
+end
+
 function PlotController:CreateProximityPrompt(name: string, plotNumber: number)
 	local found = false
 	while not found do
@@ -48,6 +107,10 @@ function PlotController:CreateProximityPrompt(name: string, plotNumber: number)
 							PlotNumber = plotNumber,
 						},
 					})
+
+					if result then
+						PlotController:EnableInsertItemProximityPrompt(plotNumber)
+					end
 				end)
 			end
 		end

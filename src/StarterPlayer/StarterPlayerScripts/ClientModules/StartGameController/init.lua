@@ -24,6 +24,7 @@ function StartGameController:Init(data)
 	WorkerController:InitProximityPrompt()
 	UpgradeController:ConfigureProximityPrompt()
 	PlotController:StartTouchGetMoney()
+	PlotController:ConfigureInsertItemProximityPrompt()
 	OfflineMoneyController:Open()
 end
 

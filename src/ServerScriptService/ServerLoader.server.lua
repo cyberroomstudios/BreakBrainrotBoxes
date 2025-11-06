@@ -61,7 +61,7 @@ local positionsAndOrietations = {
 	},
 }
 
-local function ReplicatePlots()
+local function replicatePlots()
 	local plo1 = workspace:WaitForChild("Map"):WaitForChild("Plots"):WaitForChild("1")
 
 	local plotBase = plo1:Clone()
@@ -93,6 +93,22 @@ local function configureFolders()
 
 	local workersFolder = workspace:WaitForChild("Developer"):WaitForChild("Breakers")
 	workersFolder.Parent = ReplicatedStorage
+
+	local cratesFolder = workspace:WaitForChild("Developer"):WaitForChild("Crates")
+	cratesFolder.Parent = ReplicatedStorage
+
+	local cratesToolsFolder = workspace:WaitForChild("Developer"):WaitForChild("CratesTools")
+	cratesToolsFolder.Parent = ReplicatedStorage
+end
+
+local function configureCrates()
+	local cratesFolder = ReplicatedStorage.Crates:GetChildren()
+
+	for _, value in cratesFolder do
+		local hp = value.HP
+		local billboard = ReplicatedStorage.Model.Billboards.CrateHP:Clone()
+		billboard.Parent = hp
+	end
 end
 
 local function configureViewPorts()
@@ -192,18 +208,23 @@ local function configureViewPorts()
 		newViewPort.Parent = ReplicatedStorage.GUI.ViewPortFrames.CRATES
 
 		local newItem = crate:Clone()
-		local rotation = CFrame.Angles(50, 90, 20)
-		newItem:ScaleTo(0.9)
-		newItem:SetPrimaryPartCFrame(CFrame.new(Vector3.new(0, 0, 0)))
-		newItem:SetPrimaryPartCFrame(newItem.PrimaryPart.CFrame * rotation)
 
+		newItem:ScaleTo(1.35)
+
+		-- Define a posição desejada
+		local position = Vector3.new(0, 0, 0)
+		local rotX, rotY, rotZ = -15, 130, 0
+		local rotation = CFrame.Angles(math.rad(rotX), math.rad(rotY), math.rad(rotZ))
+
+		-- Aplica a transformação
+		newItem:PivotTo(CFrame.new(position) * rotation)
 		newItem.Parent = newViewPort
 	end
 
 	--// Exemplo de uso
 
 	local brainrotsFolder = ReplicatedStorage.Brainrots
-	local cratesFolder = ReplicatedStorage.Model.Crates
+	local cratesFolder = ReplicatedStorage.Crates
 	local viewPort = ReplicatedStorage.GUI.ViewPortFrames.ViewPort
 
 	for _, value in brainrotsFolder:GetChildren() do
@@ -216,9 +237,12 @@ local function configureViewPorts()
 		createCrate(viewPort, value)
 	end
 end
+
 configureFolders()
 
-ReplicatePlots()
+configureCrates()
+
+replicatePlots()
 
 task.spawn(function()
 	configureViewPorts()

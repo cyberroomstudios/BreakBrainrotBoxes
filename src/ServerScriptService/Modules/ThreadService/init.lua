@@ -66,8 +66,8 @@ function ThreadService:StartBreaker(player: Player)
 		end
 
 		if crate.Parent then
-			local center = crate.Center
-			local billboardGui = center.BillboardGui
+			local hp = crate.HP
+			local billboardGui = hp.CrateHP
 			local textLabel = billboardGui.Frame.TextLabel
 
 			local currentXp = crate:GetAttribute("CURRENT_XP")

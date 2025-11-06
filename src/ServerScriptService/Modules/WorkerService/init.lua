@@ -77,8 +77,8 @@ end
 
 function WorkerService:UpdateCrateBillboardGui(crate: Model)
 	if crate.Parent then
-		local center = crate.Center
-		local billboardGui = center.BillboardGui
+		local hp = crate.HP
+		local billboardGui = hp.BillboardGui
 		local textLabel = billboardGui.Frame.TextLabel
 
 		local currentXp = crate:GetAttribute("CURRENT_XP")
@@ -106,7 +106,7 @@ function WorkerService:SetCrate(player: Player, crateName: string, positionRef: 
 
 	local crateEnum = Crate.CRATES[crateName]
 
-	local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateName):Clone()
+	local crate = ReplicatedStorage.Crates:FindFirstChild(crateName):Clone()
 
 	crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
 	crate:SetAttribute("CURRENT_XP", currentXp and currentXp or crateEnum.XPToOpen)

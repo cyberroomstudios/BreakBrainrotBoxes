@@ -105,6 +105,8 @@ function CrateShopScreenController:CreateButtonListner()
 	restockThisButton.MouseButton1Click:Connect(function() end)
 end
 function CrateShopScreenController:BuildScreen(stockItems)
+	local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames.CRATES
+
 	-- Atualiza a ordem dos itens, quando algum item é expandido
 	local function updateLayoutOrder(layoutOrderBase: number)
 		for _, value in crateScrollingFrame:GetChildren() do
@@ -127,6 +129,20 @@ function CrateShopScreenController:BuildScreen(stockItems)
 		newItem.Visible = true
 		-- Definindo a ordem
 		newItem.LayoutOrder = value.GUI.Order
+
+		-- Definindo o ViewPort
+		local viewPortTemplate = viewPortFolder:FindFirstChild(name)
+
+		local viewPort = viewPortTemplate:Clone()
+		viewPort.Parent = newItem.Display.Image
+
+		local shadow = viewPort:Clone()
+		shadow.ZIndex = 0
+		shadow[name]:ScaleTo(shadow[name]:GetScale() + 0.2)
+
+		shadow.Ambient = Color3.new(0, 0, 0)
+		shadow.LightColor = Color3.new(0, 0, 0)
+		shadow.Parent = viewPort.Parent
 
 		-- Definindo o nome
 		newItem.Display.InfoItem.ItemName.Text = value.GUI.Name

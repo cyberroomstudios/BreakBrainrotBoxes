@@ -67,13 +67,13 @@ end
 
 function ToolService:Give(player: Player, toolType: string, toolName: string, amount: number)
 	if toolType == "CRATE" then
-		if not ReplicatedStorage.Tools.Crates:FindFirstChild(toolName) then
+		if not ReplicatedStorage.CratesTools:FindFirstChild(toolName) then
 			return
 		end
 	end
 
 	player:SetAttribute("TOOL_ID", (player:GetAttribute("TOOL_ID") or 0) + 1)
-	local newToll = ReplicatedStorage.Tools.Crates:FindFirstChild(toolName):Clone()
+	local newToll = ReplicatedStorage.CratesTools:FindFirstChild(toolName):Clone()
 	newToll:SetAttribute("ORIGINAL_NAME", toolName)
 	newToll:SetAttribute("AMOUNT", amount)
 	newToll:SetAttribute("TOOL_TYPE", toolType)
@@ -84,11 +84,13 @@ function ToolService:Give(player: Player, toolType: string, toolName: string, am
 	ToolService:UpdateBackpack(player)
 end
 
-function ToolService:GiveBrainrotTool(player: Player, brainrotName: string, mutationType: string)
+function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainrotName: string, mutationType: string)
 	player:SetAttribute("TOOL_ID", (player:GetAttribute("TOOL_ID") or 0) + 1)
 	local newToll = ReplicatedStorage.Tools.Brainrots:FindFirstChild(brainrotName):Clone()
 	newToll:SetAttribute("ORIGINAL_NAME", brainrotName)
 	newToll:SetAttribute("TOOL_TYPE", mutationType .. "_BRAINROT")
+	newToll:SetAttribute("MUTATION_TYPE", mutationType)
+	newToll:SetAttribute("BRAINROT_ID", brainrotId)
 	newToll.Name = brainrotName
 	newToll.Parent = player.Backpack
 	newToll:SetAttribute("ID", player:GetAttribute("TOOL_ID"))
@@ -116,6 +118,11 @@ function ToolService:ConsumeBrainrotTool(player: Player, brainrotName: string)
 			return
 		end
 	end
+end
+
+function ToolService:ConsumeThisTool(player: Player, tool: Tool)
+	tool:Destroy()
+	ToolService:UpdateBackpack(player)
 end
 
 return ToolService

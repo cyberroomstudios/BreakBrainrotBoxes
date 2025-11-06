@@ -17,6 +17,8 @@ local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local BrainrotService = require(ServerScriptService.Modules.BrainrotService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
+local ToolService = require(ServerScriptService.Modules.ToolService)
 
 function PlotService:Init()
 	PlotService:InitBridgeListener()
@@ -32,9 +34,85 @@ function PlotService:InitBridgeListener()
 		if data[actionIdentifier] == "RemoveBrainrot" then
 			local name = data.data.Name
 			local plotNumber = data.data.PlotNumber
-			PlotService:RemoveBrainrot(player, name, plotNumber)
+			return PlotService:RemoveBrainrot(player, name, plotNumber)
+		end
+
+		if data[actionIdentifier] == "GetItemsToActivateInsertItemProximityPrompt" then
+			return PlotService:GetItemsToActivateInsertItemProximityPrompt(player)
+		end
+
+		if data[actionIdentifier] == "InsertBrainrot" then
+			local name = data.data.PlotName
+			return PlotService:InsertBrainrot(player, name)
 		end
 	end
+end
+
+function PlotService:InsertBrainrot(player: Player, plotName: string)
+	local base = BaseService:GetBase(player)
+	local main = base:WaitForChild("Main")
+	local plots = main.BrainrotPlots
+	local plot = plots:FindFirstChild(plotName)
+	local character = player.Character
+	local tool = character:FindFirstChildOfClass("Tool")
+
+	if not plot then
+		warn("Plot not found")
+		return
+	end
+
+	if not plot:GetAttribute("UNLOCK") then
+		warn("Plot not unlock")
+		return
+	end
+
+	if plot:GetAttribute("BUSY") then
+		warn("Plot Busy")
+		return
+	end
+
+	if not tool then
+		GameNotificationService:SendErrorNotification(player, "No Brainrot In Your Hand")
+		return
+	end
+
+	local mutationType = tool:GetAttribute("MUTATION_TYPE")
+	local brainrotId = tool:GetAttribute("BRAINROT_ID")
+	local brainrotName = tool.Name
+	-- Apaga a tool
+	ToolService:ConsumeThisTool(player, tool)
+
+	-- Apaga da lista de brainrots do backpack (banco de dados)
+	BrainrotService:RemoveBrainrotInBackpack(player, brainrotId)
+
+	-- Salva na lista de brainrots do mapa (banco de dados)
+	BrainrotService:SaveBrainrotInMap(player, brainrotName, mutationType, plotName)
+
+	-- Coloca no mapa
+	PlotService:SetWithPlotNumber(player, plotName, brainrotName, mutationType)
+
+	return true
+end
+
+function PlotService:GetItemsToActivateInsertItemProximityPrompt(player: Player)
+	local base = BaseService:GetBase(player)
+	local main = base:WaitForChild("Main")
+	local slots = main.BrainrotPlots:GetChildren()
+
+	local availableSlots = {}
+	for _, slot in slots do
+		if not slot:GetAttribute("UNLOCK") then
+			continue
+		end
+
+		if slot:GetAttribute("BUSY") then
+			continue
+		end
+
+		table.insert(availableSlots, slot.Name)
+	end
+
+	return availableSlots
 end
 
 function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
@@ -53,8 +131,12 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 			slot:SetAttribute("BUSY", false)
 			BrainrotService:RemoveBrainrotInMap(player, name, plotNumber)
 			BrainrotService:SaveBrainrotInBackpack(player, name, mutationType)
+
+			return true
 		end
 	end
+
+	return false
 end
 
 function PlotService:RelesePlot(player: Player, plotNumber: number)
@@ -195,8 +277,8 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		local humanoid = newBrainrot:WaitForChild("Humanoid")
 		local animation = ReplicatedStorage.Animations.Brainrots:FindFirstChild(newBrainrot.Name)
 		if animation then
-			--		local track = humanoid:LoadAnimation(animation)
-			--		track:Play()
+			local track = humanoid:LoadAnimation(animation)
+			track:Play()
 		end
 	end
 

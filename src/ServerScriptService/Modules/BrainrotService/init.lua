@@ -42,7 +42,7 @@ function BrainrotService:SaveBrainrotInBackpack(player: Player, brainrotName: st
 	end)
 
 	PlayerDataHandler:Set(player, "brainrotsBackpackId", data.Id + 1)
-	ToolService:GiveBrainrotTool(player, brainrotName, mutationType)
+	ToolService:GiveBrainrotTool(player, data.Id, brainrotName, mutationType)
 end
 
 function BrainrotService:InitBrainrotInMap(player: Player)
@@ -58,7 +58,7 @@ end
 
 function BrainrotService:InitBrainrotInBackpack(player: Player)
 	for _, value in PlayerDataHandler:Get(player, "brainrotsBackpack") do
-		ToolService:GiveBrainrotTool(player, value.BrainrotName, value.MutationType)
+		ToolService:GiveBrainrotTool(player,value.Id, value.BrainrotName, value.MutationType)
 	end
 end
 
@@ -110,6 +110,19 @@ function BrainrotService:RemoveBrainrotInMap(player: Player, name: string, plotN
 		local newCurrent = {}
 		for _, value in current do
 			if value.BrainrotName == name and value.SlotNumber == plotNumber then
+				continue
+			end
+			table.insert(newCurrent, value)
+		end
+		return newCurrent
+	end)
+end
+
+function BrainrotService:RemoveBrainrotInBackpack(player: Player, brainrotId: number)
+	PlayerDataHandler:Update(player, "brainrotsBackpack", function(current)
+		local newCurrent = {}
+		for _, value in current do
+			if value.Id == brainrotId then
 				continue
 			end
 			table.insert(newCurrent, value)
