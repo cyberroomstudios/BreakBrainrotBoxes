@@ -30,15 +30,17 @@ function UIStateManager:LoadModules()
 		loadedModules = true
 		local clientModules = Players.LocalPlayer.PlayerScripts.ClientModules
 		local CrateShopScreenController = require(clientModules.CrateShopScreenController)
-		local SellBrainrotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.SellBrainrotController)
-		local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.UpgradeController)
-		local IndexController = require(Players.LocalPlayer.PlayerScripts.ClientModules.IndexController)
+		local SellBrainrotController = require(clientModules.SellBrainrotController)
+		local UpgradeController = require(clientModules.UpgradeController)
+		local IndexController = require(clientModules.IndexController)
+		local NewBrinrotScreenController = require(clientModules.NewBrainrotScreenController)
 
 		screens = {
 			["CRATES"] = CrateShopScreenController,
 			["SELL"] = SellBrainrotController,
 			["UPGRADES"] = UpgradeController,
 			["INDEX"] = IndexController,
+			["NEW_GAME"] = NewBrinrotScreenController,
 		}
 
 		for screenName, screen in screens do
@@ -47,13 +49,13 @@ function UIStateManager:LoadModules()
 	end
 end
 
-function UIStateManager:Open(screenName: string)
+function UIStateManager:Open(screenName: string, data)
 	UIStateManager:LoadModules()
 	for _, screen in screens do
 		screen:Close()
 	end
 
-	if (currentScreen ~= "WORKERS" or currentScreen ~= "SELL") and screenName == currentScreen then
+	if screenName == currentScreen then
 		UIStateManager:Close(screenName)
 		currentScreen = ""
 		return
@@ -63,7 +65,7 @@ function UIStateManager:Open(screenName: string)
 	task.spawn(function()
 		MobileVibrationController:Start()
 		SoundManager:Play("UI_OPEN_SCREEN")
-		screens[screenName]:Open()
+		screens[screenName]:Open(data)
 	end)
 
 	UIStateManager:ApplyTween(screenName, screens[screenName]:GetScreen())
@@ -79,7 +81,7 @@ function UIStateManager:Close(screenName: string)
 end
 
 function UIStateManager:ApplyTween(screenName: string, screen: Frame)
-	if screen.Name == "NewGame" then
+	if screenName == "NEW_GAME" then
 		return
 	end
 

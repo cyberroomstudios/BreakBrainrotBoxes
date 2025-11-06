@@ -12,6 +12,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
 local notificationScreen
 local notificationsTemplate
@@ -44,7 +45,18 @@ function GameNotificationController:InitListeners()
 		if response[actionIdentifier] == "ShowSuccessNotificaion" then
 			GameNotificationController:ShowNotification("SUCCESS", response.data.Message)
 		end
+
+		if response[actionIdentifier] == "ShowNewBrainrotNotificaion" then
+			GameNotificationController:ShowNewBrainrotNotification(response.data.BrainrotType)
+		end
 	end)
+end
+
+function GameNotificationController:ShowNewBrainrotNotification(brainrotType: string)
+	local data = {
+		BrainrotType = brainrotType,
+	}
+	UIStateManager:Open("NEW_GAME", data)
 end
 
 function GameNotificationController:ShowNotification(notificationType: string, message: string)

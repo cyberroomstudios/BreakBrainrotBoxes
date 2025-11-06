@@ -52,11 +52,13 @@ function IndexService:Add(player: Player, itemName: string, mutationType: string
 	PlayerDataHandler:Update(player, playerDataKey[mutationType], function(current)
 		if current[itemName] then
 			GameNotificationService:SendWarnNotification(player, "You Found The " .. itemEnum.GUI.Label)
+			GameNotificationService:SendNewBrainrotNotification(player, itemName)
+
 			return current
 		end
 
 		current[itemName] = true
-		GameNotificationService:SendSuccessNotification(player, "You Found The " .. itemEnum.GUI.Label)
+		GameNotificationService:SendNewBrainrotNotification(player, itemName)
 
 		return current
 	end)
