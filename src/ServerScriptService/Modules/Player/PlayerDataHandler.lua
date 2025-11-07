@@ -52,6 +52,7 @@ local dataTemplate = {
 		["Noob"] = true,
 	},
 	luck = 1,
+	robuxSpent = 0,
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

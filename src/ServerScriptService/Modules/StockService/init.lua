@@ -20,7 +20,7 @@ local globalStock = {}
 local playerStock = {}
 
 local TIME_TO_RESTOCK = 60 * 5
-
+local currentTime = TIME_TO_RESTOCK
 function StockService:Init()
 	StockService:InitBridgeListener()
 	StockService:Start()
@@ -40,7 +40,7 @@ end
 
 function StockService:Start()
 	task.spawn(function()
-		local currentTime = TIME_TO_RESTOCK
+		
 		StockService:RestockAll()
 		while true do
 			if currentTime == 0 then
@@ -53,6 +53,10 @@ function StockService:Start()
 			task.wait(1)
 		end
 	end)
+end
+
+function StockService:BuyRestockAll()
+	currentTime = 0
 end
 
 function StockService:RestockAll()

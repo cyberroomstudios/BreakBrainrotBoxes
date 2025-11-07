@@ -18,26 +18,65 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 
 local Crate = require(ReplicatedStorage.Enums.Crate)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
+local DeveloperProductController = require(Players.LocalPlayer.PlayerScripts.ClientModules.DeveloperProductController)
 
 --GUI
 local screen -- Tela
 local restockTime -- Inidcador do tempo para restock
 local crateScrollingFrame -- Scrolling Frame dos Itens
+local restockAllCrate
 
 -- Variaveis
 local selectedItem = nil
+
+local devProductsPrices = {
+	["Wooden"] = 0,
+	["Tech"] = 0,
+	["Storm"] = 0,
+	["Stone"] = 0,
+	["Lava"] = 0,
+	["Ice"] = 0,
+	["Grass"] = 0,
+	["Golden"] = 0,
+	["Diamond"] = 0,
+	["Bronze"] = 0,
+}
+local devProducts = {
+	["Wooden"] = "WOODEN_CRATE",
+	["Tech"] = "TECH_CRATE",
+	["Storm"] = "STORM_CRATE",
+	["Stone"] = "STONE_CRATE",
+	["Lava"] = "LAVA_CRATE",
+	["Ice"] = "ICE_CRATE",
+	["Grass"] = "GRASS_CRATE",
+	["Golden"] = "GOLDEN_CRATE",
+	["Diamond"] = "DIAMOND_CRATE",
+	["Bronze"] = "BRONZE_CRATE",
+}
 
 function CrateShopScreenController:Init()
 	CrateShopScreenController:CreateReferences()
 	CrateShopScreenController:ConfigureProximityPrompt()
 	CrateShopScreenController:InitAttributeListener()
 	CrateShopScreenController:CreateButtonListner()
+	CrateShopScreenController:InitDevProductsPrices()
 end
 
 function CrateShopScreenController:CreateReferences()
 	screen = UIReferences:GetReference("CRATE_SHOP_SCREEN")
 	restockTime = UIReferences:GetReference("CRATE_SHOP_RESTOCK_TIME")
 	crateScrollingFrame = UIReferences:GetReference("CRATES_SHOP_SCROLLING_FRAME")
+	restockAllCrate = UIReferences:GetReference("RESTOCK_ALL_CRATE")
+end
+
+function CrateShopScreenController:InitDevProductsPrices()
+	task.spawn(function()
+		for key, value in pairs(devProducts) do
+			pcall(function()
+				devProductsPrices[key] = DeveloperProductController:GetProductPrice(value)
+			end)
+		end
+	end)
 end
 
 function CrateShopScreenController:ConfigureProximityPrompt()
@@ -100,9 +139,17 @@ function CrateShopScreenController:CreateButtonListner()
 		end
 	end)
 
-	buyRobuxButton.MouseButton1Click:Connect(function() end)
+	buyRobuxButton.MouseButton1Click:Connect(function()
+		DeveloperProductController:OpenPaymentRequestScreen(devProducts[selectedItem])
+	end)
 
-	restockThisButton.MouseButton1Click:Connect(function() end)
+	restockThisButton.MouseButton1Click:Connect(function()
+		DeveloperProductController:OpenPaymentRequestScreen(devProducts[selectedItem])
+	end)
+
+	restockAllCrate.MouseButton1Click:Connect(function()
+		DeveloperProductController:OpenPaymentRequestScreen("RESTOCK_ALL")
+	end)
 end
 function CrateShopScreenController:BuildScreen(stockItems)
 	local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames.CRATES
@@ -159,6 +206,16 @@ function CrateShopScreenController:BuildScreen(stockItems)
 		end
 
 		newItem.MouseButton1Click:Connect(function()
+			-- Atualizando Preço
+
+			pcall(function()
+				local buy = crateScrollingFrame.Buttons.Display.Buy
+				local buyRobux = crateScrollingFrame.Buttons.Display.BuyRobux
+
+				buy.TextLabel.Text = ClientUtil:FormatNumberToSuffixes(value.Price)
+				buyRobux.TextLabel.Text = utf8.char(0xE002) .. devProductsPrices[name]
+			end)
+
 			selectedItem = name
 			crateScrollingFrame.Buttons.Visible = true
 			updateLayoutOrder(newItem.LayoutOrder)

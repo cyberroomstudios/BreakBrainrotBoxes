@@ -98,7 +98,7 @@ local Crate = table.freeze({
 	["CRATES"] = {
 		["Wooden"] = {
 			Name = "Wooden",
-			Price = 100,
+			Price = 123,
 			Rarity = "COMMON",
 			XPToOpen = 100,
 			Odd = 1,
@@ -113,7 +113,7 @@ local Crate = table.freeze({
 		},
 		["Tech"] = {
 			Name = "Tech",
-			Price = 100,
+			Price = 444,
 			Rarity = "UNCOMMON",
 			XPToOpen = 3000,
 			Odd = 1,
@@ -129,7 +129,7 @@ local Crate = table.freeze({
 
 		["Storm"] = {
 			Name = "Storm",
-			Price = 100,
+			Price = 7800,
 			Rarity = "RARE",
 			XPToOpen = 20000,
 			Odd = 1,
@@ -145,7 +145,7 @@ local Crate = table.freeze({
 
 		["Stone"] = {
 			Name = "Stone",
-			Price = 100,
+			Price = 4500,
 			Rarity = "LEGENDARY",
 			XPToOpen = 200,
 			Odd = 1,
@@ -161,7 +161,7 @@ local Crate = table.freeze({
 
 		["Lava"] = {
 			Name = "Lava",
-			Price = 100,
+			Price = 2000,
 			Rarity = "EPIC",
 			XPToOpen = 250,
 			Odd = 1,
@@ -177,7 +177,7 @@ local Crate = table.freeze({
 
 		["Ice"] = {
 			Name = "Ice",
-			Price = 100,
+			Price = 7000,
 			Rarity = "MYTHICAL",
 			XPToOpen = 300,
 			Odd = 1,
@@ -193,7 +193,7 @@ local Crate = table.freeze({
 
 		["Grass"] = {
 			Name = "Grass",
-			Price = 100,
+			Price = 4000,
 			Rarity = "GODLY",
 			XPToOpen = 350,
 			Odd = 1,
@@ -209,7 +209,7 @@ local Crate = table.freeze({
 
 		["Golden"] = {
 			Name = "Golden",
-			Price = 100,
+			Price = 20,
 			Rarity = "GODLY",
 			XPToOpen = 350,
 			Odd = 1,
@@ -225,7 +225,7 @@ local Crate = table.freeze({
 
 		["Diamond"] = {
 			Name = "Diamond",
-			Price = 100,
+			Price = 4000,
 			Rarity = "GODLY",
 			XPToOpen = 350,
 			Odd = 1,
@@ -241,7 +241,7 @@ local Crate = table.freeze({
 
 		["Bronze"] = {
 			Name = "Bronze",
-			Price = 100,
+			Price = 4722,
 			Rarity = "GODLY",
 			XPToOpen = 350,
 			Odd = 1,

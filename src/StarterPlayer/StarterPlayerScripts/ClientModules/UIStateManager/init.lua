@@ -140,13 +140,11 @@ function UIStateManager:RemoveBluer()
 end
 
 function UIStateManager:ConfigureCloseButton()
-	local taggedObjects = CollectionService:GetTagged("CLOSE_FRAME")
+	local taggedObjects = CollectionService:GetTagged("CLOSE_BUTTON")
 
 	for _, button in taggedObjects do
 		button.MouseButton1Click:Connect(function()
-			SoundManager:Play("UI_CLICK")
-
-			UIStateManager:Close(button:GetAttribute("Screen"))
+			UIStateManager:Close(button:GetAttribute("SCREEN"))
 		end)
 	end
 end
