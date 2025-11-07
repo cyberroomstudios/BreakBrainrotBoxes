@@ -17,6 +17,35 @@ local sounds = {
 	UI_OPEN_SCREEN = "",
 	MONEY_COMING_IN = "",
 	MONEY_COMING_OUT = "",
+
+	BananitaDolphinita = "",
+	BanditoBobritto = "",
+	BombardiroCrocodilo = "",
+	SpioniroGolubiro = "",
+	BombombiniGusini = "",
+	SvininaBombardino = "",
+	TaTaTaSahur = "",
+	BonecaAmbalabu = "",
+	BrrBrrPatapim = "",
+	BubarolliLuliloli = "",
+	CactoHipopotamo = "",
+	TimCheese = "",
+	TralaleroTralala = "",
+	CappuccinoAssassino = "",
+	CavalloVirtuoso = "",
+	ChefCrabracadabra = "",
+	TrippiTroppi = "",
+	TrulimeroTrulicina = "",
+	TungTungSahur = "",
+	ChimpanziniBananini = "",
+	CocofantoElefanto = "",
+	Fluriflura = "",
+	FrigoCamelo = "",
+	GangsterFootera = "",
+	GlorboFruttodrillo = "",
+	LaVaccaSaturnoSaturnita = "",
+	["LirilìLarilà"] = "",
+	OdinDinDinDun = "",
 }
 
 local soundLooped = {}
@@ -31,6 +60,35 @@ function SoundManager:InitRef()
 	sounds["UI_OPEN_SCREEN"] = SoundService.GUI.OpenScreen
 	sounds["MONEY_COMING_IN"] = SoundService.GUI.MoneyComingIn
 	sounds["MONEY_COMING_OUT"] = SoundService.GUI.MoneyComingOut
+
+	sounds["BananitaDolphinita"] = SoundService.Brainrots:FindFirstChild("BananitaDolphinita")
+	sounds["BanditoBobritto"] = SoundService.Brainrots:FindFirstChild("BanditoBobritto")
+	sounds["BombardiroCrocodilo"] = SoundService.Brainrots:FindFirstChild("BombardiroCrocodilo")
+	sounds["SpioniroGolubiro"] = SoundService.Brainrots:FindFirstChild("SpioniroGolubiro")
+	sounds["BombombiniGusini"] = SoundService.Brainrots:FindFirstChild("BombombiniGusini")
+	sounds["SvininaBombardino"] = SoundService.Brainrots:FindFirstChild("SvininaBombardino")
+	sounds["TaTaTaSahur"] = SoundService.Brainrots:FindFirstChild("TaTaTaSahur")
+	sounds["BonecaAmbalabu"] = SoundService.Brainrots:FindFirstChild("BonecaAmbalabu")
+	sounds["BrrBrrPatapim"] = SoundService.Brainrots:FindFirstChild("BrrBrrPatapim")
+	sounds["BubarolliLuliloli"] = SoundService.Brainrots:FindFirstChild("BubarolliLuliloli")
+	sounds["CactoHipopotamo"] = SoundService.Brainrots:FindFirstChild("CactoHipopotamo")
+	sounds["TimCheese"] = SoundService.Brainrots:FindFirstChild("TimCheese")
+	sounds["TralaleroTralala"] = SoundService.Brainrots:FindFirstChild("TralaleroTralala")
+	sounds["CappuccinoAssassino"] = SoundService.Brainrots:FindFirstChild("CappuccinoAssassino")
+	sounds["CavalloVirtuoso"] = SoundService.Brainrots:FindFirstChild("CavalloVirtuoso")
+	sounds["ChefCrabracadabra"] = SoundService.Brainrots:FindFirstChild("ChefCrabracadabra")
+	sounds["TrippiTroppi"] = SoundService.Brainrots:FindFirstChild("TrippiTroppi")
+	sounds["TrulimeroTrulicina"] = SoundService.Brainrots:FindFirstChild("TrulimeroTrulicina")
+	sounds["TungTungSahur"] = SoundService.Brainrots:FindFirstChild("TungTungSahur")
+	sounds["ChimpanziniBananini"] = SoundService.Brainrots:FindFirstChild("ChimpanziniBananini")
+	sounds["CocofantoElefanto"] = SoundService.Brainrots:FindFirstChild("CocofantoElefanto")
+	sounds["Fluriflura"] = SoundService.Brainrots:FindFirstChild("Fluriflura")
+	sounds["FrigoCamelo"] = SoundService.Brainrots:FindFirstChild("FrigoCamelo")
+	sounds["GangsterFootera"] = SoundService.Brainrots:FindFirstChild("GangsterFootera")
+	sounds["GlorboFruttodrillo"] = SoundService.Brainrots:FindFirstChild("GlorboFruttodrillo")
+	sounds["LaVaccaSaturnoSaturnita"] = SoundService.Brainrots:FindFirstChild("LaVaccaSaturnoSaturnita")
+	sounds["LirilìLarilà"] = SoundService.Brainrots:FindFirstChild("LirilìLarilà")
+	sounds["OdinDinDinDun"] = SoundService.Brainrots:FindFirstChild("OdinDinDinDun")
 end
 
 function SoundManager:StartOrPauseBGM()
@@ -47,13 +105,16 @@ function SoundManager:Play(sondName: string)
 	if not settingsSoundEffect then
 		--	return
 	end
-	local sound = sounds[sondName]:Clone()
-	--sound.Parent = script.Parent
-	--	sound:Play()
 
-	sound.Ended:Connect(function()
-		--		sound:Destroy()
-	end)
+	if sounds[sondName] then
+		local sound = sounds[sondName]:Clone()
+		sound.Parent = script.Parent
+		sound:Play()
+
+		sound.Ended:Connect(function()
+			sound:Destroy()
+		end)
+	end
 end
 
 function SoundManager:PlayWithLooped(sondName: string)

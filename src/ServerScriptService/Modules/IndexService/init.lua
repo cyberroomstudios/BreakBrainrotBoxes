@@ -10,6 +10,7 @@ local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
+local GameSoundService = require(ServerScriptService.Modules.GameSoundService)
 local bridge = BridgeNet2.ReferenceBridge("IndexService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -51,6 +52,7 @@ function IndexService:Add(player: Player, itemName: string, mutationType: string
 
 	PlayerDataHandler:Update(player, playerDataKey[mutationType], function(current)
 		if current[itemName] then
+			GameSoundService:Play(player, itemName)
 			GameNotificationService:SendWarnNotification(player, "You Found The " .. itemEnum.GUI.Label)
 			GameNotificationService:SendNewBrainrotNotification(player, itemName)
 
@@ -58,6 +60,7 @@ function IndexService:Add(player: Player, itemName: string, mutationType: string
 		end
 
 		current[itemName] = true
+		GameSoundService:Play(player, itemName)
 		GameNotificationService:SendNewBrainrotNotification(player, itemName)
 
 		return current
