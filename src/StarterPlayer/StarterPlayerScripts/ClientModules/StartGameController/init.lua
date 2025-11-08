@@ -26,6 +26,7 @@ function StartGameController:Init(data)
 	PlotController:StartTouchGetMoney()
 	PlotController:ConfigureInsertItemProximityPrompt()
 	OfflineMoneyController:Open()
+	PlotController:ConfigureGamepasses()
 end
 
 return StartGameController

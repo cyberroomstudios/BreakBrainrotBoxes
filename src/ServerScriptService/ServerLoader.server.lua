@@ -31,32 +31,32 @@ local mutationColors = {
 
 local positionsAndOrietations = {
 	[1] = {
-		Position = Vector3.new(1522.683, 6.381, 148.578),
+		Position = Vector3.new(1522.683, 7.356, 148.578),
 		Orientation = Vector3.new(0, 0, 0),
 	},
 
 	[2] = {
-		Position = Vector3.new(1635.847, 6.381, 147.997),
+		Position = Vector3.new(1635.847, 7.356, 147.997),
 		Orientation = Vector3.new(0, 0, 0),
 	},
 
 	[3] = {
-		Position = Vector3.new(1747.223, 6.381, 147.997),
+		Position = Vector3.new(1747.223, 7.356, 147.997),
 		Orientation = Vector3.new(0, 0, 0),
 	},
 
 	[4] = {
-		Position = Vector3.new(1522.04, 6.381, -8.738),
+		Position = Vector3.new(1522.04, 7.356, -8.738),
 		Orientation = Vector3.new(0, 180, 0),
 	},
 
 	[5] = {
-		Position = Vector3.new(1635.847, 6.381, -8.738),
+		Position = Vector3.new(1635.847, 7.356, -8.738),
 		Orientation = Vector3.new(0, 180, 0),
 	},
 
 	[6] = {
-		Position = Vector3.new(1747.223, 6.381, -8.738),
+		Position = Vector3.new(1747.223, 7.356, -8.738),
 		Orientation = Vector3.new(0, 180, 0),
 	},
 }

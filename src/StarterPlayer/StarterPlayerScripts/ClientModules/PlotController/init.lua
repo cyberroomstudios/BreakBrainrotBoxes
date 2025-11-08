@@ -27,6 +27,24 @@ function PlotController:InitBridgeListener()
 	end)
 end
 
+function PlotController:DeleteGamepassesFolder()
+	local baseNumber = player:GetAttribute("BASE")
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if value.Name ~= baseNumber then
+			local gamepassesFolder = ClientUtil:WaitForDescendants(value, "Main", "Gamepasses")
+
+			gamepassesFolder:Destroy()
+		end
+	end
+end
+function PlotController:ConfigureGamepasses()
+	task.spawn(function()
+		PlotController:DeleteGamepassesFolder()
+	end)
+end
+
 function PlotController:ConfigureInsertItemProximityPrompt()
 	local baseNumber = player:GetAttribute("BASE")
 	local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
