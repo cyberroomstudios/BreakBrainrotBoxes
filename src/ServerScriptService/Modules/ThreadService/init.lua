@@ -7,6 +7,7 @@ local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
+local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 
 local animations = {}
 
@@ -87,13 +88,12 @@ function ThreadService:StartBreaker(player: Player)
 		end
 
 		if not animations[breakerModel] then
-			print("Iniciando Carregamento")
 			local humanoid = breakerModel:WaitForChild("Humanoid")
-			local animation = ReplicatedStorage.Animations.Worker.Attack
+			local currentBreaker = PlayerDataHandler:Get(player, "crateBreaker").Equiped
+			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Attack
 			local track = humanoid:LoadAnimation(animation)
-
+			track.Looped = false
 			animations[breakerModel] = track
-			print("Carregamento Concluido")
 		end
 
 		return animations[breakerModel]

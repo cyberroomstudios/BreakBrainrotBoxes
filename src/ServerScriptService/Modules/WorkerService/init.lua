@@ -118,84 +118,6 @@ function WorkerService:SetCrate(player: Player, crateName: string, positionRef: 
 	crate.Parent = workspace.Runtime[player.UserId].Crates
 end
 
-function WorkerService:SetCrate2(player: Player, crateName: string, workerNumber: number, currentXp: number)
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local basesFolder =
-		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
-	local breakerMain = basesFolder:FindFirstChild(workerNumber)
-	local breaker = breakerMain:FindFirstChild("Breaker"):FindFirstChild("Breaker")
-	local crateEnum = Crate.CRATES[crateName]
-
-	if breaker then
-		local crate = ReplicatedStorage.Model.Crates:FindFirstChild(crateName):Clone()
-
-		if crate then
-			crate.Parent = workspace.Runtime[player.UserId].Crates
-
-			if 1 == 1 then
-				return
-			end
-			-- Atributos
-			crate:SetAttribute("MAX_XP", crateEnum.XPToOpen)
-			crate:SetAttribute("CURRENT_XP", currentXp and currentXp or crateEnum.XPToOpen)
-			crate:SetAttribute("CRATE_TYPE", crateName)
-
-			crate:SetPrimaryPartCFrame(CFrame.new(breakerMain.CrateRef.WorldPosition))
-
-			task.spawn(function()
-				local currentXP = crate:GetAttribute("CURRENT_XP")
-
-				while player.Parent and crate.Parent and tonumber(crate:GetAttribute("CURRENT_XP")) > 0 do
-					if player:GetAttribute("CHANGE_BREAKER") then
-						player:SetAttribute("CHANGE_BREAKER", false)
-						breakerMain = basesFolder:FindFirstChild(workerNumber)
-						breaker = breakerMain:FindFirstChild("Breaker"):FindFirstChild("Breaker")
-					end
-
-					if not animations[breaker] then
-						local humanoid = breaker:WaitForChild("Humanoid")
-						local animation = ReplicatedStorage.Animations.Worker.Attack
-						local track = humanoid:LoadAnimation(animation)
-
-						animations[breaker] = track
-					end
-
-					animations[breaker]:Play()
-					local workerPower = player:GetAttribute("Power")
-					local workerSpeed = player:GetAttribute("Speed")
-
-					-- Obtem o XP atual da caixa
-					local currentXp = crate:GetAttribute("CURRENT_XP")
-					local newCurrent = currentXp - workerPower
-					crate:SetAttribute("CURRENT_XP", newCurrent)
-
-					local baseWait = 0.5
-					local reductionPerLevel = 0.05
-					local waitTime = math.max(0.1, baseWait - (workerSpeed - 1) * reductionPerLevel)
-					task.wait(waitTime)
-
-					WorkerService:UpdateCrateBillboardGui(crate)
-				end
-
-				crate:Destroy()
-
-				if (not player.Parent) or player:GetAttribute("EXIT") then
-					return
-				end
-
-				if (not breakerMain) or not breakerMain.Parent or (not breakerMain:FindFirstChild("CrateRef")) then
-					breakerMain = basesFolder:FindFirstChild(workerNumber)
-					breaker = breakerMain:FindFirstChild("Breaker"):FindFirstChild("Breaker")
-				end
-
-				WorkerService:CreateBrainrot(player, crate:GetAttribute("CRATE_TYPE"), breakerMain.CrateRef)
-				breakerMain:SetAttribute("BUSY", false)
-			end)
-		end
-	end
-end
-
 function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: Attachment)
 	--  Função para alterar a escala do modelo
 	local function setModelScale(model)
@@ -328,7 +250,7 @@ function WorkerService:EnableWorker(player: Player)
 		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
 		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 
-		local animation = ReplicatedStorage.Animations.Worker.Iddle
+		local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 		local track = humanoid:LoadAnimation(animation)
 		track:Play()
 	end
@@ -359,12 +281,13 @@ function WorkerService:ChangeWorker(player: Player)
 		newBreaker.Parent = parent
 		newBreaker:SetPrimaryPartCFrame(worker.Breaker.Attachment.WorldCFrame)
 		newBreaker.Name = "Breaker"
+		newBreaker:SetAttribute("BREAKER_NAME", currentBreaker)
 
 		-- Tirando nome
 		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
 		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 
-		local animation = ReplicatedStorage.Animations.Worker.Iddle
+		local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 		local track = humanoid:LoadAnimation(animation)
 		track:Play()
 	end

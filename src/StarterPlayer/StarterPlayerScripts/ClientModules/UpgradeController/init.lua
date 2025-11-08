@@ -445,10 +445,10 @@ function UpgradesController:CreateBreakerViewPort()
 			newItem.Parent = viewPort.WorldModel
 
 			local humanoid = newItem:WaitForChild("Humanoid")
-			local animation = ReplicatedStorage.Animations.Worker.Iddle
+			--	local animation = ReplicatedStorage.Animations.Worker.Iddle
 
-			local track = humanoid:LoadAnimation(animation)
-			track:Play()
+			--	local track = humanoid:LoadAnimation(animation)
+			--	track:Play()
 
 			local rotation = CFrame.Angles(0, math.rad(-180), 0)
 			newItem:ScaleTo(0.9)
