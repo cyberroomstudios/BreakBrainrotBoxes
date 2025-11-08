@@ -39,7 +39,7 @@ function UpgradeService:InitBridgeListener()
 
 		if data[actionIdentifier] == "BuyBreaker" then
 			local breakerType = data.data.BreakerName
-			return UpgradeService:BuyBreaker(player, breakerType)
+			return UpgradeService:BuyBreaker(player, breakerType, true)
 		end
 
 		if data[actionIdentifier] == "GetBreakers" then
@@ -78,18 +78,20 @@ function UpgradeService:GetBreakersFromPlayer(player: Player)
 	return data
 end
 
-function UpgradeService:BuyBreaker(player: Player, breakerType: string)
+function UpgradeService:BuyBreaker(player: Player, breakerType: string, checkMoney: boolean)
 	local breaakerEnum = Breakers[breakerType]
 	if not breaakerEnum then
 		return
 	end
 
-	-- Verifica se tem dinheiro
-	if not MoneyService:HasMoney(player, breaakerEnum.Price) then
-		return
-	end
+	if checkMoney then
+		-- Verifica se tem dinheiro
+		if not MoneyService:HasMoney(player, breaakerEnum.Price) then
+			return
+		end
 
-	MoneyService:ConsumeMoney(player, breaakerEnum.Price)
+		MoneyService:ConsumeMoney(player, breaakerEnum.Price)
+	end
 
 	PlayerDataHandler:Update(player, "breakers", function(current)
 		current[breakerType] = true
@@ -102,6 +104,13 @@ function UpgradeService:BuyBreaker(player: Player, breakerType: string)
 	end)
 
 	UpgradeService:UpdateBreakers(player)
+
+	-- Atualiza a interface automaticamente após a compra sem dinheiro, ou seja, com robux
+	if not checkMoney then
+		local oldIndex = player:GetAttribute("BUY_BREAKER_WITH_ROBUX_UPDATE_INDEX") or 1
+		player:SetAttribute("BUY_BREAKER_WITH_ROBUX_UPDATE_INDEX", oldIndex + 1)
+	end
+
 	return true
 end
 
@@ -170,7 +179,7 @@ end
 
 function UpgradeService:UpdateBreakers(player: Player)
 	WorkerService:ChangeWorker(player)
-	
+
 	player:SetAttribute("CHANGE_BREAKER", true)
 
 	local crateBreaker = PlayerDataHandler:Get(player, "crateBreaker")

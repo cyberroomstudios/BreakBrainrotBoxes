@@ -58,7 +58,26 @@ DeveloperProducts.ENUM = {
 		Id = 3450633878,
 	},
 
-	
+	NOOB_BREAKER = {
+		Name = "NOOB_BREAKER",
+		Id = 3450657835,
+	},
+	BASEBALL_BREAKER = {
+		Name = "BASEBALL_BREAKER",
+		Id = 3450657831,
+	},
+	NINJA_BREAKER = {
+		Name = "NINJA_BREAKER",
+		Id = 3450657834,
+	},
+	WARRIOR_BREAKER = {
+		Name = "WARRIOR_BREAKER",
+		Id = 3450657833,
+	},
+	SOLDIER_BREAKER = {
+		Name = "SOLDIER_BREAKER",
+		Id = 3450657830,
+	},
 }
 
 function DeveloperProducts:GetEnum(name: string): DeveloperProduct

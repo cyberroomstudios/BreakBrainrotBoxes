@@ -42,7 +42,8 @@ function SellBrainrotController:InitButtonListerns()
 end
 
 function SellBrainrotController:InitProximity()
-	local proximityPart = ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "Sell", "ProximityPromptPart")
+	local proximityPart =
+		ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell", "SellShop", "ProximityPromptPart")
 
 	local proximityPrompt = proximityPart.ProximityPrompt
 

@@ -14,6 +14,7 @@ local WorkerController = require(Players.LocalPlayer.PlayerScripts.ClientModules
 local PlotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.PlotController)
 local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.UpgradeController)
 local OfflineMoneyController = require(Players.LocalPlayer.PlayerScripts.ClientModules.OfflineMoneyController)
+local TeleportController = require(Players.LocalPlayer.PlayerScripts.ClientModules.TeleportController)
 
 function StartGameController:Init(data)
 	local result = bridge:InvokeServerAsync({
@@ -27,6 +28,7 @@ function StartGameController:Init(data)
 	PlotController:ConfigureInsertItemProximityPrompt()
 	OfflineMoneyController:Open()
 	PlotController:ConfigureGamepasses()
+	TeleportController:ToBase()
 end
 
 return StartGameController

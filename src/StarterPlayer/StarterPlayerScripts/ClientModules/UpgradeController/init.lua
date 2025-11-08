@@ -17,6 +17,7 @@ local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.Clien
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 local Breakers = require(ReplicatedStorage.Enums.Breakers)
+local DeveloperProductController = require(Players.LocalPlayer.PlayerScripts.ClientModules.DeveloperProductController)
 
 local screen
 local buyPowerButton
@@ -51,11 +52,29 @@ local openBreakersButton
 
 local selectBreakerItem
 
+local devProductBreakersPrice = {
+	["Noob"] = 0,
+	["Baseball"] = 0,
+	["Ninja"] = 0,
+	["Warrior"] = 0,
+	["Soldier"] = 0,
+}
+
+local devProductsBreakers = {
+	["Noob"] = "NOOB_BREAKER",
+	["Baseball"] = "BASEBALL_BREAKER",
+	["Ninja"] = "NINJA_BREAKER",
+	["Warrior"] = "WARRIOR_BREAKER",
+	["Soldier"] = "SOLDIER_BREAKER",
+}
+
 function UpgradesController:Init(data)
 	UpgradesController:CreateReferences()
 	UpgradesController:InitButtonListerns()
 	UpgradesController:FillScreen(data)
 	UpgradesController:CreateBreakerViewPort()
+	UpgradesController:InitDevProductsPrices()
+	UpgradesController:InitAttributeListener()
 end
 
 function UpgradesController:FillScreen(data)
@@ -63,6 +82,16 @@ function UpgradesController:FillScreen(data)
 	UpgradesController:UpdatePowerText(crateBreaker.Power)
 	UpgradesController:UpdateSpeedText(crateBreaker.Speed)
 	UpgradesController:UpdateCapacityText(crateBreaker.Capacity)
+end
+
+function UpgradesController:InitDevProductsPrices()
+	task.spawn(function()
+		for key, value in pairs(devProductsBreakers) do
+			pcall(function()
+				devProductBreakersPrice[key] = DeveloperProductController:GetProductPrice(value)
+			end)
+		end
+	end)
 end
 
 function UpgradesController:CreateReferences()
@@ -95,6 +124,12 @@ function UpgradesController:CreateReferences()
 	maximumReachedCapacity = UIReferences:GetReference("MAXIMUM_REACHED_CAPACITY")
 	numberInformationCapacity = UIReferences:GetReference("NUMBER_INFORMATION_CAPACITY")
 	buyCapacityFrame = UIReferences:GetReference("BUY_CAPACITY_FRAME")
+end
+
+function UpgradesController:InitAttributeListener()
+	Players.LocalPlayer:GetAttributeChangedSignal("BUY_BREAKER_WITH_ROBUX_UPDATE_INDEX"):Connect(function()
+		UpgradesController:UpdateBreakers()
+	end)
 end
 
 function UpgradesController:UpdateBreakers()
@@ -138,6 +173,20 @@ function UpgradesController:UpdateBreakers()
 	end
 end
 
+function UpgradesController:UpdateInfoButtons(breakerName: string)
+	pcall(function()
+		local buttonsFrame = breakersFrame:WaitForChild("Items"):WaitForChild("Buttons")
+		local display = buttonsFrame:WaitForChild("Display")
+		local textLabel = display:WaitForChild("Buy"):WaitForChild("TextLabel")
+		local buyWithRobuxTextLabel = display:WaitForChild("BuyWithRobux"):WaitForChild("TextLabel")
+
+		local breakersEnum = Breakers[breakerName]
+		textLabel.Text = "$" .. ClientUtil:FormatNumberToSuffixes(breakersEnum.Price)
+
+		buyWithRobuxTextLabel.Text = utf8.char(0xE002) .. devProductBreakersPrice[breakerName]
+	end)
+end
+
 function UpgradesController:InitBreakersButtons()
 	local function updateLayoutOrder(layoutOrderBase: number)
 		for _, value in breakersFrame:WaitForChild("Items"):GetChildren() do
@@ -147,7 +196,7 @@ function UpgradesController:InitBreakersButtons()
 		end
 	end
 
-	local breakers = {
+	local breakersName = {
 		"Baseball",
 		"Ninja",
 		"Noob",
@@ -155,7 +204,7 @@ function UpgradesController:InitBreakersButtons()
 		"Warrior",
 	}
 
-	for _, value in breakers do
+	for _, value in breakersName do
 		local item = breakersFrame:WaitForChild("Items"):WaitForChild(value)
 		item.MouseButton1Click:Connect(function()
 			if item:GetAttribute("EQUIPED") then
@@ -168,8 +217,14 @@ function UpgradesController:InitBreakersButtons()
 				breakersFrame:WaitForChild("Items").Buttons.Display.Equip.Visible = true
 				breakersFrame:WaitForChild("Items").Buttons.Display.Buy.Visible = false
 				breakersFrame:WaitForChild("Items").Buttons.Display.BuyWithRobux.Visible = false
+			else
+				breakersFrame:WaitForChild("Items").Buttons.Display.Equip.Visible = false
+				breakersFrame:WaitForChild("Items").Buttons.Display.Buy.Visible = true
+				breakersFrame:WaitForChild("Items").Buttons.Display.BuyWithRobux.Visible = true
 			end
 
+			-- Atualizando as informações de preço dos botões
+			UpgradesController:UpdateInfoButtons(value)
 			breakersFrame:WaitForChild("Items").Buttons.Visible = true
 			updateLayoutOrder(item.LayoutOrder)
 			breakersFrame:WaitForChild("Items").Buttons.LayoutOrder = item.LayoutOrder + 1
@@ -180,7 +235,15 @@ function UpgradesController:InitBreakersButtons()
 
 	if buttonsFrame then
 		local buyButton = buttonsFrame:WaitForChild("Display"):WaitForChild("Buy")
+		local buyWithRobux = buttonsFrame:WaitForChild("Display"):WaitForChild("BuyWithRobux")
+
 		local equipButton = buttonsFrame:WaitForChild("Display"):WaitForChild("Equip")
+
+		buyWithRobux.Button.MouseButton1Click:Connect(function()
+			DeveloperProductController:OpenPaymentRequestScreen(devProductsBreakers[selectBreakerItem])
+			breakersFrame:WaitForChild("Items").Buttons.Visible = false
+			selectBreakerItem = nil
+		end)
 
 		buyButton.Button.MouseButton1Click:Connect(function()
 			local result = bridge:InvokeServerAsync({
@@ -214,6 +277,7 @@ end
 
 function UpgradesController:InitButtonListerns()
 	UpgradesController:InitBreakersButtons()
+
 	buyPowerButton.MouseButton1Click:Connect(function()
 		local result = bridge:InvokeServerAsync({
 			[actionIdentifier] = "BuyPower",

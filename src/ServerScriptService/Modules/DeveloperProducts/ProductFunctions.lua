@@ -7,6 +7,7 @@ local DeveloperProducts = require(ReplicatedStorage.Enums.DeveloperProducts)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local CrateService = require(ServerScriptService.Modules.CrateService)
 local StockService = require(ServerScriptService.Modules.StockService)
+local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
 
 ProductFunctions[DeveloperProducts:GetEnum("WOODEN_CRATE").Id] = function(receipt, player)
 	CrateService:Give(player, "Wooden")
@@ -65,6 +66,40 @@ end
 ProductFunctions[DeveloperProducts:GetEnum("BRONZE_CRATE").Id] = function(receipt, player)
 	CrateService:Give(player, "Bronze")
 	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("BRONZE_CRATE").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("NOOB_BREAKER").Id] = function(receipt, player)
+	UpgradeService:BuyBreaker(player, "Noob", false)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("NOOB_BREAKER").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("BASEBALL_BREAKER").Id] = function(receipt, player)
+	UpgradeService:BuyBreaker(player, "Baseball", false)
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("BASEBALL_BREAKER").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("NINJA_BREAKER").Id] = function(receipt, player)
+	UpgradeService:BuyBreaker(player, "Ninja", false)
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("NINJA_BREAKER").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("WARRIOR_BREAKER").Id] = function(receipt, player)
+	UpgradeService:BuyBreaker(player, "Warrior", false)
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("WARRIOR_BREAKER").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("SOLDIER_BREAKER").Id] = function(receipt, player)
+	UpgradeService:BuyBreaker(player, "Soldier", false)
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SOLDIER_BREAKER").Id)
 	return true
 end
 

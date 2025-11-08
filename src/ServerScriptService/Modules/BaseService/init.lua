@@ -39,9 +39,11 @@ function BaseService:Allocate(player: Player)
 
 			player:SetAttribute("BASE", place.Name)
 			player:SetAttribute("BASE_CFRAME", place.Spawn.CFrame)
+			player:SetAttribute("BASE_LOOK_POSITION", place.Spawn.LookPart.Position)
+
 			BaseService:CreateCrateShopCFrameAttribute(player)
 			BaseService:CreateUpgradesCFrameAttribute(player)
-			BaseService:MoveToBase(player, place.Spawn)
+		--	BaseService:MoveToBase(player, place.Spawn)
 
 			break
 		end
@@ -52,13 +54,6 @@ function BaseService:Allocate(player: Player)
 	return true
 end
 
--- Leva o Jogador para o Spawn da Base
-function BaseService:MoveToBase(player, baseSpawn)
-	local character = player.Character
-	if character and character:FindFirstChild("HumanoidRootPart") then
-		character.HumanoidRootPart.CFrame = baseSpawn.CFrame
-	end
-end
 
 function BaseService:GetBase(player: Player)
 	local places = workspace.Map.Plots:GetChildren()
@@ -71,10 +66,11 @@ function BaseService:GetBase(player: Player)
 end
 
 function BaseService:CreateCrateShopCFrameAttribute(player: Player)
-	local crateShop = UtilService:WaitForDescendants(workspace, "Map", "Booths", "Shop")
+	local crateAndSell = UtilService:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell")
 
-	if crateShop then
-		player:SetAttribute("CRATE_SHOP_CFRAME", crateShop.Spawn.CFrame)
+	if crateAndSell then
+		player:SetAttribute("CRATE_SHOP_CFRAME", crateAndSell.Spawn.CFrame)
+		player:SetAttribute("CRATE_SHOP_LOOK_POSITION", crateAndSell.Spawn.LookPart.Position)
 	end
 end
 

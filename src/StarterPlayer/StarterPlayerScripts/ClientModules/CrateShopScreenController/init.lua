@@ -80,7 +80,8 @@ function CrateShopScreenController:InitDevProductsPrices()
 end
 
 function CrateShopScreenController:ConfigureProximityPrompt()
-	local proximityPart = ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "Shop", "ProximityPromptPart")
+	local proximityPart =
+		ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell", "CrateShop", "ProximityPromptPart")
 
 	local proximityPrompt = proximityPart.ProximityPrompt
 
