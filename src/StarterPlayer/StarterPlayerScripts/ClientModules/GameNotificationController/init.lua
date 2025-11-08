@@ -29,6 +29,7 @@ function GameNotificationController:CreateReferences()
 		["WARN"] = ReplicatedStorage.GUI.Notifications.Warning,
 		["ERROR"] = ReplicatedStorage.GUI.Notifications.Error,
 		["SUCCESS"] = ReplicatedStorage.GUI.Notifications.Success,
+		["RESTOCKED"] = ReplicatedStorage.GUI.Notifications.Restocked,
 	}
 end
 
@@ -48,6 +49,10 @@ function GameNotificationController:InitListeners()
 
 		if response[actionIdentifier] == "ShowNewBrainrotNotificaion" then
 			GameNotificationController:ShowNewBrainrotNotification(response.data.BrainrotType)
+		end
+
+		if response[actionIdentifier] == "ShowCrateStoreRestocked" then
+			GameNotificationController:ShowNotification("RESTOCKED", "The Crate Store Has Been Restocked.")
 		end
 	end)
 end

@@ -1,6 +1,7 @@
 local GameNotificationService = {}
 
 -- Init Bridg Net
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
@@ -39,7 +40,6 @@ function GameNotificationService:SendSuccessNotification(player: Player, message
 	})
 end
 
-
 function GameNotificationService:SendNewBrainrotNotification(player: Player, brainrotType: string)
 	bridge:Fire(player, {
 		[actionIdentifier] = "ShowNewBrainrotNotificaion",
@@ -47,6 +47,16 @@ function GameNotificationService:SendNewBrainrotNotification(player: Player, bra
 			BrainrotType = brainrotType,
 		},
 	})
+end
+
+function GameNotificationService:SendCrateStoreRestockedNotification()
+	local players = Players:GetPlayers()
+
+	for _, player in players do
+		bridge:Fire(player, {
+			[actionIdentifier] = "ShowCrateStoreRestocked",
+		})
+	end
 end
 
 return GameNotificationService

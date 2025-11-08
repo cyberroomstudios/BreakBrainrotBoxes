@@ -115,6 +115,23 @@ function CrateShopScreenController:InitAttributeListener()
 		local currentTimeStock = workspace:GetAttribute("CURRENT_TIME_STOCK")
 		restockTime.Text = "Restock In: " .. ClientUtil:FormatSecondsToMinutes(currentTimeStock)
 	end)
+
+	Workspace:GetAttributeChangedSignal("STOCK_UPDATE_INDEX"):Connect(function()
+		print("Atualiznaod")
+		local result = bridge:InvokeServerAsync({
+			[actionIdentifier] = "GetStock",
+		})
+
+		CrateShopScreenController:BuildScreen(result)
+	end)
+
+	Players.LocalPlayer:GetAttributeChangedSignal("RESTOCK_UPDATE_INDEX"):Connect(function()
+		local result = bridge:InvokeServerAsync({
+			[actionIdentifier] = "GetStock",
+		})
+
+		CrateShopScreenController:BuildScreen(result)
+	end)
 end
 
 function CrateShopScreenController:CreateButtonListner()
@@ -144,7 +161,14 @@ function CrateShopScreenController:CreateButtonListner()
 	end)
 
 	restockThisButton.MouseButton1Click:Connect(function()
-		DeveloperProductController:OpenPaymentRequestScreen(devProducts[selectedItem])
+		local result = bridge:InvokeServerAsync({
+			[actionIdentifier] = "AddRestockItention",
+			data = {
+				ItemName = selectedItem,
+			},
+		})
+
+		DeveloperProductController:OpenPaymentRequestScreen("RESTOCK_THIS")
 	end)
 
 	restockAllCrate.MouseButton1Click:Connect(function()

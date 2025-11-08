@@ -74,6 +74,17 @@ ProductFunctions[DeveloperProducts:GetEnum("RESTOCK_ALL").Id] = function(receipt
 	return true
 end
 
+ProductFunctions[DeveloperProducts:GetEnum("RESTOCK_THIS").Id] = function(receipt, player)
+	local result = StockService:RestockThis(player)
+
+	if not result then
+		return false
+	end
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("RESTOCK_THIS").Id)
+	return true
+end
+
 function ProductFunctions:AddRobuxSpent(player: Player, productId: number)
 	local info = MarketplaceService:GetProductInfo(productId, Enum.InfoType.Product)
 	if info then

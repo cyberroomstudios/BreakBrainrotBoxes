@@ -13,7 +13,7 @@ local Crate = table.freeze({
 			},
 		},
 		["UNCOMMON"] = {
-			Odd = 1,
+			Odd = 0.1,
 			CratesCategoryOdds = {
 				["COMMON"] = 0.3,
 				["UNCOMMON"] = 0.7,
@@ -25,7 +25,7 @@ local Crate = table.freeze({
 			},
 		},
 		["RARE"] = {
-			Odd = 1,
+			Odd = 0.05,
 			CratesCategoryOdds = {
 				["COMMON"] = 0,
 				["UNCOMMON"] = 0.3,
@@ -38,7 +38,7 @@ local Crate = table.freeze({
 		},
 
 		["LEGENDARY"] = {
-			Odd = 1,
+			Odd = 0.03,
 			CratesCategoryOdds = {
 				["COMMON"] = 0,
 				["UNCOMMON"] = 0,

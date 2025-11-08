@@ -52,6 +52,13 @@ DeveloperProducts.ENUM = {
 		Name = "RESTOCK_ALL",
 		Id = 3449933802,
 	},
+
+	RESTOCK_THIS = {
+		Name = "RESTOCK_THIS",
+		Id = 3450633878,
+	},
+
+	
 }
 
 function DeveloperProducts:GetEnum(name: string): DeveloperProduct

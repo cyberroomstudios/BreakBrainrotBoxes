@@ -15,12 +15,16 @@ local Crate = require(ReplicatedStorage.Enums.Crate)
 local ToolService = require(ServerScriptService.Modules.ToolService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local CrateService = require(ServerScriptService.Modules.CrateService)
+local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
 
 local globalStock = {}
 local playerStock = {}
+local playerRestockIntention = {}
 
 local TIME_TO_RESTOCK = 60 * 5
 local currentTime = TIME_TO_RESTOCK
+local stockUpdateIndex = 1
+
 function StockService:Init()
 	StockService:InitBridgeListener()
 	StockService:Start()
@@ -35,17 +39,28 @@ function StockService:InitBridgeListener()
 		if data[actionIdentifier] == "BuyItem" then
 			return StockService:BuyItem(player, data.data.ItemName)
 		end
+
+		if data[actionIdentifier] == "AddRestockItention" then
+			print("Adicionando Itenção")
+			return StockService:AddRestockIntention(player, data.data.ItemName)
+		end
 	end
 end
 
 function StockService:Start()
 	task.spawn(function()
-		
 		StockService:RestockAll()
+		stockUpdateIndex = stockUpdateIndex + 1
+		workspace:SetAttribute("STOCK_UPDATE_INDEX", stockUpdateIndex)
+
 		while true do
-			if currentTime == 0 then
+			if currentTime <= 0 then
+				print("Restocando")
 				StockService:RestockAll()
+				stockUpdateIndex = stockUpdateIndex + 1
+				workspace:SetAttribute("STOCK_UPDATE_INDEX", stockUpdateIndex)
 				currentTime = TIME_TO_RESTOCK
+				GameNotificationService:SendCrateStoreRestockedNotification()
 			end
 
 			currentTime = currentTime - 1
@@ -53,6 +68,29 @@ function StockService:Start()
 			task.wait(1)
 		end
 	end)
+end
+
+function StockService:AddRestockIntention(player: Player, item: string)
+	playerRestockIntention[player] = item
+end
+
+function StockService:RestockThis(player: Player)
+	if not playerRestockIntention[player] then
+		warn("RESTOCK INTENTION NOT FOUND FOR: " .. player.Name)
+		return false
+	end
+
+	local stock = playerStock[player]
+	local itemName = playerRestockIntention[player]
+	local crateEnum = Crate.CRATES[itemName]
+	local amount = math.random(crateEnum.Stock.Min, crateEnum.Stock.Max)
+	local restockIndex = player:GetAttribute("RESTOCK_UPDATE_INDEX") or 0
+
+	playerStock[player][itemName] = amount
+
+	player:SetAttribute("RESTOCK_UPDATE_INDEX", restockIndex + 1)
+
+	return true
 end
 
 function StockService:BuyRestockAll()
