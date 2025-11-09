@@ -75,7 +75,7 @@ function SellBrainrotController:GetScreen()
 end
 
 function SellBrainrotController:ClearScreen()
-	local itemsScrollingFrame = screen.Main.Items:GetChildren()
+	local itemsScrollingFrame = screen.Main.Main.Items:GetChildren()
 
 	for _, value in itemsScrollingFrame do
 		if value.Name == "UIListLayout" or value.Name == "UIPadding" or value.Name == "Item" then
@@ -90,13 +90,13 @@ function SellBrainrotController:BuildScreen(items)
 	SellBrainrotController:ClearScreen()
 
 	for _, item in items do
-		local newFrame = screen.Main.Items.Item:Clone()
+		local newFrame = screen.Main.Main.Items.Item:Clone()
 		newFrame.Visible = true
 		newFrame.Name = item.Name
 
 		newFrame.Content.Frame.ItemName.Text = Brainrots[item.Name].GUI.Label
 		newFrame.Content.Frame.ItemPrice.Text = ClientUtil:FormatToUSD(item.Price)
-		newFrame.Content.Button.Button.MouseButton1Click:Connect(function()
+		newFrame.Content.Button.Buy.Button.MouseButton1Click:Connect(function()
 			local result = bridge:InvokeServerAsync({
 				[actionIdentifier] = "SellThis",
 				Data = {
@@ -109,7 +109,7 @@ function SellBrainrotController:BuildScreen(items)
 			end
 		end)
 
-		newFrame.Parent = screen.Main.Items
+		newFrame.Parent = screen.Main.Main.Items
 	end
 end
 

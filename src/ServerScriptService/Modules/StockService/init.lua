@@ -41,7 +41,6 @@ function StockService:InitBridgeListener()
 		end
 
 		if data[actionIdentifier] == "AddRestockItention" then
-			print("Adicionando Itenção")
 			return StockService:AddRestockIntention(player, data.data.ItemName)
 		end
 	end
@@ -55,7 +54,7 @@ function StockService:Start()
 
 		while true do
 			if currentTime <= 0 then
-				print("Restocando")
+				
 				StockService:RestockAll()
 				stockUpdateIndex = stockUpdateIndex + 1
 				workspace:SetAttribute("STOCK_UPDATE_INDEX", stockUpdateIndex)

@@ -324,7 +324,7 @@ function UpgradesController:UpdatePowerText(value: number)
 	end
 	currentPower.Text = value
 	nextPower.Text = value + 1
-	buyPowerFrame.TextLabel.Text = ClientUtil:FormatToUSD(item)
+	buyPowerFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item)
 end
 
 function UpgradesController:UpdateSpeedText(value: number)
@@ -339,7 +339,7 @@ function UpgradesController:UpdateSpeedText(value: number)
 
 	currentSpeed.Text = value
 	nextSpeed.Text = value + 1
-	buySpeedFrame.TextLabel.Text = ClientUtil:FormatToUSD(item)
+	buySpeedFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item)
 end
 
 function UpgradesController:UpdateCapacityText(value: number)
@@ -353,7 +353,7 @@ function UpgradesController:UpdateCapacityText(value: number)
 	end
 	currentCapacity.Text = value
 	nextCapacity.Text = value + 1
-	buyCapacityFrame.TextLabel.Text = ClientUtil:FormatToUSD(item)
+	buyCapacityFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item)
 end
 
 function UpgradesController:ConfigureProximityPrompt()

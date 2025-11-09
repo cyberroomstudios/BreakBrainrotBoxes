@@ -84,7 +84,7 @@ function PlotController:ConfigureInsertItemProximityPrompt()
 				end
 			end
 		end
-		print(result)
+		
 	end
 end
 

@@ -48,7 +48,6 @@ function WorkerService:SetAllCrateBackpack(player: Player)
 				WorkerService:SetCrate(player, crateName, crateRef.Name, nil)
 				continue
 			end
-			print("Sem Espaço")
 		end
 	end
 end
@@ -289,6 +288,7 @@ function WorkerService:ChangeWorker(player: Player)
 
 		local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 		local track = humanoid:LoadAnimation(animation)
+		track.Priority = Enum.AnimationPriority.Idle
 		track:Play()
 	end
 

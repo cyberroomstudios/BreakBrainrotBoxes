@@ -93,6 +93,14 @@ function ThreadService:StartBreaker(player: Player)
 			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Attack
 			local track = humanoid:LoadAnimation(animation)
 			track.Looped = false
+			track.Priority = Enum.AnimationPriority.Action
+			track:GetMarkerReachedSignal("HIT"):Connect(function(param)
+				local crates = workspace.Runtime[player.UserId].Crates
+				for _, crate in crates:GetChildren() do
+					crate.PrimaryPart.CrateHit:Emit(20)
+				end
+			end)
+
 			animations[breakerModel] = track
 		end
 

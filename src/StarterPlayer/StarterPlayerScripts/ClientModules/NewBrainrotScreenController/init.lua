@@ -36,8 +36,7 @@ function NewBrainrotScreenController:GetScreen()
 end
 
 function NewBrainrotScreenController:PlayTween(brainrotType: string)
-	print("Teste")
-	print(brainrotType)
+	
 	local frame = screen
 	frame.Content.Visible = false
 

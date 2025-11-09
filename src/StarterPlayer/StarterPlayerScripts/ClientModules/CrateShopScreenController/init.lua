@@ -118,7 +118,7 @@ function CrateShopScreenController:InitAttributeListener()
 	end)
 
 	Workspace:GetAttributeChangedSignal("STOCK_UPDATE_INDEX"):Connect(function()
-		print("Atualiznaod")
+		
 		local result = bridge:InvokeServerAsync({
 			[actionIdentifier] = "GetStock",
 		})
