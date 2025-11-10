@@ -11,4 +11,10 @@ function LuckService:GetLuckFromPlayer(player: Player)
 	return luck
 end
 
+function LuckService:AddPlayerLuck(player: Player, newLuck: number)
+	PlayerDataHandler:Update(player, "luck", function(current)
+		return current + newLuck
+	end)
+end
+
 return LuckService

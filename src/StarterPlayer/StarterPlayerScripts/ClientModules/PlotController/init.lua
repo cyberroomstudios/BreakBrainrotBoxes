@@ -12,6 +12,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
+local GamepassController = require(Players.LocalPlayer.PlayerScripts.ClientModules.GamepassController)
 
 local cooldowns = {}
 
@@ -39,9 +40,43 @@ function PlotController:DeleteGamepassesFolder()
 		end
 	end
 end
+
+function PlotController:ConfigureGamepassesTouched()
+	local passes = {
+		["UltraLuck"] = "ULTRA_LUCK",
+		["MegaLuck"] = "MEGA_LUCK",
+		["SuperLuck"] = "SUPER_LUCK",
+		["BaseLuck"] = "BASE_LUCK",
+	}
+	local baseNumber = player:GetAttribute("BASE")
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if value.Name == baseNumber then
+			local lucksFolder = ClientUtil:WaitForDescendants(value, "Main", "Gamepasses", "Lucks")
+
+			for _, gamepassModel in lucksFolder:GetChildren() do
+				local standingPart = gamepassModel:WaitForChild("StandingPart")
+				local debounce = false
+				standingPart.Touched:Connect(function(hit)
+					if debounce then
+						return
+					end
+					debounce = true
+
+					GamepassController:OpenPaymentRequestScreen(passes[gamepassModel.Name])
+
+					task.wait(5)
+					debounce = false
+				end)
+			end
+		end
+	end
+end
 function PlotController:ConfigureGamepasses()
 	task.spawn(function()
 		PlotController:DeleteGamepassesFolder()
+		PlotController:ConfigureGamepassesTouched()
 	end)
 end
 
@@ -84,7 +119,6 @@ function PlotController:ConfigureInsertItemProximityPrompt()
 				end
 			end
 		end
-		
 	end
 end
 
