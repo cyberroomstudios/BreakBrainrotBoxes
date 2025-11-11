@@ -227,7 +227,8 @@ function PlotController:StartTouchGetMoney()
 	local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
 
 	for _, value in brainrotsPlots:GetChildren() do
-		local emitter = value.ParticlePart.ParticleEmitter
+		local emitter = value:WaitForChild("ParticlePart"):WaitForChild("ParticleEmitter")
+
 		value.TouchPart.Touched:Connect(function(hit)
 			local character = hit:FindFirstAncestorOfClass("Model")
 			local touchPlayer = character and Players:GetPlayerFromCharacter(character)

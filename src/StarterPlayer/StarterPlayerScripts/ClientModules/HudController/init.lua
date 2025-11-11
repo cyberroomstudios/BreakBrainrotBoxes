@@ -1,11 +1,13 @@
+local HudController = {}
+
 local Players = game:GetService("Players")
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local TeleportController = require(Players.LocalPlayer.PlayerScripts.ClientModules.TeleportController)
 local RebirthController = require(Players.LocalPlayer.PlayerScripts.ClientModules.RebirthController)
-local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
+local MoneyController = require(Players.LocalPlayer.PlayerScripts.ClientModules.MoneyController)
 
-local HudController = {}
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
 local myBaseButton
 local crateShopButton
@@ -14,6 +16,9 @@ local upgradeShopButton
 -- Botões lateral
 local rebirthButton
 local indexButton
+
+-- Botões da Esquerda
+local autoCollectButton
 
 -- Label
 local yourLuckText
@@ -35,6 +40,7 @@ function HudController:CreateReferences()
 	yourLuckText = UIReferences:GetReference("YOUR_LUCK")
 	checkLuck = UIReferences:GetReference("CHECK_LUCK")
 	infoLuck = UIReferences:GetReference("INFO_LUCK")
+	autoCollectButton = UIReferences:GetReference("AUTO_COLLECT")
 end
 
 function HudController:UpdadeLabelLuck(luck: number)
@@ -68,6 +74,10 @@ function HudController:InitButtonListerns()
 
 	checkLuck.MouseLeave:Connect(function()
 		infoLuck.Visible = false
+	end)
+
+	autoCollectButton.MouseLeave:Connect(function()
+		MoneyController:ToggleAutoCollect()
 	end)
 end
 

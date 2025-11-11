@@ -1,8 +1,34 @@
 local MoneyService = {}
 
+-- Init Bridg Net
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("MoneyService")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
+
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local BaseService = require(ServerScriptService.Modules.BaseService)
+local UtilService = require(ServerScriptService.Modules.UtilService)
+
+local playerAutoCollect = {}
+
+function MoneyService:Init()
+	MoneyService:InitBridgeListener()
+end
+
+function MoneyService:InitBridgeListener()
+	bridge.OnServerInvoke = function(player, data)
+		if data[actionIdentifier] == "ToggleAutoCollect" then
+			MoneyService:ToggleAutoCollect(player)
+		end
+	end
+end
 
 function MoneyService:GiveMoney(player: Player, amount: number)
 	PlayerDataHandler:Update(player, "money", function(current)
@@ -54,6 +80,41 @@ function MoneyService:GiveBrainrotCashMultiplier(player: Player)
 		player:SetAttribute("HAS_BRAINROT_CASH_MULTIPLIER", true)
 		return true
 	end)
+end
+
+function MoneyService:CollectBrainrotMoney(player: Player, base)
+	local main = base:WaitForChild("Main")
+	local slots = main.BrainrotPlots:GetChildren()
+
+	for _, slot in slots do
+		local amountMoney = slot:GetAttribute("AMOUNT_MONEY") or 0
+
+		if amountMoney > 0 then
+			slot:SetAttribute("AMOUNT_MONEY", 0)
+			local touchPart = slot:WaitForChild("TouchPart")
+			local billBoard = touchPart:WaitForChild("BillBoard")
+			billBoard.Cash.Text = UtilService:FormatToUSD(0)
+			MoneyService:GiveMoney(player, amountMoney)
+		end
+	end
+end
+
+function MoneyService:ToggleAutoCollect(player)
+	if not playerAutoCollect[player] then
+		playerAutoCollect[player] = player
+		task.spawn(function()
+			local base = BaseService:GetBase(player)
+
+			while playerAutoCollect[player] do
+				MoneyService:CollectBrainrotMoney(player, base)
+				print("Auto Collect")
+				task.wait(2)
+			end
+		end)
+		return
+	end
+
+	playerAutoCollect[player] = nil
 end
 
 return MoneyService

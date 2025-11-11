@@ -1,5 +1,15 @@
 local MoneyController = {}
 
+-- Init Bridg Net
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("MoneyService")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
+
 local Players = game:GetService("Players")
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
@@ -68,6 +78,12 @@ function MoneyController:AddHistory(positiveMoney, value)
 			negativeMoneyTextLabel.Visible = false
 		end)
 	end
+end
+
+function MoneyController:ToggleAutoCollect()
+	local result = bridge:InvokeServerAsync({
+		[actionIdentifier] = "ToggleAutoCollect",
+	})
 end
 
 return MoneyController
