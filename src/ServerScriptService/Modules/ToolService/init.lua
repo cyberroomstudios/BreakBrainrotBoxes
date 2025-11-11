@@ -109,7 +109,7 @@ function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainr
 	local newToll = ReplicatedStorage.Tools.Brainrots:FindFirstChild(brainrotName):Clone()
 
 	for _, value in newToll:GetDescendants() do
-		if value:GetAttribute("Color") then
+		if value:GetAttribute("Color") and mutationColors[mutationType] then
 			value.Color = mutationColors[mutationType][value:GetAttribute("Color")]
 		end
 	end

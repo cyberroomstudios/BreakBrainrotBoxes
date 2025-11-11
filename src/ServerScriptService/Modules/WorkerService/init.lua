@@ -269,6 +269,19 @@ function WorkerService:EnableWorker(player: Player)
 end
 
 function WorkerService:ChangeWorker(player: Player)
+	local function getScale()
+		local base = BaseService:GetBase(player)
+		local main = base:FindFirstChild("Main")
+		local breakersAreaFolder = main:WaitForChild("BreakersArea")
+		local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+		local containersModel = containersFolder:WaitForChild("Container")
+		local breakerFolder = containersModel:WaitForChild("Breaker")
+		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
+		local scale = breakerFolder[breakerCapacity]:GetAttribute("SCALE")
+		print(scale)
+		return scale
+	end
+
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
 	local breakersAreaFolder = main:WaitForChild("BreakersArea")
@@ -306,8 +319,7 @@ function WorkerService:ChangeWorker(player: Player)
 		track:Play()
 	end
 
-	local capacity = player:GetAttribute("Capacity")
-	WorkerService:ScaleBreaker(player, capacity)
+	WorkerService:ScaleBreaker(player, getScale())
 end
 
 function WorkerService:SaveOfflineCrate(player: Player)
