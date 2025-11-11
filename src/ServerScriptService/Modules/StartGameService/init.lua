@@ -65,6 +65,12 @@ end
 function StartGameService:InitPlayerAttributes(player: Player)
 	local money = PlayerDataHandler:Get(player, "money")
 	player:SetAttribute("MONEY", money)
+
+	local cashMultiplier = PlayerDataHandler:Get(player, "cashMultiplier")
+	player:SetAttribute("CASH_MULTIPLIER", cashMultiplier)
+
+	local hasBrainrotCashMultiplier = PlayerDataHandler:Get(player, "hasBrainrotCashMultiplier")
+	player:SetAttribute("HAS_BRAINROT_CASH_MULTIPLIER", hasBrainrotCashMultiplier)
 end
 
 function StartGameService:CreatePlayerFolder(player: Player)

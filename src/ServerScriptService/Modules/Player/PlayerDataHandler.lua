@@ -54,6 +54,8 @@ local dataTemplate = {
 	luck = 1,
 	robuxSpent = 0,
 	gamepassesProcessed = {},
+	hasBrainrotCashMultiplier = false,
+	cashMultiplier = 1,
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

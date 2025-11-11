@@ -41,5 +41,19 @@ function MoneyService:GiveInitialMoney(player: Player)
 	end
 end
 
+function MoneyService:GiveCashMultiplier(player: Player, incrementValue: number)
+	PlayerDataHandler:Update(player, "cashMultiplier", function(current)
+		return current + incrementValue
+	end)
+
+	player:SetAttribute("CASH_MULTIPLIER", PlayerDataHandler:Get(player, "cashMultiplier"))
+end
+
+function MoneyService:GiveBrainrotCashMultiplier(player: Player)
+	PlayerDataHandler:Update(player, "hasBrainrotCashMultiplier", function(current)
+		player:SetAttribute("HAS_BRAINROT_CASH_MULTIPLIER", true)
+		return true
+	end)
+end
 
 return MoneyService

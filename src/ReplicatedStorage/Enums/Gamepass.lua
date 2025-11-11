@@ -6,6 +6,11 @@ export type Gamepass = {
 }
 
 Gamepass.ENUM = {
+
+	["2X_CASH"] = {
+		Name = "2X_CASH",
+		Id = 1577516233,
+	},
 	ULTRA_LUCK = {
 		Name = "ULTRA_LUCK",
 		Id = 1577230052,

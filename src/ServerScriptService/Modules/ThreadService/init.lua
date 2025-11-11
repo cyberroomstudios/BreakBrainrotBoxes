@@ -30,6 +30,21 @@ function ThreadService:StartBrainrotsMoney(player: Player)
 		billBoard.Enabled = true
 	end
 
+	local function getMoneyMoneyPerSecond(player: Player, moneyPerSecondFromBrainrot: number)
+		-- Verifica se o jogador tem o cash multiplier de brainrot
+		local hasBrainrotCashMultiplier = player:GetAttribute("HAS_BRAINROT_CASH_MULTIPLIER") or false
+
+		-- Obtem o multiplicador da base
+		local baseCashMultiplier = player:SetAttribute("CASH_MULTIPLIER") or 1
+
+		local moneyPerSecond = hasBrainrotCashMultiplier and moneyPerSecondFromBrainrot * 2
+			or moneyPerSecondFromBrainrot
+
+		moneyPerSecond = moneyPerSecond * baseCashMultiplier
+
+		return moneyPerSecond
+	end
+
 	task.spawn(function()
 		while player.Parent do
 			-- Obtem todos os brainrots do jogador
@@ -42,6 +57,8 @@ function ThreadService:StartBrainrotsMoney(player: Player)
 
 					if brainrotEnum then
 						local slotNumber = value:GetAttribute("SLOT_NUMBER")
+						local moneyPerSecond = getMoneyMoneyPerSecond(player, brainrotEnum.MoneyPerSecond)
+
 						updatePlotMoney(slotNumber, brainrotEnum.MoneyPerSecond)
 					end
 				end
@@ -54,12 +71,12 @@ end
 function ThreadService:StartBreaker(player: Player)
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
-	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
-	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
-	local worker = containersFolder:FindFirstChild("Worker")
-	local breakerFolder = worker:FindFirstChild("Breaker")
+	local breakersAreaFolder = main:WaitForChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+	local containersModel = containersFolder:WaitForChild("Container")
+	local breakerFolder = containersModel:WaitForChild("Breaker")
 	local breakerModel = breakerFolder:FindFirstChild("Breaker")
-	local crateRefFolder = worker:WaitForChild("CrateRef")
+	local crateRefFolder = containersModel:WaitForChild("CrateRef")
 
 	local function updateCrateBillboardGui(crate: Model)
 		if not player.Parent then
@@ -94,6 +111,7 @@ function ThreadService:StartBreaker(player: Player)
 			local track = humanoid:LoadAnimation(animation)
 			track.Looped = false
 			track.Priority = Enum.AnimationPriority.Action
+
 			track:GetMarkerReachedSignal("HIT"):Connect(function(param)
 				local crates = workspace.Runtime[player.UserId].Crates
 				for _, crate in crates:GetChildren() do

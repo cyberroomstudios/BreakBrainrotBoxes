@@ -58,7 +58,7 @@ function WorkerService:GetNextAvailableCrateReF(player: Player)
 	local crateRef = plot:WaitForChild("Main")
 		:WaitForChild("BreakersArea")
 		:WaitForChild("Containers")
-		:WaitForChild("Worker")
+		:WaitForChild("Container")
 		:WaitForChild("CrateRef")
 
 	local refs = crateRef:GetChildren()
@@ -94,7 +94,7 @@ function WorkerService:SetCrate(player: Player, crateName: string, positionRef: 
 	local crateRefFolder = plot:WaitForChild("Main")
 		:WaitForChild("BreakersArea")
 		:WaitForChild("Containers")
-		:WaitForChild("Worker")
+		:WaitForChild("Container")
 		:WaitForChild("CrateRef")
 
 	local crateRef = crateRefFolder:FindFirstChild(positionRef)
@@ -112,7 +112,17 @@ function WorkerService:SetCrate(player: Player, crateName: string, positionRef: 
 	crate:SetAttribute("CRATE_TYPE", crateName)
 	crate:SetAttribute("POSITION_NUMBER", positionRef)
 
-	crate:SetPrimaryPartCFrame(CFrame.new(crateRef.WorldPosition))
+	--// Pega CFrame e tamanho da bounding box
+	local cf, size = crate:GetBoundingBox()
+
+	--// Calcula o ponto mais baixo (centro da base)
+	local basePosition = cf.Position - Vector3.new(0, size.Y / 2, 0)
+
+	--// Calcula o deslocamento entre base e attachment
+	local offset = crateRef.WorldPosition - basePosition
+
+	--// Move o modelo mantendo sua rotação original
+	crate:PivotTo(cf + offset)
 
 	crate.Parent = workspace.Runtime[player.UserId].Crates
 end
@@ -176,12 +186,35 @@ function WorkerService:ClearAllCrates(player: Player)
 end
 
 function WorkerService:ScaleBreaker(player: Player, scaleValue: number)
+	local function applyScaleKeepingOnGround(model)
+		local base = BaseService:GetBase(player)
+		local main = base:FindFirstChild("Main")
+		local breakersAreaFolder = main:WaitForChild("BreakersArea")
+		local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+		local containersModel = containersFolder:WaitForChild("Container")
+		local breakerFolder = containersModel:WaitForChild("Breaker")
+		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
+		local attachment = breakerFolder[breakerCapacity]
+		model:ScaleTo(scaleValue)
+		--// Pega CFrame e tamanho da bounding box
+		local cf, size = model:GetBoundingBox()
+
+		--// Calcula o ponto mais baixo (centro da base)
+		local basePosition = cf.Position - Vector3.new(0, size.Y / 2, 0)
+
+		--// Calcula o deslocamento entre base e attachment
+		local offset = attachment.WorldPosition - basePosition
+
+		--// Move o modelo mantendo sua rotação original
+		model:PivotTo(cf + offset)
+	end
+
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
-	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
-	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
-	local worker = containersFolder:FindFirstChild("Worker")
-	local breakerFolder = worker:FindFirstChild("Breaker")
+	local breakersAreaFolder = main:WaitForChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+	local containersModel = containersFolder:WaitForChild("Container")
+	local breakerFolder = containersModel:WaitForChild("Breaker")
 	local breakerModel = breakerFolder:FindFirstChild("Breaker")
 
 	if not breakerModel then
@@ -189,34 +222,16 @@ function WorkerService:ScaleBreaker(player: Player, scaleValue: number)
 		return
 	end
 
-	-- Escalas mínimas e máximas
-	local MIN_SCALE = 1
-	local MAX_SCALE = MAX_BREAKER_SCALE
-
-	if scaleValue <= 1 then
-		breakerModel:ScaleTo(MIN_SCALE)
-		return
-	end
-
-	if scaleValue >= 10 then
-		breakerModel:ScaleTo(MAX_SCALE)
-		return
-	end
-
-	-- Interpolação linear entre 1 e 10
-	local normalized = (scaleValue - 1) / (10 - 1)
-	local scaledValue = MIN_SCALE + (MAX_SCALE - MIN_SCALE) * normalized
-
-	breakerModel:ScaleTo(scaledValue)
+	applyScaleKeepingOnGround(breakerModel)
 end
 function WorkerService:EnableCrate(player: Player, crateRefNumber: number)
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
 	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
 	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
-	local worker = containersFolder:FindFirstChild("Worker")
-	local crateRef = worker:FindFirstChild("CrateRef")
-	local attachment = crateRef:FindFirstChild(crateRefNumber)
+	local containersModel = containersFolder:WaitForChild("Container")
+	local crateRefFolder = containersModel:WaitForChild("CrateRef")
+	local attachment = crateRefFolder:WaitForChild(crateRefNumber)
 
 	if attachment then
 		attachment:SetAttribute("UNLOCK", true)
@@ -226,14 +241,12 @@ end
 function WorkerService:EnableWorker(player: Player)
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
-	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
-	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local breakersAreaFolder = main:WaitForChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+	local containersModel = containersFolder:WaitForChild("Container")
+	local breakerFolder = containersModel:WaitForChild("Breaker")
 	local currentBreaker = PlayerDataHandler:Get(player, "crateBreaker").Equiped
-
-	local newContainer = ReplicatedStorage.Model.Breakers.Container:Clone()
-	newContainer.Name = "Worker"
-	newContainer.Parent = containersFolder
-	newContainer:SetPrimaryPartCFrame(containersFolder.Attachment.WorldCFrame)
+	local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
 
 	-- Obtem o tipo do quebrador
 	local breaker = ReplicatedStorage.Breakers:FindFirstChild(currentBreaker)
@@ -241,8 +254,8 @@ function WorkerService:EnableWorker(player: Player)
 	if breaker then
 		-- Cria o Quebrador
 		local newBreaker = breaker:Clone()
-		newBreaker.Parent = newContainer.Breaker
-		newBreaker:SetPrimaryPartCFrame(newContainer.Breaker.Attachment.WorldCFrame)
+		newBreaker.Parent = breakerFolder
+		newBreaker:SetPrimaryPartCFrame(breakerFolder[breakerCapacity].WorldCFrame)
 		newBreaker.Name = "Breaker"
 
 		-- Tirando nome
@@ -258,11 +271,12 @@ end
 function WorkerService:ChangeWorker(player: Player)
 	local base = BaseService:GetBase(player)
 	local main = base:FindFirstChild("Main")
-	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
-	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
-	local worker = containersFolder:FindFirstChild("Worker")
-	local breakerFolder = worker:FindFirstChild("Breaker")
+	local breakersAreaFolder = main:WaitForChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+	local containersModel = containersFolder:WaitForChild("Container")
+	local breakerFolder = containersModel:WaitForChild("Breaker")
 	local breakerModel = breakerFolder:FindFirstChild("Breaker")
+
 	local parent
 	if breakerModel then
 		parent = breakerModel.Parent
@@ -278,7 +292,7 @@ function WorkerService:ChangeWorker(player: Player)
 		-- Cria o Quebrador
 		local newBreaker = breaker:Clone()
 		newBreaker.Parent = parent
-		newBreaker:SetPrimaryPartCFrame(worker.Breaker.Attachment.WorldCFrame)
+		--	newBreaker:SetPrimaryPartCFrame(worker.Breaker.Attachment.WorldCFrame)
 		newBreaker.Name = "Breaker"
 		newBreaker:SetAttribute("BREAKER_NAME", currentBreaker)
 

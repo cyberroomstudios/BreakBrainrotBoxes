@@ -168,13 +168,26 @@ function UpgradeService:ConfigureWorkerCapacity(player: Player)
 end
 
 function UpgradeService:EnableCrates(player)
+	local function getScale()
+		local base = BaseService:GetBase(player)
+		local main = base:FindFirstChild("Main")
+		local breakersAreaFolder = main:WaitForChild("BreakersArea")
+		local containersFolder = breakersAreaFolder:WaitForChild("Containers")
+		local containersModel = containersFolder:WaitForChild("Container")
+		local breakerFolder = containersModel:WaitForChild("Breaker")
+		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
+		local scale = breakerFolder[breakerCapacity]:GetAttribute("SCALE")
+		print(scale)
+		return scale
+	end
+
 	local capacity = player:GetAttribute("Capacity")
 
 	for i = 1, capacity do
 		WorkerService:EnableCrate(player, i)
 	end
 
-	WorkerService:ScaleBreaker(player, capacity)
+	WorkerService:ScaleBreaker(player, getScale())
 end
 
 function UpgradeService:UpdateBreakers(player: Player)

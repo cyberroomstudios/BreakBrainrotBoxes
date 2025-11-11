@@ -55,14 +55,14 @@ function GamepassManager:InitGamePassesFromPlayer(player: Player)
 		local gamepassesProcessed = PlayerDataHandler:Get(player, "gamepassesProcessed")
 		for _, value in GamepassEnum.ENUM do
 			local hasGamePass = GamepassManager:HasGamePass(player, value.Id)
-			print("Verificando:" .. value.Name .. " - " .. tostring(hasGamePass))
 
 			-- Se tem GamePass e ainda não foi processada, processa ele
-			if hasGamePass and (not gamepassesProcessed[value.Name]) then
+			if hasGamePass and not gamepassesProcessed[value.Name] then
 				local grantPurchaseHandler = GamepassesFunctions[value.Id]
 				grantPurchaseHandler(player)
 			end
 		end
 	end)
 end
+
 return GamepassManager

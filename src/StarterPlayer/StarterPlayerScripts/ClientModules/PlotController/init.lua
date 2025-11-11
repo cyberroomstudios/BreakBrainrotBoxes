@@ -42,36 +42,69 @@ function PlotController:DeleteGamepassesFolder()
 end
 
 function PlotController:ConfigureGamepassesTouched()
-	local passes = {
-		["UltraLuck"] = "ULTRA_LUCK",
-		["MegaLuck"] = "MEGA_LUCK",
-		["SuperLuck"] = "SUPER_LUCK",
-		["BaseLuck"] = "BASE_LUCK",
-	}
-	local baseNumber = player:GetAttribute("BASE")
-	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+	local function configureLuckGamepasses()
+		local passes = {
+			["UltraLuck"] = "ULTRA_LUCK",
+			["MegaLuck"] = "MEGA_LUCK",
+			["SuperLuck"] = "SUPER_LUCK",
+			["BaseLuck"] = "BASE_LUCK",
+		}
 
-	for _, value in bases do
-		if value.Name == baseNumber then
-			local lucksFolder = ClientUtil:WaitForDescendants(value, "Main", "Gamepasses", "Lucks")
+		local baseNumber = player:GetAttribute("BASE")
+		local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
 
-			for _, gamepassModel in lucksFolder:GetChildren() do
-				local standingPart = gamepassModel:WaitForChild("StandingPart")
-				local debounce = false
-				standingPart.Touched:Connect(function(hit)
-					if debounce then
-						return
-					end
-					debounce = true
+		for _, value in bases do
+			if value.Name == baseNumber then
+				local lucksFolder = ClientUtil:WaitForDescendants(value, "Main", "Gamepasses", "Lucks")
 
-					GamepassController:OpenPaymentRequestScreen(passes[gamepassModel.Name])
+				for _, gamepassModel in lucksFolder:GetChildren() do
+					local standingPart = gamepassModel:WaitForChild("StandingPart")
+					local debounce = false
+					standingPart.Touched:Connect(function(hit)
+						if debounce then
+							return
+						end
+						debounce = true
 
-					task.wait(5)
-					debounce = false
-				end)
+						GamepassController:OpenPaymentRequestScreen(passes[gamepassModel.Name])
+
+						task.wait(5)
+						debounce = false
+					end)
+				end
 			end
 		end
 	end
+
+	local function configure2XCashGamepass()
+		local baseNumber = player:GetAttribute("BASE")
+		local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+		for _, value in bases do
+			if value.Name == baseNumber then
+				local cashModel =
+					ClientUtil:WaitForDescendants(value, "Main", "Gamepasses", "Cash", "2XCash", "StandingPart")
+
+				if cashModel then
+					local debounce = false
+					cashModel.Touched:Connect(function(hit)
+						if debounce then
+							return
+						end
+						debounce = true
+
+						GamepassController:OpenPaymentRequestScreen("2X_CASH")
+
+						task.wait(5)
+						debounce = false
+					end)
+				end
+			end
+		end
+	end
+
+	configureLuckGamepasses()
+	configure2XCashGamepass()
 end
 function PlotController:ConfigureGamepasses()
 	task.spawn(function()
