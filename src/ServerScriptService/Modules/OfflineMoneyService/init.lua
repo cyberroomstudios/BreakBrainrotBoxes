@@ -27,7 +27,7 @@ function OfflineMoneyService:InitBridgeListener()
 
 			if money then
 				player:SetAttribute("OFFLINE_MONEY", 0)
-				MoneyService:GiveMoney(player, money)
+				MoneyService:GiveMoney(player, money, false)
 			end
 		end
 	end

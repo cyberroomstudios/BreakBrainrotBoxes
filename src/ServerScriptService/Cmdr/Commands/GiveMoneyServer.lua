@@ -4,6 +4,6 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 
 return function(context, player, amount)
-	MoneyService:GiveMoney(player, amount)
+	MoneyService:GiveMoney(player, amount, true)
 	return "Success!"
 end

@@ -71,6 +71,9 @@ function StartGameService:InitPlayerAttributes(player: Player)
 
 	local hasBrainrotCashMultiplier = PlayerDataHandler:Get(player, "hasBrainrotCashMultiplier")
 	player:SetAttribute("HAS_BRAINROT_CASH_MULTIPLIER", hasBrainrotCashMultiplier)
+
+	local hasOPAutoCollect = PlayerDataHandler:Get(player, "opAutoCollect")
+	player:SetAttribute("HAS_OP_AUTO_COLLECT", hasOPAutoCollect)
 end
 
 function StartGameService:CreatePlayerFolder(player: Player)

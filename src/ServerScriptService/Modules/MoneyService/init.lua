@@ -15,6 +15,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
+local GameSoundService = require(ServerScriptService.Modules.GameSoundService)
 
 local playerAutoCollect = {}
 
@@ -30,11 +31,15 @@ function MoneyService:InitBridgeListener()
 	end
 end
 
-function MoneyService:GiveMoney(player: Player, amount: number)
+function MoneyService:GiveMoney(player: Player, amount: number, withSound: boolean)
 	PlayerDataHandler:Update(player, "money", function(current)
 		local newMoney = current + amount
 
 		player:SetAttribute("MONEY", newMoney)
+
+		if withSound then
+			GameSoundService:Play(player, "MONEY_COMING_IN")
+		end
 
 		return newMoney
 	end)
@@ -45,6 +50,7 @@ function MoneyService:ConsumeMoney(player: Player, amount: number)
 		local newMoney = current - amount
 
 		player:SetAttribute("MONEY", newMoney)
+		GameSoundService:Play(player, "MONEY_COMING_OUT")
 
 		return newMoney
 	end)
@@ -63,7 +69,7 @@ end
 
 function MoneyService:GiveInitialMoney(player: Player)
 	if PlayerDataHandler:Get(player, "totalPlaytime") == 0 then
-		MoneyService:GiveMoney(player, 1000)
+		MoneyService:GiveMoney(player, 1000, false)
 	end
 end
 
@@ -82,6 +88,10 @@ function MoneyService:GiveBrainrotCashMultiplier(player: Player)
 	end)
 end
 
+function MoneyService:GiveOpAutoCollect(player: Player)
+	PlayerDataHandler:Set(player, "opAutoCollect", true)
+	player:SetAttribute("HAS_OP_AUTO_COLLECT", true)
+end
 function MoneyService:CollectBrainrotMoney(player: Player, base)
 	local main = base:WaitForChild("Main")
 	local slots = main.BrainrotPlots:GetChildren()
@@ -94,7 +104,7 @@ function MoneyService:CollectBrainrotMoney(player: Player, base)
 			local touchPart = slot:WaitForChild("TouchPart")
 			local billBoard = touchPart:WaitForChild("BillBoard")
 			billBoard.Cash.Text = UtilService:FormatToUSD(0)
-			MoneyService:GiveMoney(player, amountMoney)
+			MoneyService:GiveMoney(player, amountMoney, false)
 		end
 	end
 end
@@ -104,7 +114,7 @@ function MoneyService:ToggleAutoCollect(player)
 		playerAutoCollect[player] = player
 		task.spawn(function()
 			local base = BaseService:GetBase(player)
-			player:SetAttribute("TIME_TO_AUTO_COLLECT", 8)
+			player:SetAttribute("TIME_TO_AUTO_COLLECT", player:GetAttribute("HAS_OP_AUTO_COLLECT") and 3 or 8)
 
 			while playerAutoCollect[player] do
 				local timeToAutoCollect = player:GetAttribute("TIME_TO_AUTO_COLLECT")
@@ -115,7 +125,7 @@ function MoneyService:ToggleAutoCollect(player)
 				if timeToAutoCollect == 0 then
 					MoneyService:CollectBrainrotMoney(player, base)
 
-					player:SetAttribute("TIME_TO_AUTO_COLLECT", 8)
+					player:SetAttribute("TIME_TO_AUTO_COLLECT", player:GetAttribute("HAS_OP_AUTO_COLLECT") and 3 or 8)
 					continue
 				end
 
@@ -125,7 +135,7 @@ function MoneyService:ToggleAutoCollect(player)
 		return
 	end
 
-	player:SetAttribute("TIME_TO_AUTO_COLLECT", 7)
+	player:SetAttribute("TIME_TO_AUTO_COLLECT", player:GetAttribute("HAS_OP_AUTO_COLLECT") and 1 or 7)
 	playerAutoCollect[player] = nil
 end
 

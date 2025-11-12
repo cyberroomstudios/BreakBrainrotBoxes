@@ -103,8 +103,36 @@ function PlotController:ConfigureGamepassesTouched()
 		end
 	end
 
+	local function configureOpAutoCollectCashGamepass()
+		local baseNumber = player:GetAttribute("BASE")
+		local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+		for _, value in bases do
+			if value.Name == baseNumber then
+				local cashModel =
+					ClientUtil:WaitForDescendants(value, "Main", "Gamepasses", "Cash", "AutoCollect", "StandingPart")
+
+				if cashModel then
+					local debounce = false
+					cashModel.Touched:Connect(function(hit)
+						if debounce then
+							return
+						end
+						debounce = true
+
+						GamepassController:OpenPaymentRequestScreen("OP_AUTO_COLLECT")
+
+						task.wait(5)
+						debounce = false
+					end)
+				end
+			end
+		end
+	end
+
 	configureLuckGamepasses()
 	configure2XCashGamepass()
+	configureOpAutoCollectCashGamepass()
 end
 function PlotController:ConfigureGamepasses()
 	task.spawn(function()

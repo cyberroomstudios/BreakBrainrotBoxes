@@ -11,6 +11,12 @@ Gamepass.ENUM = {
 		Name = "2X_CASH",
 		Id = 1577516233,
 	},
+
+	OP_AUTO_COLLECT = {
+		Name = "OP_AUTO_COLLECT",
+		Id = 1579253026,
+	},
+
 	ULTRA_LUCK = {
 		Name = "ULTRA_LUCK",
 		Id = 1577230052,

@@ -196,7 +196,7 @@ function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number
 	local value = slot:GetAttribute("AMOUNT_MONEY") or 0
 	slot:SetAttribute("AMOUNT_MONEY", 0)
 
-	MoneyService:GiveMoney(player, value)
+	MoneyService:GiveMoney(player, value, true)
 
 	return value
 end

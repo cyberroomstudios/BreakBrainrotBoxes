@@ -40,6 +40,11 @@ GamepassesFunctions[Gamepass:GetEnum("2X_CASH").Id] = function(player)
 	return true
 end
 
+GamepassesFunctions[Gamepass:GetEnum("OP_AUTO_COLLECT").Id] = function(player)
+	MoneyService:GiveOpAutoCollect(player)
+	return true
+end
+
 function GamepassesFunctions:AddGamepassesProcessed(player: Player, gamePassName: string)
 	PlayerDataHandler:Update(player, "gamepassesProcessed", function(current)
 		current[gamePassName] = true

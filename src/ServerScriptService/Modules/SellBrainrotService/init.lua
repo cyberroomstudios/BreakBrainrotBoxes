@@ -47,7 +47,7 @@ function SellBrainrotService:SellAll(player: Player)
 		totalMoney = totalMoney + sellPrice
 		ToolService:ConsumeBrainrotTool(player, value.BrainrotName)
 	end
-	MoneyService:GiveMoney(player, totalMoney)
+	MoneyService:GiveMoney(player, totalMoney, true)
 	PlayerDataHandler:Set(player, "brainrotsBackpack", {})
 	return {}
 end
@@ -60,7 +60,7 @@ function SellBrainrotService:SellThis(player: Player, brainrotId: number)
 			if value.Id == brainrotId then
 				local sellPrice = Brainrots[value.BrainrotName].SellPrice
 
-				MoneyService:GiveMoney(player, sellPrice)
+				MoneyService:GiveMoney(player, sellPrice, true)
 				ToolService:ConsumeBrainrotTool(player, value.BrainrotName)
 
 				continue

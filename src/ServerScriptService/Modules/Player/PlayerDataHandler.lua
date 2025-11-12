@@ -56,8 +56,8 @@ local dataTemplate = {
 	gamepassesProcessed = {},
 	hasBrainrotCashMultiplier = false,
 	cashMultiplier = 1,
-	autoCollectA = false,
-	superAutoCollect = false,
+	autoCollect = false,
+	opAutoCollect = false,
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

@@ -69,7 +69,7 @@ function RebirthService:GiveAllAwards(player: Player, rebirth)
 		end
 
 		if award.Type == "MONEY" then
-			MoneyService:GiveMoney(player, award.Amount)
+			MoneyService:GiveMoney(player, award.Amount, true)
 		end
 	end
 end
