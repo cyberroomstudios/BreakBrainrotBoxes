@@ -243,12 +243,14 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		},
 
 		["DIAMOND"] = {
-			[1] = Color3.fromRGB(37, 196, 254),
-			[2] = Color3.fromRGB(116, 212, 254),
-			[3] = Color3.fromRGB(28, 137, 254),
-			[4] = Color3.fromRGB(21, 64, 254),
-			[5] = Color3.fromRGB(160, 162, 254),
-			[6] = Color3.fromRGB(176, 255, 252),
+			[1] = Color3.fromRGB(237, 178, 0),
+			[2] = Color3.fromRGB(237, 194, 86),
+			[3] = Color3.fromRGB(215, 111, 1),
+			[4] = Color3.fromRGB(139, 74, 0),
+			[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
+			[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
+			[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
+			[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
 		},
 	}
 

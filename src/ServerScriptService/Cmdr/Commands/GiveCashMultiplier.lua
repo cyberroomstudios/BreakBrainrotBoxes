@@ -1,6 +1,6 @@
 return {
 	Name = script.Name,
-	Aliases = { "GiveMoney" },
+	Aliases = { "GiveCashMultiplier" },
 	Description = "Give Cash Multiplier to Player",
 	Group = "Admin",
 	Args = {
