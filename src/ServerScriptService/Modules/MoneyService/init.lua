@@ -104,16 +104,28 @@ function MoneyService:ToggleAutoCollect(player)
 		playerAutoCollect[player] = player
 		task.spawn(function()
 			local base = BaseService:GetBase(player)
+			player:SetAttribute("TIME_TO_AUTO_COLLECT", 8)
 
 			while playerAutoCollect[player] do
-				MoneyService:CollectBrainrotMoney(player, base)
-				print("Auto Collect")
-				task.wait(2)
+				local timeToAutoCollect = player:GetAttribute("TIME_TO_AUTO_COLLECT")
+				timeToAutoCollect = timeToAutoCollect - 1
+
+				player:SetAttribute("TIME_TO_AUTO_COLLECT", timeToAutoCollect)
+
+				if timeToAutoCollect == 0 then
+					MoneyService:CollectBrainrotMoney(player, base)
+
+					player:SetAttribute("TIME_TO_AUTO_COLLECT", 8)
+					continue
+				end
+
+				task.wait(1)
 			end
 		end)
 		return
 	end
 
+	player:SetAttribute("TIME_TO_AUTO_COLLECT", 7)
 	playerAutoCollect[player] = nil
 end
 

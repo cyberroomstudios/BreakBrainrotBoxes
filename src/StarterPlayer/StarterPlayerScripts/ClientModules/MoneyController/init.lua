@@ -22,6 +22,9 @@ local moneyLabel
 local historyMoney
 local oldMoney = nil
 
+local contentAutoCollect
+local timeAutoCollect
+
 function MoneyController:Init(data)
 	MoneyController:CreateReferences()
 	MoneyController:InitAttributeListener()
@@ -32,11 +35,14 @@ function MoneyController:CreateReferences()
 	-- Botões referente as Tools
 	moneyLabel = UIReferences:GetReference("MONEY")
 	historyMoney = UIReferences:GetReference("HISTORY_MONEY")
+	contentAutoCollect = UIReferences:GetReference("CONTENT_AUTO_COLLECT")
+	timeAutoCollect = UIReferences:GetReference("TIME_AUTO_COLLECT")
 end
 
 function MoneyController:StartMoney(money: number)
 	moneyLabel.Text = ClientUtil:FormatToUSD(money)
 end
+
 function MoneyController:InitAttributeListener()
 	player:GetAttributeChangedSignal("MONEY"):Connect(function()
 		local money = player:GetAttribute("MONEY")
@@ -55,6 +61,11 @@ function MoneyController:InitAttributeListener()
 
 		oldMoney = money
 		moneyLabel.Text = ClientUtil:FormatToUSD(money)
+	end)
+
+	player:GetAttributeChangedSignal("TIME_TO_AUTO_COLLECT"):Connect(function()
+		local timeToAutoCollect = player:GetAttribute("TIME_TO_AUTO_COLLECT")
+		timeAutoCollect.Text = timeToAutoCollect
 	end)
 end
 
@@ -81,6 +92,9 @@ function MoneyController:AddHistory(positiveMoney, value)
 end
 
 function MoneyController:ToggleAutoCollect()
+	contentAutoCollect.Visible = not contentAutoCollect.Visible
+	timeAutoCollect.Visible = not timeAutoCollect.Visible
+
 	local result = bridge:InvokeServerAsync({
 		[actionIdentifier] = "ToggleAutoCollect",
 	})

@@ -76,7 +76,7 @@ function HudController:InitButtonListerns()
 		infoLuck.Visible = false
 	end)
 
-	autoCollectButton.MouseLeave:Connect(function()
+	autoCollectButton.MouseButton1Click:Connect(function()
 		MoneyController:ToggleAutoCollect()
 	end)
 end
