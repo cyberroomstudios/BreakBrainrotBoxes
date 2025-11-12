@@ -32,6 +32,13 @@ function StartGameController:Init(data)
 	PlotController:DeleteCashMultiplier()
 	PlotController:UpdateCashMultiplier(player:GetAttribute("CASH_MULTIPLIER") or 1)
 	TeleportController:ToBase()
+	StartGameController:DeleteLoadingScreen()
 end
 
+function StartGameController:DeleteLoadingScreen()
+	local player = Players.LocalPlayer
+	local playerGui = player:WaitForChild("PlayerGui")
+	local loadingScreen = playerGui:WaitForChild("LoadingScreen")
+	loadingScreen:Destroy()
+end
 return StartGameController
