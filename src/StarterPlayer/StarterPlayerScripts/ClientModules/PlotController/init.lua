@@ -18,6 +18,7 @@ local cooldowns = {}
 
 function PlotController:Init()
 	PlotController:InitBridgeListener()
+	PlotController:InitAttributeListener()
 end
 
 function PlotController:InitBridgeListener()
@@ -37,6 +38,31 @@ function PlotController:DeleteGamepassesFolder()
 			local gamepassesFolder = ClientUtil:WaitForDescendants(value, "Main", "Gamepasses")
 
 			gamepassesFolder:Destroy()
+		end
+	end
+end
+
+function PlotController:DeleteCashMultiplier()
+	local baseNumber = player:GetAttribute("BASE")
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if tonumber(value.Name) ~= tonumber(baseNumber) then
+			local multiplierZone = ClientUtil:WaitForDescendants(value, "Main", "MultiplierZone")
+
+			multiplierZone:Destroy()
+		end
+	end
+end
+
+function PlotController:UpdateCashMultiplier(cashMultiplier)
+	local baseNumber = player:GetAttribute("BASE")
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if value.Name == baseNumber then
+			local multiplierZone = ClientUtil:WaitForDescendants(value, "Main", "MultiplierZone")
+			multiplierZone.CashMultiplierBillboardGui.CashMultiplier.Text = "Cash Multiplier: " .. cashMultiplier .. "x"
 		end
 	end
 end
@@ -291,5 +317,12 @@ function PlotController:StartTouchGetMoney()
 			end)
 		end)
 	end
+end
+
+function PlotController:InitAttributeListener()
+	player:GetAttributeChangedSignal("CASH_MULTIPLIER"):Connect(function()
+		local cashMultiplier = player:GetAttribute("CASH_MULTIPLIER")
+		PlotController:UpdateCashMultiplier(cashMultiplier)
+	end)
 end
 return PlotController

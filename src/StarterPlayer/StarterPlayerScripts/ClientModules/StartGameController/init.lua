@@ -10,6 +10,7 @@ local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
+local player = Players.LocalPlayer
 local WorkerController = require(Players.LocalPlayer.PlayerScripts.ClientModules.WorkerController)
 local PlotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.PlotController)
 local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.UpgradeController)
@@ -28,6 +29,8 @@ function StartGameController:Init(data)
 	PlotController:ConfigureInsertItemProximityPrompt()
 	OfflineMoneyController:Open()
 	PlotController:ConfigureGamepasses()
+	PlotController:DeleteCashMultiplier()
+	PlotController:UpdateCashMultiplier(player:GetAttribute("CASH_MULTIPLIER") or 1)
 	TeleportController:ToBase()
 end
 

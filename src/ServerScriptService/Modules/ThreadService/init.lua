@@ -35,7 +35,7 @@ function ThreadService:StartBrainrotsMoney(player: Player)
 		local hasBrainrotCashMultiplier = player:GetAttribute("HAS_BRAINROT_CASH_MULTIPLIER") or false
 
 		-- Obtem o multiplicador da base
-		local baseCashMultiplier = player:SetAttribute("CASH_MULTIPLIER") or 1
+		local baseCashMultiplier = player:GetAttribute("CASH_MULTIPLIER") or 1
 
 		local moneyPerSecond = hasBrainrotCashMultiplier and moneyPerSecondFromBrainrot * 2
 			or moneyPerSecondFromBrainrot
