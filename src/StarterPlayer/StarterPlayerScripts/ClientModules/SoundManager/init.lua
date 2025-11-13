@@ -13,6 +13,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
 local sounds = {
+	BGM = "",
 	UI_CLICK = "",
 	UI_OPEN_SCREEN = "",
 	MONEY_COMING_IN = "",
@@ -56,6 +57,7 @@ function SoundManager:Init()
 end
 
 function SoundManager:InitRef()
+	sounds["BGM"] = SoundService.Game.BGM
 	sounds["UI_CLICK"] = SoundService.GUI.Click
 	sounds["UI_OPEN_SCREEN"] = SoundService.GUI.OpenScreen
 	sounds["MONEY_COMING_IN"] = SoundService.GUI.MoneyComingIn
@@ -92,7 +94,7 @@ function SoundManager:InitRef()
 end
 
 function SoundManager:StartOrPauseBGM()
-	local settingsMusicTheme = Players.LocalPlayer:GetAttribute("SETTINGS_MUSIC_THEME")
+	local settingsMusicTheme = Players.LocalPlayer:GetAttribute("SETTINGS_BACKGROUND_MUSIC")
 	if settingsMusicTheme then
 		sounds["BGM"]:Play()
 	else
@@ -103,7 +105,7 @@ function SoundManager:Play(sondName: string)
 	local settingsSoundEffect = Players.LocalPlayer:GetAttribute("SETTINGS_SOUND_EFFECT")
 
 	if not settingsSoundEffect then
-		--	return
+		return
 	end
 
 	if sounds[sondName] then

@@ -58,6 +58,10 @@ local dataTemplate = {
 	cashMultiplier = 1,
 	autoCollect = false,
 	opAutoCollect = false,
+	gameSettings = {
+		backgroundMusic = true,
+		soundEffect = true,
+	}
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

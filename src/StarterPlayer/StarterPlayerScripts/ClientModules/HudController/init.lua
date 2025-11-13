@@ -16,6 +16,7 @@ local upgradeShopButton
 -- Botões lateral
 local rebirthButton
 local indexButton
+local settingsButton
 
 -- Botões da Esquerda
 local autoCollectButton
@@ -41,6 +42,7 @@ function HudController:CreateReferences()
 	checkLuck = UIReferences:GetReference("CHECK_LUCK")
 	infoLuck = UIReferences:GetReference("INFO_LUCK")
 	autoCollectButton = UIReferences:GetReference("AUTO_COLLECT")
+	settingsButton = UIReferences:GetReference("SETTINGS_HUD")
 end
 
 function HudController:UpdadeLabelLuck(luck: number)
@@ -61,7 +63,7 @@ function HudController:InitButtonListerns()
 	end)
 
 	rebirthButton.MouseButton1Click:Connect(function()
-		RebirthController:Show()
+		UIStateManager:Open("REBIRTH")
 	end)
 
 	indexButton.MouseButton1Click:Connect(function()
@@ -78,6 +80,10 @@ function HudController:InitButtonListerns()
 
 	autoCollectButton.MouseButton1Click:Connect(function()
 		MoneyController:ToggleAutoCollect()
+	end)
+
+	settingsButton.MouseButton1Click:Connect(function()
+		UIStateManager:Open("SETTINGS")
 	end)
 end
 

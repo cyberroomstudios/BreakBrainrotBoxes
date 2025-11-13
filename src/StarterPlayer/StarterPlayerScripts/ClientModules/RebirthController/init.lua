@@ -37,9 +37,18 @@ function RebirthController:CreateReferences()
 	infoCurrentRebirth = UIReferences:GetReference("INFO_CURRENT_REBIRTH")
 end
 
-function RebirthController:Show()
-	screen.Visible = not screen.Visible
+
+function RebirthController:Open(data)
+	screen.Visible = true
 	RebirthController:BuildScreen()
+end
+
+function RebirthController:Close()
+	screen.Visible = false
+end
+
+function RebirthController:GetScreen()
+	return screen
 end
 
 function RebirthController:InitButtonListerns()

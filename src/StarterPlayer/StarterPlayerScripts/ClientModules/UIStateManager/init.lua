@@ -8,6 +8,7 @@ local UserInputService = game:GetService("UserInputService")
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local MobileVibrationController = require(Players.LocalPlayer.PlayerScripts.ClientModules.MobileVibrationController)
 local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
+local SettingsController = require(Players.LocalPlayer.PlayerScripts.ClientModules.SettingsController)
 
 local screens = {}
 local originalSizeScreen = {}
@@ -34,6 +35,8 @@ function UIStateManager:LoadModules()
 		local UpgradeController = require(clientModules.UpgradeController)
 		local IndexController = require(clientModules.IndexController)
 		local NewBrinrotScreenController = require(clientModules.NewBrainrotScreenController)
+		local SellBrainrotController = require(clientModules.SettingsController)
+		local RebirthController = require(clientModules.RebirthController)
 
 		screens = {
 			["CRATES"] = CrateShopScreenController,
@@ -41,6 +44,8 @@ function UIStateManager:LoadModules()
 			["UPGRADES"] = UpgradeController,
 			["INDEX"] = IndexController,
 			["NEW_GAME"] = NewBrinrotScreenController,
+			["SETTINGS"] = SellBrainrotController,
+			["REBIRTH"] = RebirthController,
 		}
 
 		for screenName, screen in screens do

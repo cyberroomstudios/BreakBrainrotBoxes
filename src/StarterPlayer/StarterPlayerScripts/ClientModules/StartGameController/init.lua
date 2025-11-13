@@ -16,6 +16,7 @@ local PlotController = require(Players.LocalPlayer.PlayerScripts.ClientModules.P
 local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.UpgradeController)
 local OfflineMoneyController = require(Players.LocalPlayer.PlayerScripts.ClientModules.OfflineMoneyController)
 local TeleportController = require(Players.LocalPlayer.PlayerScripts.ClientModules.TeleportController)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 
 function StartGameController:Init(data)
 	local result = bridge:InvokeServerAsync({
@@ -32,6 +33,7 @@ function StartGameController:Init(data)
 	PlotController:DeleteCashMultiplier()
 	PlotController:UpdateCashMultiplier(player:GetAttribute("CASH_MULTIPLIER") or 1)
 	TeleportController:ToBase()
+	SoundManager:StartOrPauseBGM()
 	StartGameController:DeleteLoadingScreen()
 end
 

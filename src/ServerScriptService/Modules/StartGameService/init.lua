@@ -74,6 +74,12 @@ function StartGameService:InitPlayerAttributes(player: Player)
 
 	local hasOPAutoCollect = PlayerDataHandler:Get(player, "opAutoCollect")
 	player:SetAttribute("HAS_OP_AUTO_COLLECT", hasOPAutoCollect)
+
+	local backgroundMusic = PlayerDataHandler:Get(player, "gameSettings").backgroundMusic
+	player:SetAttribute("SETTINGS_BACKGROUND_MUSIC", backgroundMusic)
+
+	local soundEffect = PlayerDataHandler:Get(player, "gameSettings").soundEffect
+	player:SetAttribute("SETTINGS_SOUND_EFFECT", soundEffect)
 end
 
 function StartGameService:CreatePlayerFolder(player: Player)
