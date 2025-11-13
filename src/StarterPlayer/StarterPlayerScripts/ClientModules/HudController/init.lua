@@ -14,8 +14,9 @@ local crateShopButton
 local upgradeShopButton
 
 -- Botões lateral
-local rebirthButton
+local robuxShopButton
 local indexButton
+local rebirthButton
 local settingsButton
 
 -- Botões da Esquerda
@@ -36,6 +37,7 @@ function HudController:CreateReferences()
 	myBaseButton = UIReferences:GetReference("MY_BASE_BUTTON")
 	crateShopButton = UIReferences:GetReference("CRATE_SHOP_BUTTON")
 	upgradeShopButton = UIReferences:GetReference("UPGRADES_SHOP_BUTTON")
+	robuxShopButton = UIReferences:GetReference("ROBUX_SHOP_HUD")
 	rebirthButton = UIReferences:GetReference("REBIRTH_HUD")
 	indexButton = UIReferences:GetReference("INDEX_HUD")
 	yourLuckText = UIReferences:GetReference("YOUR_LUCK")
@@ -60,6 +62,10 @@ function HudController:InitButtonListerns()
 
 	upgradeShopButton.MouseButton1Click:Connect(function()
 		TeleportController:ToUpgradeShop()
+	end)
+
+	robuxShopButton.MouseButton1Click:Connect(function()
+		UIStateManager:Open("ROBUX_SHOP")
 	end)
 
 	rebirthButton.MouseButton1Click:Connect(function()

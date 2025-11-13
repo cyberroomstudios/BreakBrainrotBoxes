@@ -8,7 +8,6 @@ local UserInputService = game:GetService("UserInputService")
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local MobileVibrationController = require(Players.LocalPlayer.PlayerScripts.ClientModules.MobileVibrationController)
 local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
-local SettingsController = require(Players.LocalPlayer.PlayerScripts.ClientModules.SettingsController)
 
 local screens = {}
 local originalSizeScreen = {}
@@ -35,8 +34,10 @@ function UIStateManager:LoadModules()
 		local UpgradeController = require(clientModules.UpgradeController)
 		local IndexController = require(clientModules.IndexController)
 		local NewBrinrotScreenController = require(clientModules.NewBrainrotScreenController)
-		local SellBrainrotController = require(clientModules.SettingsController)
+		local SellBrainrotController = require(clientModules.SellBrainrotController)
 		local RebirthController = require(clientModules.RebirthController)
+		local SettingsController = require(Players.LocalPlayer.PlayerScripts.ClientModules.SettingsController)
+		local RobuxShopController = require(Players.LocalPlayer.PlayerScripts.ClientModules.RobuxShopController)
 
 		screens = {
 			["CRATES"] = CrateShopScreenController,
@@ -44,8 +45,9 @@ function UIStateManager:LoadModules()
 			["UPGRADES"] = UpgradeController,
 			["INDEX"] = IndexController,
 			["NEW_GAME"] = NewBrinrotScreenController,
-			["SETTINGS"] = SellBrainrotController,
+			["SETTINGS"] = SettingsController,
 			["REBIRTH"] = RebirthController,
+			["ROBUX_SHOP"] = RobuxShopController,
 		}
 
 		for screenName, screen in screens do
@@ -148,7 +150,9 @@ function UIStateManager:ConfigureCloseButton()
 	local taggedObjects = CollectionService:GetTagged("CLOSE_BUTTON")
 
 	for _, button in taggedObjects do
+		print(button:GetAttribute("SCREEN"))
 		button.MouseButton1Click:Connect(function()
+			print("Clicou")
 			UIStateManager:Close(button:GetAttribute("SCREEN"))
 		end)
 	end

@@ -109,4 +109,5 @@ end
 function SettingsController:GetScreen()
 	return screen
 end
+
 return SettingsController
