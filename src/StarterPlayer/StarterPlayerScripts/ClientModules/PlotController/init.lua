@@ -13,6 +13,7 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local GamepassController = require(Players.LocalPlayer.PlayerScripts.ClientModules.GamepassController)
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
 local cooldowns = {}
 
@@ -67,6 +68,32 @@ function PlotController:UpdateCashMultiplier(cashMultiplier)
 	end
 end
 
+function PlotController:ConfigureClaimeProximity()
+	local baseNumber = player:GetAttribute("BASE")
+
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if tonumber(value.Name) == tonumber(baseNumber) then
+			local proximityPrompt =
+				ClientUtil:WaitForDescendants(value, "Main", "Chest", "ProximityPart", "ProximityPrompt")
+
+			proximityPrompt.PromptShown:Connect(function()
+				UIStateManager:Open("CLAIME")
+			end)
+
+			proximityPrompt.PromptHidden:Connect(function()
+				UIStateManager:Close("CLAIME")
+			end)
+		end
+
+		if tonumber(value.Name) ~= tonumber(baseNumber) then
+			local chest = ClientUtil:WaitForDescendants(value, "Main", "Chest")
+
+			chest:Destroy()
+		end
+	end
+end
 function PlotController:ConfigureGamepassesTouched()
 	local function configureLuckGamepasses()
 		local passes = {
@@ -160,6 +187,7 @@ function PlotController:ConfigureGamepassesTouched()
 	configure2XCashGamepass()
 	configureOpAutoCollectCashGamepass()
 end
+
 function PlotController:ConfigureGamepasses()
 	task.spawn(function()
 		PlotController:DeleteGamepassesFolder()

@@ -23,6 +23,8 @@ function StartGameController:Init(data)
 		[actionIdentifier] = "Start",
 		data = {},
 	})
+	TeleportController:ToBase()
+	StartGameController:DeleteLoadingScreen()
 
 	WorkerController:InitProximityPrompt()
 	UpgradeController:ConfigureProximityPrompt()
@@ -32,9 +34,9 @@ function StartGameController:Init(data)
 	PlotController:ConfigureGamepasses()
 	PlotController:DeleteCashMultiplier()
 	PlotController:UpdateCashMultiplier(player:GetAttribute("CASH_MULTIPLIER") or 1)
-	TeleportController:ToBase()
+
 	SoundManager:StartOrPauseBGM()
-	StartGameController:DeleteLoadingScreen()
+	PlotController:ConfigureClaimeProximity()
 end
 
 function StartGameController:DeleteLoadingScreen()

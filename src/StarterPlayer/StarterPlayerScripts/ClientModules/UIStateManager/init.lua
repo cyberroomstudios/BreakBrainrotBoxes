@@ -38,6 +38,7 @@ function UIStateManager:LoadModules()
 		local RebirthController = require(clientModules.RebirthController)
 		local SettingsController = require(Players.LocalPlayer.PlayerScripts.ClientModules.SettingsController)
 		local RobuxShopController = require(Players.LocalPlayer.PlayerScripts.ClientModules.RobuxShopController)
+		local ClaimeController = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClaimeController)
 
 		screens = {
 			["CRATES"] = CrateShopScreenController,
@@ -48,6 +49,7 @@ function UIStateManager:LoadModules()
 			["SETTINGS"] = SettingsController,
 			["REBIRTH"] = RebirthController,
 			["ROBUX_SHOP"] = RobuxShopController,
+			["CLAIME"] = ClaimeController,
 		}
 
 		for screenName, screen in screens do
