@@ -93,6 +93,15 @@ function SellBrainrotController:BuildScreen(items)
 		local newFrame = screen.Main.Main.Items.Item:Clone()
 		newFrame.Visible = true
 		newFrame.Name = item.Name
+		local folderName = item.MutationType
+		local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames:FindFirstChild(folderName)
+		local viewPortTemplate = viewPortFolder:FindFirstChild(item.Name)
+
+		if viewPortTemplate then
+			local viewPort = viewPortTemplate:Clone()
+			viewPort.Name = "viewPort"
+			viewPort.Parent = newFrame.Content.ImageFrame
+		end
 
 		newFrame.Content.Frame.ItemName.Text = Brainrots[item.Name].GUI.Label
 		newFrame.Content.Frame.ItemPrice.Text = ClientUtil:FormatToUSD(item.Price)

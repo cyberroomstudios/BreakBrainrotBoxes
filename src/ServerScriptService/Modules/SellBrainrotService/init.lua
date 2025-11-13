@@ -87,6 +87,7 @@ function SellBrainrotService:Get(player: Player)
 			Id = id,
 			Price = sellPrice,
 			Name = value.BrainrotName,
+			MutationType = value.MutationType,
 		}
 
 		table.insert(dataList, data)

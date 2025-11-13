@@ -36,7 +36,6 @@ function NewBrainrotScreenController:GetScreen()
 end
 
 function NewBrainrotScreenController:PlayTween(brainrotType: string)
-	
 	local frame = screen
 	frame.Content.Visible = false
 
@@ -58,7 +57,7 @@ function NewBrainrotScreenController:PlayTween(brainrotType: string)
 	local goal = { Size = UDim2.new(1, 0, 0.2, 0) }
 
 	task.spawn(function()
-		ConfettiController:CreateConfetti()
+		--	ConfettiController:CreateConfetti()
 	end)
 
 	-- Criar e tocar o tween
