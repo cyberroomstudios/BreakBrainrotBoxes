@@ -61,7 +61,8 @@ local dataTemplate = {
 	gameSettings = {
 		backgroundMusic = true,
 		soundEffect = true,
-	}
+	},
+	rewards = {},
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

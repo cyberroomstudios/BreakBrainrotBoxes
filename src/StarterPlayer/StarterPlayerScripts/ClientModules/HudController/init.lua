@@ -76,13 +76,6 @@ function HudController:InitButtonListerns()
 		UIStateManager:Open("INDEX")
 	end)
 
-	checkLuck.MouseEnter:Connect(function()
-		infoLuck.Visible = true
-	end)
-
-	checkLuck.MouseLeave:Connect(function()
-		infoLuck.Visible = false
-	end)
 
 	autoCollectButton.MouseButton1Click:Connect(function()
 		MoneyController:ToggleAutoCollect()
