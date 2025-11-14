@@ -152,9 +152,7 @@ function UIStateManager:ConfigureCloseButton()
 	local taggedObjects = CollectionService:GetTagged("CLOSE_BUTTON")
 
 	for _, button in taggedObjects do
-		print(button:GetAttribute("SCREEN"))
 		button.MouseButton1Click:Connect(function()
-			print("Clicou")
 			UIStateManager:Close(button:GetAttribute("SCREEN"))
 		end)
 	end

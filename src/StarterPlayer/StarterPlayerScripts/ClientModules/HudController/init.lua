@@ -53,7 +53,7 @@ end
 
 function HudController:InitButtonListerns()
 	myBaseButton.MouseButton1Click:Connect(function()
-		TeleportController:ToBase()
+		TeleportController:ToBase(true)
 	end)
 
 	crateShopButton.MouseButton1Click:Connect(function()

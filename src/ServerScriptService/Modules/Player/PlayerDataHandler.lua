@@ -63,6 +63,7 @@ local dataTemplate = {
 		soundEffect = true,
 	},
 	rewards = {},
+	funnelEvents = {},
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

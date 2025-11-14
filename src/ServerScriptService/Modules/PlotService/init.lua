@@ -19,6 +19,7 @@ local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
 local ToolService = require(ServerScriptService.Modules.ToolService)
+local FunnelService = require(ServerScriptService.Modules.FunnelService)
 
 function PlotService:Init()
 	PlotService:InitBridgeListener()
@@ -198,6 +199,7 @@ function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number
 
 	MoneyService:GiveMoney(player, value, true)
 
+	FunnelService:AddEvent(player, "COLLECT_MONEY")
 	return value
 end
 

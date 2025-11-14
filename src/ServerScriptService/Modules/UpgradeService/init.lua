@@ -19,6 +19,7 @@ local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
 local Breakers = require(ReplicatedStorage.Enums.Breakers)
 local BaseService = require(ServerScriptService.Modules.BaseService)
+local FunnelService = require(ServerScriptService.Modules.FunnelService)
 
 function UpgradeService:Init()
 	UpgradeService:InitBridgeListener()
@@ -145,6 +146,8 @@ function UpgradeService:Buy(player: Player, upgradeType: string)
 	if upgradeType == "Capacity" then
 		UpgradeService:EnableCrates(player)
 	end
+
+	FunnelService:AddEvent(player, "BUY_CAPACITY_UPGRADE")
 	return newValue
 end
 
@@ -177,7 +180,7 @@ function UpgradeService:EnableCrates(player)
 		local breakerFolder = containersModel:WaitForChild("Breaker")
 		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
 		local scale = breakerFolder[breakerCapacity]:GetAttribute("SCALE")
-		print(scale)
+		
 		return scale
 	end
 

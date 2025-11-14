@@ -23,7 +23,7 @@ function StartGameController:Init(data)
 		[actionIdentifier] = "Start",
 		data = {},
 	})
-	TeleportController:ToBase()
+	TeleportController:ToBase(false)
 	StartGameController:DeleteLoadingScreen()
 
 	WorkerController:InitProximityPrompt()

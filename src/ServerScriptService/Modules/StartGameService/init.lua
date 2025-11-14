@@ -23,6 +23,8 @@ local RebirthService = require(ServerScriptService.Modules.RebirthService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
 local OfflineMoneyService = require(ServerScriptService.Modules.OfflineMoneyService)
 local GamepassManager = require(ServerScriptService.Modules.GamepassManager)
+local FunnelService = require(ServerScriptService.Modules.FunnelService)
+local MoneyService = require(ServerScriptService.Modules.MoneyService)
 
 local playerInitializer = {}
 
@@ -42,6 +44,8 @@ function StartGameService:InitBridgeListener()
 				return false
 			end
 
+			FunnelService:AddEvent(player, "ON_GAME")
+
 			playerInitializer[player] = true
 			StartGameService:CreatePlayerFolder(player)
 
@@ -58,6 +62,8 @@ function StartGameService:InitBridgeListener()
 			OfflineMoneyService:StartOfflineMoney(player)
 			ThreadService:StartBreaker(player)
 			GamepassManager:InitGamePassesFromPlayer(player)
+			MoneyService:GiveInitialMoney(player)
+			FunnelService:AddEvent(player, "LOADING_ALL_GAME")
 		end
 	end
 end
@@ -80,6 +86,12 @@ function StartGameService:InitPlayerAttributes(player: Player)
 
 	local soundEffect = PlayerDataHandler:Get(player, "gameSettings").soundEffect
 	player:SetAttribute("SETTINGS_SOUND_EFFECT", soundEffect)
+
+	local funnelEvents = PlayerDataHandler:Get(player, "funnelEvents")
+
+	for index, value in funnelEvents do
+		player:SetAttribute(index, true)
+	end
 end
 
 function StartGameService:CreatePlayerFolder(player: Player)

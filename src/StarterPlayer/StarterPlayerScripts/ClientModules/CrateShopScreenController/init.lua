@@ -2,6 +2,7 @@ local CrateShopScreenController = {}
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
@@ -11,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local bridge = BridgeNet2.ReferenceBridge("StockService")
+local bridgeFunnelService = BridgeNet2.ReferenceBridge("FunnelService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
@@ -62,6 +64,19 @@ function CrateShopScreenController:Init()
 	CrateShopScreenController:InitDevProductsPrices()
 end
 
+function CrateShopScreenController:SendFunnelEvent(eventName: string)
+	task.spawn(function()
+		if player:GetAttribute("FUNNEL_" .. eventName) then
+			return
+		end
+
+		local result = bridgeFunnelService:InvokeServerAsync({
+			[actionIdentifier] = "AddEvent",
+			data = { Name = eventName },
+		})
+	end)
+end
+
 function CrateShopScreenController:CreateReferences()
 	screen = UIReferences:GetReference("CRATE_SHOP_SCREEN")
 	restockTime = UIReferences:GetReference("CRATE_SHOP_RESTOCK_TIME")
@@ -86,6 +101,8 @@ function CrateShopScreenController:ConfigureProximityPrompt()
 	local proximityPrompt = proximityPart.ProximityPrompt
 
 	proximityPrompt.PromptShown:Connect(function()
+		CrateShopScreenController:SendFunnelEvent("OPEN_CRATE_SHOP_UI")
+
 		UIStateManager:Open("CRATES")
 	end)
 
@@ -118,7 +135,6 @@ function CrateShopScreenController:InitAttributeListener()
 	end)
 
 	Workspace:GetAttributeChangedSignal("STOCK_UPDATE_INDEX"):Connect(function()
-		
 		local result = bridge:InvokeServerAsync({
 			[actionIdentifier] = "GetStock",
 		})

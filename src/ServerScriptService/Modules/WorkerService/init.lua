@@ -13,6 +13,7 @@ local PlotService = require(ServerScriptService.Modules.PlotService)
 local IndexService = require(ServerScriptService.Modules.IndexService)
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local Breakers = require(ReplicatedStorage.Enums.Breakers)
+local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local bridge = BridgeNet2.ReferenceBridge("WorkerService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -46,6 +47,7 @@ function WorkerService:SetAllCrateBackpack(player: Player)
 				ToolService:Consume(player, "CRATE", crateName)
 				crateRef:SetAttribute("BUSY", true)
 				WorkerService:SetCrate(player, crateName, crateRef.Name, nil)
+				FunnelService:AddEvent(player, "PLACE_CRATE")
 				continue
 			end
 		end
@@ -278,7 +280,7 @@ function WorkerService:ChangeWorker(player: Player)
 		local breakerFolder = containersModel:WaitForChild("Breaker")
 		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
 		local scale = breakerFolder[breakerCapacity]:GetAttribute("SCALE")
-		print(scale)
+		
 		return scale
 	end
 

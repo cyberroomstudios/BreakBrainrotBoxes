@@ -16,6 +16,7 @@ local ToolService = require(ServerScriptService.Modules.ToolService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local CrateService = require(ServerScriptService.Modules.CrateService)
 local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
+local FunnelService = require(ServerScriptService.Modules.FunnelService)
 
 local globalStock = {}
 local playerStock = {}
@@ -54,7 +55,6 @@ function StockService:Start()
 
 		while true do
 			if currentTime <= 0 then
-				
 				StockService:RestockAll()
 				stockUpdateIndex = stockUpdateIndex + 1
 				workspace:SetAttribute("STOCK_UPDATE_INDEX", stockUpdateIndex)
@@ -195,7 +195,7 @@ function StockService:BuyItem(player: Player, itemName: string)
 	playerStock[player][itemName] = playerStock[player][itemName] - 1
 	MoneyService:ConsumeMoney(player, crateEnum.Price)
 	CrateService:Give(player, itemName)
-
+	FunnelService:AddEvent(player, "BUY_CRATE")
 	return playerStock[player][itemName]
 end
 

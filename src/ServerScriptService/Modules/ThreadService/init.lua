@@ -8,6 +8,7 @@ local BaseService = require(ServerScriptService.Modules.BaseService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local FunnelService = require(ServerScriptService.Modules.FunnelService)
 
 local animations = {}
 
@@ -149,6 +150,7 @@ function ThreadService:StartBreaker(player: Player)
 					crateRefPosition:SetAttribute("BUSY", false)
 					crate:Destroy()
 					WorkerService:CreateBrainrot(player, crateType, crateRefPosition)
+					FunnelService:AddEvent(player, "OPEN_CRATE")
 				end
 
 				continue
