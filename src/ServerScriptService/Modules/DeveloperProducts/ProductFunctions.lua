@@ -103,6 +103,19 @@ ProductFunctions[DeveloperProducts:GetEnum("SOLDIER_BREAKER").Id] = function(rec
 	return true
 end
 
+ProductFunctions[DeveloperProducts:GetEnum("SAHUR_BREAKER").Id] = function(receipt, player)
+	UpgradeService:BuyBreaker(player, "Sahur", false)
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SAHUR_BREAKER").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("OP_CRATE").Id] = function(receipt, player)
+	CrateService:Give(player, "Lava")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("OP_CRATE").Id)
+	return true
+end
+
 ProductFunctions[DeveloperProducts:GetEnum("RESTOCK_ALL").Id] = function(receipt, player)
 	StockService:BuyRestockAll()
 	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("RESTOCK_ALL").Id)

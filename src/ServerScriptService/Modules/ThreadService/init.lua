@@ -106,20 +106,44 @@ function ThreadService:StartBreaker(player: Player)
 		end
 
 		if not animations[breakerModel] then
-			local humanoid = breakerModel:WaitForChild("Humanoid")
 			local currentBreaker = PlayerDataHandler:Get(player, "crateBreaker").Equiped
-			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Attack
-			local track = humanoid:LoadAnimation(animation)
+			local animationsFolder = ReplicatedStorage.Animations.Breakers[currentBreaker]
+
+			-- Definir a animação com base na existência do Humanoid
+			local humanoid = breakerModel:FindFirstChild("Humanoid")
+			local animationController
+			local animator
+			local animation
+
+			if humanoid then
+				animator = humanoid
+				animation = animationsFolder.Attack
+			else
+				animationController = breakerModel:WaitForChild("AnimationController")
+				animator = animationController:WaitForChild("Animator")
+				animation = animationsFolder.Attack
+			end
+
+			-- Carregar a animação
+			local track = animator:LoadAnimation(animation)
 			track.Looped = false
 			track.Priority = Enum.AnimationPriority.Action
 
-			track:GetMarkerReachedSignal("HIT"):Connect(function(param)
-				local crates = workspace.Runtime[player.UserId].Crates
-				for _, crate in crates:GetChildren() do
-					crate.PrimaryPart.CrateHit:Emit(20)
+			-- Conectar o HIT uma vez
+			track:GetMarkerReachedSignal("HIT"):Connect(function()
+				local cratesFolder = workspace.Runtime[player.UserId]:FindFirstChild("Crates")
+				if not cratesFolder then
+					return
+				end
+
+				for _, crate in ipairs(cratesFolder:GetChildren()) do
+					if crate.PrimaryPart and crate.PrimaryPart:FindFirstChild("CrateHit") then
+						crate.PrimaryPart.CrateHit:Emit(20)
+					end
 				end
 			end)
 
+			-- Guardar referência
 			animations[breakerModel] = track
 		end
 

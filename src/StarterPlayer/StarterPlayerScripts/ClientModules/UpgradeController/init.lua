@@ -58,6 +58,7 @@ local devProductBreakersPrice = {
 	["Ninja"] = 0,
 	["Warrior"] = 0,
 	["Soldier"] = 0,
+	["Sahur"] = 0,
 }
 
 local devProductsBreakers = {
@@ -66,6 +67,7 @@ local devProductsBreakers = {
 	["Ninja"] = "NINJA_BREAKER",
 	["Warrior"] = "WARRIOR_BREAKER",
 	["Soldier"] = "SOLDIER_BREAKER",
+	["Sahur"] = "SAHUR_BREAKER",
 }
 
 function UpgradesController:Init(data)
@@ -143,6 +145,7 @@ function UpgradesController:UpdateBreakers()
 		"Noob",
 		"Soldier",
 		"Warrior",
+		"Sahur",
 	}
 
 	for _, modelName in models do
@@ -181,7 +184,9 @@ function UpgradesController:UpdateInfoButtons(breakerName: string)
 		local buyWithRobuxTextLabel = display:WaitForChild("BuyWithRobux"):WaitForChild("TextLabel")
 
 		local breakersEnum = Breakers[breakerName]
-		textLabel.Text = "$" .. ClientUtil:FormatNumberToSuffixes(breakersEnum.Price)
+		if not breakersEnum.OnlyRobux then
+			textLabel.Text = "$" .. ClientUtil:FormatNumberToSuffixes(breakersEnum.Price)
+		end
 
 		buyWithRobuxTextLabel.Text = utf8.char(0xE002) .. devProductBreakersPrice[breakerName]
 	end)
@@ -202,6 +207,7 @@ function UpgradesController:InitBreakersButtons()
 		"Noob",
 		"Soldier",
 		"Warrior",
+		"Sahur",
 	}
 
 	for _, value in breakersName do
@@ -221,6 +227,9 @@ function UpgradesController:InitBreakersButtons()
 				breakersFrame:WaitForChild("Items").Buttons.Display.Equip.Visible = false
 				breakersFrame:WaitForChild("Items").Buttons.Display.Buy.Visible = true
 				breakersFrame:WaitForChild("Items").Buttons.Display.BuyWithRobux.Visible = true
+				if Breakers[selectBreakerItem].OnlyRobux then
+					breakersFrame:WaitForChild("Items").Buttons.Display.Buy.Visible = false
+				end
 			end
 
 			-- Atualizando as informações de preço dos botões
@@ -419,6 +428,7 @@ function UpgradesController:CreateBreakerViewPort()
 		"Noob",
 		"Soldier",
 		"Warrior",
+		"Sahur",
 	}
 
 	for _, modelName in models do
@@ -439,12 +449,14 @@ function UpgradesController:CreateBreakerViewPort()
 
 			item.Display.InfoItem.Frame.Power.Text = "+" .. breakersEnum.Boosts.Power
 			item.Display.InfoItem.Frame.Speed.Text = "+" .. breakersEnum.Boosts.Speed
-			item.Display.PriceAndStatus.Price.Text = ClientUtil:FormatToUSD(breakersEnum.Price)
+			if not breakersEnum.OnlyRobux then
+				item.Display.PriceAndStatus.Price.Text = ClientUtil:FormatToUSD(breakersEnum.Price)
+			end
 
 			local viewPort = item:WaitForChild("Display"):WaitForChild("Breaker")
 			newItem.Parent = viewPort.WorldModel
 
-			local humanoid = newItem:WaitForChild("Humanoid")
+			--local humanoid = newItem:WaitForChild("Humanoid")
 			--	local animation = ReplicatedStorage.Animations.Worker.Iddle
 
 			--	local track = humanoid:LoadAnimation(animation)

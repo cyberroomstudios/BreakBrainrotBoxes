@@ -261,12 +261,22 @@ function WorkerService:EnableWorker(player: Player)
 		newBreaker.Name = "Breaker"
 
 		-- Tirando nome
+		-- Tirando nome
 		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
-		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		if humanoid then
+			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
+			local track = humanoid:LoadAnimation(animation)
+			track.Priority = Enum.AnimationPriority.Idle
+			track:Play()
+		else
+			local animationController = newBreaker:WaitForChild("AnimationController")
+			local animator = animationController:WaitForChild("Animator")
+			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 
-		local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
-		local track = humanoid:LoadAnimation(animation)
-		track:Play()
+			local animationTrack = animator:LoadAnimation(animation)
+			animationTrack:Play()
+		end
 	end
 end
 
@@ -280,7 +290,7 @@ function WorkerService:ChangeWorker(player: Player)
 		local breakerFolder = containersModel:WaitForChild("Breaker")
 		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
 		local scale = breakerFolder[breakerCapacity]:GetAttribute("SCALE")
-		
+
 		return scale
 	end
 
@@ -313,12 +323,20 @@ function WorkerService:ChangeWorker(player: Player)
 
 		-- Tirando nome
 		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
-		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		if humanoid then
+			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
+			local track = humanoid:LoadAnimation(animation)
+			track.Priority = Enum.AnimationPriority.Idle
+			track:Play()
+		else
+			local animationController = newBreaker:WaitForChild("AnimationController")
+			local animator = animationController:WaitForChild("Animator")
+			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 
-		local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
-		local track = humanoid:LoadAnimation(animation)
-		track.Priority = Enum.AnimationPriority.Idle
-		track:Play()
+			local animationTrack = animator:LoadAnimation(animation)
+			animationTrack:Play()
+		end
 	end
 
 	WorkerService:ScaleBreaker(player, getScale())

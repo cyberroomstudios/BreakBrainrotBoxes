@@ -40,6 +40,10 @@ function UpgradeService:InitBridgeListener()
 
 		if data[actionIdentifier] == "BuyBreaker" then
 			local breakerType = data.data.BreakerName
+			if Breakers[breakerType].OnlyRobux then
+				return
+			end
+
 			return UpgradeService:BuyBreaker(player, breakerType, true)
 		end
 
@@ -180,7 +184,7 @@ function UpgradeService:EnableCrates(player)
 		local breakerFolder = containersModel:WaitForChild("Breaker")
 		local breakerCapacity = PlayerDataHandler:Get(player, "crateBreaker").Capacity
 		local scale = breakerFolder[breakerCapacity]:GetAttribute("SCALE")
-		
+
 		return scale
 	end
 

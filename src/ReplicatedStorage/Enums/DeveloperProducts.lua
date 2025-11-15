@@ -78,6 +78,15 @@ DeveloperProducts.ENUM = {
 		Name = "SOLDIER_BREAKER",
 		Id = 3450657830,
 	},
+	SAHUR_BREAKER = {
+		Name = "SAHUR_BREAKER",
+		Id = 3455868462,
+	},
+
+	OP_CRATE = {
+		Name = "OP_CRATE",
+		Id = 3455930719,
+	},
 }
 
 function DeveloperProducts:GetEnum(name: string): DeveloperProduct
