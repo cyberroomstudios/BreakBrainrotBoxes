@@ -63,6 +63,7 @@ function StartGameService:InitBridgeListener()
 			ThreadService:StartBreaker(player)
 			GamepassManager:InitGamePassesFromPlayer(player)
 			MoneyService:GiveInitialMoney(player)
+			PlotService:SetBaseName(player)
 			FunnelService:AddEvent(player, "LOADING_ALL_GAME")
 		end
 	end

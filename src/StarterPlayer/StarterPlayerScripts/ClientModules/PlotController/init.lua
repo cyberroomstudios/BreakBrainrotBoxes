@@ -56,6 +56,19 @@ function PlotController:DeleteCashMultiplier()
 	end
 end
 
+function PlotController:DeleteYourBaseIndicator()
+	local baseNumber = player:GetAttribute("BASE")
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if tonumber(value.Name) ~= tonumber(baseNumber) then
+			local multiplierZone = ClientUtil:WaitForDescendants(value, "Main", "YourBase")
+
+			multiplierZone:Destroy()
+		end
+	end
+end
+
 function PlotController:UpdateCashMultiplier(cashMultiplier)
 	local baseNumber = player:GetAttribute("BASE")
 	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()

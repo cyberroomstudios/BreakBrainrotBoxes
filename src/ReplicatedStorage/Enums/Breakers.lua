@@ -51,11 +51,11 @@ local Breakers = table.freeze({
 
 	["Sahur"] = {
 		Name = "Sahur",
-		
+
 		OnlyRobux = true,
 		Boosts = {
 			Speed = 3,
-			Power = 1000,
+			Power = 10,
 		},
 	},
 })

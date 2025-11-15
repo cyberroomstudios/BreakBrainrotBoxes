@@ -33,6 +33,7 @@ function StartGameController:Init(data)
 	OfflineMoneyController:Open()
 	PlotController:ConfigureGamepasses()
 	PlotController:DeleteCashMultiplier()
+	PlotController:DeleteYourBaseIndicator()
 	PlotController:UpdateCashMultiplier(player:GetAttribute("CASH_MULTIPLIER") or 1)
 
 	SoundManager:StartOrPauseBGM()

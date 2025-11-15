@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local UtilService = {}
 
 function UtilService:Init() end
@@ -90,6 +91,26 @@ function UtilService:FormatToUSD(number)
 		return "$" .. beforeDecimal .. "." .. afterDecimal
 	else
 		return "$" .. beforeDecimal
+	end
+end
+
+function UtilService:GetThumb(playerId: number)
+	local thumbType = Enum.ThumbnailType.HeadShot
+	local thumbSize = Enum.ThumbnailSize.Size420x420
+	local content, isReady = Players:GetUserThumbnailAsync(playerId, thumbType, thumbSize)
+
+	if content and isReady then
+		return content
+	end
+end
+
+function UtilService:GetPlayerNameById(playerId)
+	local success, playerName = pcall(function()
+		return Players:GetNameFromUserIdAsync(playerId)
+	end)
+
+	if success then
+		return playerName
 	end
 end
 return UtilService

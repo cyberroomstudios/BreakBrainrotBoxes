@@ -275,6 +275,8 @@ function WorkerService:EnableWorker(player: Player)
 			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 
 			local animationTrack = animator:LoadAnimation(animation)
+			animationTrack.Priority = Enum.AnimationPriority.Idle
+
 			animationTrack:Play()
 		end
 	end

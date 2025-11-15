@@ -11,6 +11,7 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
 local ServerScriptService = game:GetService("ServerScriptService")
+local Workspace = game:GetService("Workspace")
 
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
@@ -20,6 +21,7 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
 local ToolService = require(ServerScriptService.Modules.ToolService)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
+local UtilService = require(ServerScriptService.Modules.UtilService)
 
 function PlotService:Init()
 	PlotService:InitBridgeListener()
@@ -140,6 +142,50 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 	return false
 end
 
+function PlotService:SetBaseName(player: Player)
+	pcall(function()
+		local playerFolder = Workspace.Runtime:FindFirstChild(player.UserId)
+		local brainrotFolder = playerFolder:FindFirstChild("Brainrots")
+
+		local base = BaseService:GetBase(player)
+		local main = base:WaitForChild("Main")
+		local baseName = main:WaitForChild("BaseName")
+		local infosPart = baseName:WaitForChild("Infos")
+		local surfaceGui = infosPart:WaitForChild("SurfaceGui")
+		local withPlayer = surfaceGui:WaitForChild("WithPlayer")
+		local withoutPlayer = surfaceGui:WaitForChild("WithoutPlayer")
+
+		withPlayer.Visible = true
+		withoutPlayer.Visible = false
+
+		withPlayer.Infos.PlayerName.Text = UtilService:GetPlayerNameById(player.UserId)
+		withPlayer.ImageFrame.ImageLabel.Image = UtilService:GetThumb(player.UserId)
+
+		local function updateMoney()
+			if brainrotFolder.Parent then
+				brainrotFolder = playerFolder:FindFirstChild("Brainrots")
+
+				local totalMoney = 0
+
+				for _, value in brainrotFolder:GetChildren() do
+					local brainrotEnum = Brainrots[value.Name]
+					totalMoney = totalMoney + brainrotEnum.MoneyPerSecond
+				end
+				withPlayer.Infos.PlayerMoney.Text = UtilService:FormatToUSD(totalMoney) .. "/s"
+			end
+		end
+
+		updateMoney()
+
+		brainrotFolder.ChildAdded:Connect(function(child)
+			updateMoney()
+		end)
+
+		brainrotFolder.ChildRemoved:Connect(function(child)
+			updateMoney()
+		end)
+	end)
+end
 function PlotService:RelesePlot(player: Player, plotNumber: number)
 	local base = BaseService:GetBase(player)
 	local main = base:WaitForChild("Main")
