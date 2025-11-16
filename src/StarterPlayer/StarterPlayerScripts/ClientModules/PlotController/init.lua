@@ -14,6 +14,7 @@ local player = Players.LocalPlayer
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local GamepassController = require(Players.LocalPlayer.PlayerScripts.ClientModules.GamepassController)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 
 local cooldowns = {}
 
@@ -350,6 +351,7 @@ function PlotController:StartTouchGetMoney()
 			})
 
 			if result and result > 0 then
+				SoundManager:Play("GET_MONEY_PLOT")
 				emitter:Emit(20)
 			end
 

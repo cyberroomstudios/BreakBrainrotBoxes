@@ -210,10 +210,12 @@ function ThreadService:StartBreaker(player: Player)
 
 	task.spawn(function()
 		while player.Parent do
+			print("Rodando")
+
 			pcall(function()
 				-- Verifica se tem alguma caixa para quebrar
 				local hasCrate = hasCrate()
-
+				print(hasCrate)
 				if hasCrate then
 					-- Roda a animação
 					local animation = getAnimation()
@@ -225,16 +227,15 @@ function ThreadService:StartBreaker(player: Player)
 					animation:Play()
 
 					-- Espera a animação acabar
-					animation.Stopped:Wait()
-
+					--animation.Stopped:Wait()
+					task.wait(2)
 					-- Dar o dano em todas as caixas
 					damageAllCrate()
 				end
 
 				-- Aguarda o temo para o proximo ciclo
+				waitNextCycle()
 			end)
-
-			waitNextCycle()
 		end
 	end)
 end
