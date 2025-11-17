@@ -212,16 +212,17 @@ function ThreadService:StartBreaker(player: Player)
 
 	local function UpdateNextHitbillboard()
 		pcall(function()
-			local speedData = PlayerDataHandler:Get(player, "crateBreaker").Speed
+			local speedFromData = Upgrades.Speed[PlayerDataHandler:Get(player, "crateBreaker").Speed].Value
+			local speedFromBreaker = Breakers[PlayerDataHandler:Get(player, "crateBreaker").Equiped].Boosts.Speed
+			print("Speed From Data:" .. speedFromData)
+			print("Speed From Breaker:" .. speedFromData)
 
-			local time = Upgrades.Speed[speedData].Time
-
-			local speedBreaker = Breakers[PlayerDataHandler:Get(player, "crateBreaker").Equiped].Boosts.Speed
-			time = time + speedBreaker
-
+			local time = speedFromData + speedFromBreaker
+			print("Time:" .. time)
 			if time < 1 then
 				time = 1
 			end
+
 			local nextHit = breakersAreaFolder:WaitForChild("NextHit")
 
 			local waiting = nextHit:WaitForChild("Waiting")
@@ -252,8 +253,6 @@ function ThreadService:StartBreaker(player: Player)
 
 	task.spawn(function()
 		while player.Parent do
-			print("Rodando")
-
 			pcall(function()
 				-- Verifica se tem alguma caixa para quebrar
 				local hasCrate = hasCrate()

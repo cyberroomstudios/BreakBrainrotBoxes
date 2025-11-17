@@ -175,10 +175,11 @@ function UpgradeService:ConfigureWorkerCapacity(player: Player)
 end
 
 function UpgradeService:EnableCrates(player)
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:WaitForChild("BreakersArea")
+
 	local function getScale()
-		local base = BaseService:GetBase(player)
-		local main = base:FindFirstChild("Main")
-		local breakersAreaFolder = main:WaitForChild("BreakersArea")
 		local containersFolder = breakersAreaFolder:WaitForChild("Containers")
 		local containersModel = containersFolder:WaitForChild("Container")
 		local breakerFolder = containersModel:WaitForChild("Breaker")
@@ -192,9 +193,24 @@ function UpgradeService:EnableCrates(player)
 
 	for i = 1, capacity do
 		WorkerService:EnableCrate(player, i)
+		if i > 1 then
+		end
 	end
 
 	WorkerService:ScaleBreaker(player, getScale())
+
+	if PlayerDataHandler:Get(player, "crateBreaker").Equiped == "Sahur" then
+		local nextHit = breakersAreaFolder:WaitForChild("NextHit")
+		if nextHit then
+			nextHit.Position = Vector3.new(nextHit.Position.X, 17.98 + (capacity * 2), nextHit.Position.Z)
+		end
+		return
+	end
+
+	local nextHit = breakersAreaFolder:WaitForChild("NextHit")
+	if nextHit then
+		nextHit.Position = Vector3.new(nextHit.Position.X, 14.98 + capacity, nextHit.Position.Z)
+	end
 end
 
 function UpgradeService:UpdateBreakers(player: Player)

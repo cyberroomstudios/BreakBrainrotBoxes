@@ -1,81 +1,165 @@
 local Upgrades = table.freeze({
 	["Power"] = {
-		[1] = 0,
-		[2] = 100,
-		[3] = 200,
-		[4] = 300,
-		[5] = 400,
-		[6] = 500,
-		[7] = 600,
-		[8] = 700,
+		[1] = {
+			Value = 1,
+			Price = 0,
+		},
+		[2] = {
+			Value = 2,
+			Price = 100,
+		},
+		[3] = {
+			Value = 3,
+			Price = 200,
+		},
+		[4] = {
+			Value = 4,
+			Price = 400,
+		},
+		[5] = {
+			Value = 5,
+			Price = 500,
+		},
+		[6] = {
+			Value = 6,
+			Price = 600,
+		},
+		[7] = {
+			Value = 7,
+			Price = 700,
+		},
+		[8] = {
+			Value = 8,
+			Price = 800,
+		},
 	},
 
 	["Speed"] = {
 		[1] = {
-			Time = 10,
+			Value = 10,
 			Price = 0,
 		},
 		[2] = {
-			Time = 9,
+			Value = 9,
 			Price = 100,
 		},
 		[3] = {
-			Time = 8,
+			Value = 8,
 			Price = 200,
 		},
 		[4] = {
-			Time = 7,
+			Value = 7,
 			Price = 300,
 		},
 		[5] = {
-			Time = 6,
+			Value = 6,
 			Price = 400,
 		},
 		[6] = {
-			Time = 5,
+			Value = 5,
 			Price = 500,
 		},
 		[7] = {
-			Time = 4,
+			Value = 4,
 			Price = 600,
 		},
 		[8] = {
-			Time = 3,
+			Value = 3,
 			Price = 700,
 		},
 
 		[9] = {
-			Time = 2,
+			Value = 2,
 			Price = 800,
 		},
 
 		[10] = {
-			Time = 1,
+			Value = 1,
 			Price = 900,
 		},
 	},
 
 	["Capacity"] = {
-		[1] = 0,
-		[2] = 100,
-		[3] = 200,
-		[4] = 300,
-		[5] = 400,
-		[6] = 500,
-		[7] = 600,
-		[8] = 700,
-		[9] = 700,
-		[10] = 700,
-		[11] = 700,
-		[12] = 700,
-		[13] = 700,
-		[14] = 700,
-		[15] = 700,
-		[16] = 700,
-		[17] = 700,
-		[18] = 700,
-		[19] = 700,
-		[20] = 700,
+		[1] = {
+			Value = 1,
+			Price = 0,
+		},
+		[2] = {
+			Value = 2,
+			Price = 100,
+		},
+		[3] = {
+			Value = 3,
+			Price = 200,
+		},
+		[4] = {
+			Value = 4,
+			Price = 400,
+		},
+		[5] = {
+			Value = 5,
+			Price = 500,
+		},
+		[6] = {
+			Value = 6,
+			Price = 600,
+		},
+		[7] = {
+			Value = 7,
+			Price = 700,
+		},
+		[8] = {
+			Value = 8,
+			Price = 800,
+		},
+		[9] = {
+			Value = 9,
+			Price = 800,
+		},
+		[10] = {
+			Value = 10,
+			Price = 800,
+		},
+		[11] = {
+			Value = 11,
+			Price = 800,
+		},
+		[12] = {
+			Value = 12,
+			Price = 800,
+		},
+		[13] = {
+			Value = 13,
+			Price = 800,
+		},
+		[14] = {
+			Value = 14,
+			Price = 800,
+		},
+		[15] = {
+			Value = 15,
+			Price = 800,
+		},
+		[16] = {
+			Value = 16,
+			Price = 800,
+		},
+		[17] = {
+			Value = 17,
+			Price = 800,
+		},
+		[18] = {
+			Value = 18,
+			Price = 800,
+		},
+		[19] = {
+			Value = 19,
+			Price = 800,
+		},
+		[20] = {
+			Value = 20,
+			Price = 800,
+		},
 	},
 })
 
