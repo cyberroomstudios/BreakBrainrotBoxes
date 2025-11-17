@@ -113,4 +113,8 @@ function UtilService:GetPlayerNameById(playerId)
 		return playerName
 	end
 end
+
+function UtilService:Color3(a, b, c)
+	return Color3.new(a / 255, b / 255, c / 255)
+end
 return UtilService

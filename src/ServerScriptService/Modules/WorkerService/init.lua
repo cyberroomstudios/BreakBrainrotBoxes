@@ -261,7 +261,6 @@ function WorkerService:EnableWorker(player: Player)
 		newBreaker.Name = "Breaker"
 
 		-- Tirando nome
-		-- Tirando nome
 		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
 		if humanoid then
 			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
@@ -337,6 +336,7 @@ function WorkerService:ChangeWorker(player: Player)
 			local animation = ReplicatedStorage.Animations.Breakers[currentBreaker].Idle
 
 			local animationTrack = animator:LoadAnimation(animation)
+			animationTrack.Priority = Enum.AnimationPriority.Idle
 			animationTrack:Play()
 		end
 	end

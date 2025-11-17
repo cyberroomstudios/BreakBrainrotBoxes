@@ -4,7 +4,7 @@ local Breakers = table.freeze({
 		Price = 10000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = 3,
+			Speed = 0,
 			Power = 2,
 		},
 	},
@@ -14,7 +14,7 @@ local Breakers = table.freeze({
 		Price = 200000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = 5,
+			Speed = -1,
 			Power = 10,
 		},
 	},
@@ -24,7 +24,7 @@ local Breakers = table.freeze({
 		Price = 32000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = 1,
+			Speed = -2,
 			Power = 20,
 		},
 	},
@@ -34,7 +34,7 @@ local Breakers = table.freeze({
 		Price = 400000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = 4,
+			Speed = -3,
 			Power = 10,
 		},
 	},
@@ -44,17 +44,16 @@ local Breakers = table.freeze({
 		Price = 100000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = 3,
+			Speed = -4,
 			Power = 10,
 		},
 	},
 
 	["Sahur"] = {
 		Name = "Sahur",
-
 		OnlyRobux = true,
 		Boosts = {
-			Speed = 3,
+			Speed = -5,
 			Power = 10,
 		},
 	},

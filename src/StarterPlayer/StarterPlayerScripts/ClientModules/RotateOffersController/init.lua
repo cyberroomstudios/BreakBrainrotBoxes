@@ -33,9 +33,9 @@ function RotateOffersController:ConfigurePosition()
 		and not UserInputService.MouseEnabled
 
 	if isMobile then
-		rotateContent.Position = UDim2.fromScale(0.784, 0.042)
+		rotateContent.Position = UDim2.fromScale(0.785, 0.211)
 	else
-		rotateContent.Position = UDim2.fromScale(0.08, 0.1)
+		rotateContent.Position = UDim2.fromScale(-0.025, 0.05)
 	end
 end
 
@@ -160,13 +160,17 @@ function RotateOffersController:ConfigurePulseAnimation()
 end
 
 function RotateOffersController:ConfigureSahurAnimation()
-	local sahur = ClientUtil:WaitForDescendants(rotateOfferSahur, "Breaker", "WorldModel", "Sahur")
-	local animationController = sahur:WaitForChild("AnimationController")
-	local animator = animationController:WaitForChild("Animator")
-	local animation = ReplicatedStorage.Animations.Breakers.Sahur.Idle
+	local function playAnimation(sahur)
+		local animationController = sahur:WaitForChild("AnimationController")
+		local animator = animationController:WaitForChild("Animator")
+		local animation = ReplicatedStorage.Animations.Breakers.Sahur.Idle
 
-	local animationTrack = animator:LoadAnimation(animation)
-	animationTrack:Play()
+		local animationTrack = animator:LoadAnimation(animation)
+		animationTrack:Play()
+	end
+
+	playAnimation(ClientUtil:WaitForDescendants(rotateOfferSahur, "Breaker", "WorldModel", "Sahur"))
+	playAnimation(ClientUtil:WaitForDescendants(rotateOfferSahur, "Shadow", "WorldModel", "Sahur"))
 end
 
 return RotateOffersController

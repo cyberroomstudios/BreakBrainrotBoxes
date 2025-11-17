@@ -337,7 +337,7 @@ function UpgradesController:UpdatePowerText(value: number)
 end
 
 function UpgradesController:UpdateSpeedText(value: number)
-	local item = Upgrades["Speed"][value + 1]
+	local item = Upgrades["Speed"][value]
 
 	if not item then
 		maximumReachedSpeed.Visible = true
@@ -346,9 +346,16 @@ function UpgradesController:UpdateSpeedText(value: number)
 		return
 	end
 
-	currentSpeed.Text = value
-	nextSpeed.Text = value + 1
-	buySpeedFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item)
+	if not Upgrades["Speed"][value + 1] then
+		maximumReachedSpeed.Visible = true
+		numberInformationSpeed.Visible = false
+		buySpeedFrame.Visible = false
+		return
+	end
+
+	currentSpeed.Text = item.Time .. "s"
+	nextSpeed.Text = Upgrades["Speed"][value + 1].Time .. "s"
+	buySpeedFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item.Price)
 end
 
 function UpgradesController:UpdateCapacityText(value: number)
@@ -448,7 +455,7 @@ function UpgradesController:CreateBreakerViewPort()
 			end
 
 			item.Display.InfoItem.Frame.Power.Text = "+" .. breakersEnum.Boosts.Power
-			item.Display.InfoItem.Frame.Speed.Text = "+" .. breakersEnum.Boosts.Speed
+			item.Display.InfoItem.Frame.Speed.Text = breakersEnum.Boosts.Speed .. "s"
 			if not breakersEnum.OnlyRobux then
 				item.Display.PriceAndStatus.Price.Text = ClientUtil:FormatToUSD(breakersEnum.Price)
 			end

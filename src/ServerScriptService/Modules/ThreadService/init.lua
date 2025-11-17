@@ -9,6 +9,8 @@ local UtilService = require(ServerScriptService.Modules.UtilService)
 local WorkerService = require(ServerScriptService.Modules.WorkerService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
+local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
+local Breakers = require(ReplicatedStorage.Enums.Breakers)
 
 local animations = {}
 
@@ -79,6 +81,20 @@ function ThreadService:StartBreaker(player: Player)
 	local breakerModel = breakerFolder:FindFirstChild("Breaker")
 	local crateRefFolder = containersModel:WaitForChild("CrateRef")
 
+	local function hasCrate()
+		if not player.Parent then
+			return
+		end
+
+		local crates = workspace.Runtime[player.UserId].Crates
+
+		for _, crate in crates:GetChildren() do
+			return true
+		end
+
+		return false
+	end
+
 	local function updateCrateBillboardGui(crate: Model)
 		if not player.Parent then
 			return
@@ -93,6 +109,38 @@ function ThreadService:StartBreaker(player: Player)
 			local maxXp = crate:GetAttribute("MAX_XP")
 
 			textLabel.Text = currentXp .. "/" .. maxXp
+		end
+	end
+
+	local function damageAllCrate()
+		if not player.Parent then
+			return
+		end
+
+		local workerPower = player:GetAttribute("Power")
+
+		local crates = workspace.Runtime[player.UserId].Crates
+
+		for _, crate in crates:GetChildren() do
+			local currentXp = crate:GetAttribute("CURRENT_XP")
+			local newCurrent = currentXp - workerPower
+			crate:SetAttribute("CURRENT_XP", newCurrent)
+			updateCrateBillboardGui(crate)
+
+			if crate:GetAttribute("CURRENT_XP") <= 0 then
+				local crateType = crate:GetAttribute("CRATE_TYPE")
+				local positionNumber = crate:GetAttribute("POSITION_NUMBER")
+				local crateRefPosition = crateRefFolder:FindFirstChild(positionNumber)
+
+				if crateRefPosition then
+					crateRefPosition:SetAttribute("BUSY", false)
+					crate:Destroy()
+					WorkerService:CreateBrainrot(player, crateType, crateRefPosition)
+					FunnelService:AddEvent(player, "OPEN_CRATE")
+				end
+
+				continue
+			end
 		end
 	end
 
@@ -141,6 +189,8 @@ function ThreadService:StartBreaker(player: Player)
 						crate.PrimaryPart.CrateHit:Emit(20)
 					end
 				end
+
+				damageAllCrate()
 			end)
 
 			-- Guardar referência
@@ -150,62 +200,54 @@ function ThreadService:StartBreaker(player: Player)
 		return animations[breakerModel]
 	end
 
-	local function damageAllCrate()
-		if not player.Parent then
-			return
-		end
+	local function setWaitingForCrate()
+		pcall(function()
+			local nextHit = breakersAreaFolder:WaitForChild("NextHit")
+			local waiting = nextHit:WaitForChild("Waiting")
+			local timeBillboard = nextHit:WaitForChild("Time")
+			waiting.Enabled = true
+			timeBillboard.Enabled = false
+		end)
+	end
 
-		local workerPower = player:GetAttribute("Power")
+	local function UpdateNextHitbillboard()
+		pcall(function()
+			local speedData = PlayerDataHandler:Get(player, "crateBreaker").Speed
 
-		local crates = workspace.Runtime[player.UserId].Crates
+			local time = Upgrades.Speed[speedData].Time
 
-		for _, crate in crates:GetChildren() do
-			local currentXp = crate:GetAttribute("CURRENT_XP")
-			local newCurrent = currentXp - workerPower
-			crate:SetAttribute("CURRENT_XP", newCurrent)
-			updateCrateBillboardGui(crate)
+			local speedBreaker = Breakers[PlayerDataHandler:Get(player, "crateBreaker").Equiped].Boosts.Speed
+			time = time + speedBreaker
 
-			if crate:GetAttribute("CURRENT_XP") <= 0 then
-				local crateType = crate:GetAttribute("CRATE_TYPE")
-				local positionNumber = crate:GetAttribute("POSITION_NUMBER")
-				local crateRefPosition = crateRefFolder:FindFirstChild(positionNumber)
+			if time < 1 then
+				time = 1
+			end
+			local nextHit = breakersAreaFolder:WaitForChild("NextHit")
 
-				if crateRefPosition then
-					crateRefPosition:SetAttribute("BUSY", false)
-					crate:Destroy()
-					WorkerService:CreateBrainrot(player, crateType, crateRefPosition)
-					FunnelService:AddEvent(player, "OPEN_CRATE")
+			local waiting = nextHit:WaitForChild("Waiting")
+			local timeBillboard = nextHit:WaitForChild("Time")
+			waiting.Enabled = false
+			timeBillboard.Enabled = true
+
+			local textLabel = timeBillboard.TextLabel
+
+			local current = time
+			local lastShown = -1 -- guarda o último valor inteiro mostrado
+
+			while current > 0 do
+				-- mostra apenas quando o valor inteiro muda
+				local intValue = math.floor(current)
+
+				if intValue ~= lastShown then
+					textLabel.Text = intValue
+					lastShown = intValue
 				end
 
-				continue
+				current -= task.wait()
 			end
-		end
-	end
 
-	local function hasCrate()
-		if not player.Parent then
-			return
-		end
-
-		local crates = workspace.Runtime[player.UserId].Crates
-
-		for _, crate in crates:GetChildren() do
-			return true
-		end
-
-		return false
-	end
-
-	local function waitNextCycle()
-		if not player.Parent then
-			return
-		end
-
-		local workerSpeed = player:GetAttribute("Speed")
-		local baseWait = 0.5
-		local reductionPerLevel = 0.05
-		local waitTime = math.max(0.1, baseWait - (workerSpeed - 1) * reductionPerLevel)
-		task.wait(waitTime)
+			textLabel.Text = 0
+		end)
 	end
 
 	task.spawn(function()
@@ -215,7 +257,7 @@ function ThreadService:StartBreaker(player: Player)
 			pcall(function()
 				-- Verifica se tem alguma caixa para quebrar
 				local hasCrate = hasCrate()
-				print(hasCrate)
+
 				if hasCrate then
 					-- Roda a animação
 					local animation = getAnimation()
@@ -225,17 +267,13 @@ function ThreadService:StartBreaker(player: Player)
 					end
 
 					animation:Play()
-
-					-- Espera a animação acabar
-					--animation.Stopped:Wait()
-					task.wait(2)
-					-- Dar o dano em todas as caixas
-					damageAllCrate()
+					task.wait(1)
+					UpdateNextHitbillboard()
+				else
+					setWaitingForCrate()
 				end
-
-				-- Aguarda o temo para o proximo ciclo
-				waitNextCycle()
 			end)
+			task.wait()
 		end
 	end)
 end

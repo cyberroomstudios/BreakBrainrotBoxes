@@ -130,7 +130,7 @@ function UpgradeService:Buy(player: Player, upgradeType: string)
 		return
 	end
 
-	local buyValue = Upgrades[upgradeType][currentUpgrade + 1]
+	local buyValue = Upgrades[upgradeType][currentUpgrade + 1].Price
 
 	if not MoneyService:HasMoney(player, buyValue) then
 		return

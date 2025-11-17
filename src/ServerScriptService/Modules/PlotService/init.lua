@@ -328,7 +328,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		local animation = ReplicatedStorage.Animations.Brainrots:FindFirstChild(newBrainrot.Name)
 		if animation then
 			local track = humanoid:LoadAnimation(animation)
-			track:Play()
+		--	track:Play()
 		end
 	end
 
