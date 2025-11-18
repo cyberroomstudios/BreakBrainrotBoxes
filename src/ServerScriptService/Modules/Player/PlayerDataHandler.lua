@@ -64,6 +64,7 @@ local dataTemplate = {
 	},
 	rewards = {},
 	funnelEvents = {},
+	ftueSteps = {}
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)

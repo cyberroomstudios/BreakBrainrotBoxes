@@ -21,13 +21,14 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 local Crate = require(ReplicatedStorage.Enums.Crate)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 local DeveloperProductController = require(Players.LocalPlayer.PlayerScripts.ClientModules.DeveloperProductController)
+local FTUEController = require(Players.LocalPlayer.PlayerScripts.ClientModules.FTUEController)
 
 --GUI
 local screen -- Tela
 local restockTime -- Inidcador do tempo para restock
 local crateScrollingFrame -- Scrolling Frame dos Itens
 local restockAllCrate
-
+local frameBuyCrateFTUE
 -- Variaveis
 local selectedItem = nil
 
@@ -82,6 +83,7 @@ function CrateShopScreenController:CreateReferences()
 	restockTime = UIReferences:GetReference("CRATE_SHOP_RESTOCK_TIME")
 	crateScrollingFrame = UIReferences:GetReference("CRATES_SHOP_SCROLLING_FRAME")
 	restockAllCrate = UIReferences:GetReference("RESTOCK_ALL_CRATE")
+	frameBuyCrateFTUE = UIReferences:GetReference("FRAME_BUY_CRATE_FTUE")
 end
 
 function CrateShopScreenController:InitDevProductsPrices()
@@ -193,6 +195,8 @@ function CrateShopScreenController:CreateButtonListner()
 	end)
 end
 function CrateShopScreenController:BuildScreen(stockItems)
+	player:SetAttribute("CRATE_SHOP_SCREEN_LOADED", false)
+
 	local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames.CRATES
 
 	-- Atualiza a ordem dos itens, quando algum item é expandido
@@ -217,6 +221,10 @@ function CrateShopScreenController:BuildScreen(stockItems)
 		newItem.Visible = true
 		-- Definindo a ordem
 		newItem.LayoutOrder = value.GUI.Order
+
+		if value.GUI.Order == 1 then
+			frameBuyCrateFTUE.Parent = newItem
+		end
 
 		-- Definindo o ViewPort
 		local viewPortTemplate = viewPortFolder:FindFirstChild(name)
@@ -261,8 +269,11 @@ function CrateShopScreenController:BuildScreen(stockItems)
 			crateScrollingFrame.Buttons.Visible = true
 			updateLayoutOrder(newItem.LayoutOrder)
 			crateScrollingFrame.Buttons.LayoutOrder = newItem.LayoutOrder + 1
+			FTUEController:TryExecuteFTUE("CLICK_SHOW_BUTTON_CRATES")
 		end)
 		newItem.Parent = crateScrollingFrame
 	end
+
+	player:SetAttribute("CRATE_SHOP_SCREEN_LOADED", true)
 end
 return CrateShopScreenController
