@@ -1,4 +1,4 @@
-local ConfettiModule = {}
+local ConfettiController = {}
 
 -- Configurações
 local confettiColors = {
@@ -24,10 +24,10 @@ local confettiSettings = {
 	fadeOutTime = 0.5, -- Tempo para desaparecer (segundos)
 }
 
-function ConfettiModule:Init() end
+function ConfettiController:Init() end
 
 -- Função principal para criar confetes
-function ConfettiModule:CreateConfetti()
+function ConfettiController:CreateConfetti()
 	local parent = game.Players.LocalPlayer.PlayerGui
 
 	-- Cria ScreenGui
@@ -129,7 +129,7 @@ function ConfettiModule:CreateConfetti()
 end
 
 -- Função para ajustar configurações
-function ConfettiModule:SetSettings(newSettings)
+function ConfettiController:SetSettings(newSettings)
 	for key, value in pairs(newSettings) do
 		if confettiSettings[key] ~= nil then
 			confettiSettings[key] = value
@@ -137,4 +137,4 @@ function ConfettiModule:SetSettings(newSettings)
 	end
 end
 
-return ConfettiModule
+return ConfettiController

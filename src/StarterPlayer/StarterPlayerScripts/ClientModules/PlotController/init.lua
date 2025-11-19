@@ -15,6 +15,7 @@ local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.Clien
 local GamepassController = require(Players.LocalPlayer.PlayerScripts.ClientModules.GamepassController)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
+local FTUEController = require(Players.LocalPlayer.PlayerScripts.ClientModules.FTUEController)
 
 local cooldowns = {}
 
@@ -354,6 +355,8 @@ function PlotController:StartTouchGetMoney()
 				SoundManager:Play("GET_MONEY_PLOT")
 				emitter:Emit(20)
 			end
+
+			FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
 
 			task.delay(2, function()
 				cooldowns[value.TouchPart] = false

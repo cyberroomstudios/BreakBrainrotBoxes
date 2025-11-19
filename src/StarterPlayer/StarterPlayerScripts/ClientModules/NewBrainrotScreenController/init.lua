@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local ConfettiController = require(Players.LocalPlayer.PlayerScripts.ClientModules.ConfettiController)
+local FTUEController = require(Players.LocalPlayer.PlayerScripts.ClientModules.FTUEController)
 
 local screen
 
@@ -20,7 +21,7 @@ function NewBrainrotScreenController:Open(data)
 
 	screen.Visible = true
 	NewBrainrotScreenController:PlayTween(brainrotType)
-
+	FTUEController:TryExecuteFTUE("GET_MONEY")
 	task.delay(3, function()
 		local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 		UIStateManager:Close("NEW_GAME")

@@ -95,6 +95,30 @@ function ThreadService:StartBreaker(player: Player)
 		return false
 	end
 
+	local function UpdateContentColor(content, crate)
+		local currentXp = crate:GetAttribute("CURRENT_XP")
+		local maxXp = crate:GetAttribute("MAX_XP")
+
+		if not currentXp or not maxXp or maxXp == 0 then
+			return
+		end
+
+		local percent = currentXp / maxXp -- 0 a 1
+
+		-- Ajusta a cor
+		if percent < 0.40 then
+			content.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- vermelho
+		elseif percent < 0.80 then
+			content.BackgroundColor3 = Color3.fromRGB(255, 255, 0) -- amarelo
+		else
+			-- Mantém cor atual (não altera)
+		end
+
+		-- Ajusta a largura proporcional
+		-- content.Size.X.Scale = percent
+		content.Size = UDim2.fromScale(percent, content.Size.Y.Scale)
+	end
+
 	local function updateCrateBillboardGui(crate: Model)
 		if not player.Parent then
 			return
@@ -103,12 +127,14 @@ function ThreadService:StartBreaker(player: Player)
 		if crate.Parent then
 			local hp = crate.HP
 			local billboardGui = hp.CrateHP
+			local content = billboardGui.Frame.Content
 			local textLabel = billboardGui.Frame.TextLabel
 
 			local currentXp = crate:GetAttribute("CURRENT_XP")
 			local maxXp = crate:GetAttribute("MAX_XP")
 
 			textLabel.Text = currentXp .. "/" .. maxXp
+			UpdateContentColor(content, crate)
 		end
 	end
 

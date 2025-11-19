@@ -90,6 +90,17 @@ function WorkerService:UpdateCrateBillboardGui(crate: Model)
 end
 
 function WorkerService:SetCrate(player: Player, crateName: string, positionRef: number, currentXp: number)
+	local function updateCrateBillboardGui(crate: Model)
+		local hp = crate.HP
+		local billboardGui = hp.CrateHP
+		local textLabel = billboardGui.Frame.TextLabel
+
+		local currentXp = crate:GetAttribute("CURRENT_XP")
+		local maxXp = crate:GetAttribute("MAX_XP")
+
+		textLabel.Text = currentXp .. "/" .. maxXp
+	end
+
 	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
 	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
 
@@ -113,6 +124,7 @@ function WorkerService:SetCrate(player: Player, crateName: string, positionRef: 
 	crate:SetAttribute("CURRENT_XP", currentXp and currentXp or crateEnum.XPToOpen)
 	crate:SetAttribute("CRATE_TYPE", crateName)
 	crate:SetAttribute("POSITION_NUMBER", positionRef)
+	updateCrateBillboardGui(crate)
 
 	--// Pega CFrame e tamanho da bounding box
 	local cf, size = crate:GetBoundingBox()

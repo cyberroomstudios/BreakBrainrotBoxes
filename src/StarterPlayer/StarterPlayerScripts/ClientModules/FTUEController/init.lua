@@ -15,10 +15,12 @@ local player = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
+local ConfettiController = require(Players.LocalPlayer.PlayerScripts.ClientModules.ConfettiController)
 
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
+local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
-local PADDING = 5 -- aumenta 10 pixels em cada lado
+local PADDING = 10 -- aumenta 10 pixels em cada lado
 
 local myBaseButton
 local crateShopButton
@@ -31,6 +33,7 @@ local crateCloseButton
 local placeAllButton
 local ftueStep
 local ftueStepText
+local buyPowerButton
 
 local orderedSteps = {
 	"INIT",
@@ -41,6 +44,10 @@ local orderedSteps = {
 	"GO_TO_BASE",
 	"PLACE_CRATE",
 	"WAITING_FOR_BREAK_CRATE",
+	"GET_MONEY",
+	"GO_TO_UPGRADE",
+	"SHOW_UPGRADE_UI",
+	"FINISH",
 }
 
 local steps = {}
@@ -54,6 +61,33 @@ function FTUEController:Init(data)
 end
 
 function FTUEController:InitListeners()
+	local function configureShopListner()
+		local proximityPart = ClientUtil:WaitForDescendants(
+			workspace,
+			"Map",
+			"Booths",
+			"CrateAndSell",
+			"CrateShop",
+			"ProximityPromptPart"
+		)
+
+		local proximityPrompt = proximityPart.ProximityPrompt
+
+		proximityPrompt.PromptShown:Connect(function()
+			FTUEController:TryExecuteFTUE("OPEN_SHOP_UI")
+		end)
+	end
+
+	local function configureUpgradeListner()
+		local proximityPart = ClientUtil:WaitForDescendants(workspace, "Map", "Upgrade", "ProximityPromptPart")
+
+		local proximityPrompt = proximityPart.ProximityPrompt
+
+		proximityPrompt.PromptShown:Connect(function()
+			FTUEController:TryExecuteFTUE("SHOW_UPGRADE_UI")
+		end)
+	end
+
 	crateShopButton.MouseButton1Click:Connect(function()
 		FTUEController:TryExecuteFTUE("GO_TO_CRATE_SHOP_UI")
 	end)
@@ -74,14 +108,12 @@ function FTUEController:InitListeners()
 		FTUEController:TryExecuteFTUE("WAITING_FOR_BREAK_CRATE")
 	end)
 
-	local proximityPart =
-		ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell", "CrateShop", "ProximityPromptPart")
-
-	local proximityPrompt = proximityPart.ProximityPrompt
-
-	proximityPrompt.PromptShown:Connect(function()
-		FTUEController:TryExecuteFTUE("OPEN_SHOP_UI")
+	buyPowerButton.MouseButton1Click:Connect(function()
+		FTUEController:TryExecuteFTUE("FINISH")
 	end)
+
+	configureShopListner()
+	configureUpgradeListner()
 end
 
 function FTUEController:ShowFTUEStep(text: string)
@@ -148,7 +180,6 @@ function FTUEController:StartFTUE(data)
 	steps["OPEN_SHOP_UI"] = function()
 		FTUEController:HideFTUEStep()
 		while not player:GetAttribute("CRATE_SHOP_SCREEN_LOADED") do
-			print("Aguardando")
 			task.wait()
 		end
 		FTUEController:CloseBeam()
@@ -168,7 +199,7 @@ function FTUEController:StartFTUE(data)
 	steps["GO_TO_BASE"] = function()
 		FTUEController:ShowFTUEStep("Go To Your Base")
 		FTUEController:FocusOnTarget(ftueFocus, myBaseButton)
-		FTUEController:AttachFingerToTarget(ftueFinger, myBaseButton, Vector2.new(0.2, 0.9))
+		FTUEController:AttachFingerToTarget(ftueFinger, myBaseButton, Vector2.new(0.2, 0.7))
 	end
 
 	steps["PLACE_CRATE"] = function()
@@ -181,13 +212,45 @@ function FTUEController:StartFTUE(data)
 		FTUEController:StopFingerAnimations(ftueFinger)
 
 		FTUEController:CreateBeamToPart(proximityPart)
-		FTUEController:AttachFingerToTarget(ftueFinger, placeAllButton, Vector2.new(0.2, 0.9))
+		FTUEController:AttachFingerToTarget(ftueFinger, placeAllButton, Vector2.new(0.2, 0.5))
 	end
 
 	steps["WAITING_FOR_BREAK_CRATE"] = function()
 		FTUEController:ShowFTUEStep("Waiting for break Crate")
 		FTUEController:StopFingerAnimations(ftueFinger)
 		FTUEController:CloseBeam()
+	end
+
+	steps["GET_MONEY"] = function()
+		FTUEController:ShowFTUEStep("Collect Money!")
+		local baseNumber = player:GetAttribute("BASE")
+		local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
+		local plot = ClientUtil:WaitForDescendants(base, "Main", "BrainrotPlots", "1")
+		FTUEController:CreateBeamToPart(plot)
+	end
+
+	steps["GO_TO_UPGRADE"] = function()
+		FTUEController:ShowFTUEStep("Make a Upgrade!")
+		FTUEController:CloseBeam()
+		FTUEController:FocusOnTarget(ftueFocus, upgradeShopButton)
+		FTUEController:AttachFingerToTarget(ftueFinger, upgradeShopButton, Vector2.new(0.2, 0.9))
+	end
+
+	steps["SHOW_UPGRADE_UI"] = function()
+		FTUEController:CloseFocus(ftueFocus)
+
+		FTUEController:AttachFingerToTarget(ftueFinger, buyPowerButton, Vector2.new(0.2, 0.7))
+	end
+
+	steps["FINISH"] = function()
+		FTUEController:ShowFTUEStep("You're Ready! Enjoy The Game!")
+		UIStateManager:Close("UPGRADES")
+		FTUEController:CloseFocus(ftueFocus)
+		FTUEController:StopFingerAnimations(ftueFinger)
+		ConfettiController:CreateConfetti()
+		task.delay(3, function()
+			FTUEController:HideFTUEStep()
+		end)
 	end
 
 	FTUEController:RunNextStep()
@@ -205,6 +268,7 @@ function FTUEController:CreateReferences()
 	placeAllButton = UIReferences:GetReference("PLACE_ALL_BUTTON")
 	ftueStep = UIReferences:GetReference("FTUE_STEP")
 	ftueStepText = UIReferences:GetReference("FTUE_STEP_TEXT")
+	buyPowerButton = UIReferences:GetReference("BUY_POWER")
 end
 
 -----------------------------------------------------
@@ -215,9 +279,10 @@ function FTUEController:FocusOnTarget(focusFrame: Frame, targetUI: GuiObject)
 		return
 	end
 
-	local absSize = targetUI.AbsoluteSize
-	local newSize = UDim2.fromOffset(absSize.X + (PADDING * 4), absSize.Y + (PADDING * 4))
-
+	local targetSize = targetUI.Size
+	local xSize = targetSize.X.Scale * 1.2
+	local ySize = targetSize.Y.Scale * 1.2
+	local newSize = UDim2.new(xSize, targetSize.X.Offset, ySize, targetSize.Y.Offset)
 	focusFrame.Parent = targetUI
 	focusFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	focusFrame.Position = UDim2.fromScale(0.5, 0.5)
@@ -228,6 +293,15 @@ end
 function FTUEController:CloseFocus(focusFrame: Frame)
 	focusFrame.Visible = false
 end
+
+-- Helper: cria tween loop
+local function CreateLoopTween(instance, time, goal)
+	local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true)
+	local tween = TweenService:Create(instance, tweenInfo, goal)
+	tween:Play()
+	return tween
+end
+
 function FTUEController:TweenToTarget(focusFrame: Frame, newTarget: GuiObject, duration: number)
 	if not focusFrame or not newTarget then
 		return
@@ -266,6 +340,10 @@ function FTUEController:TweenToTarget(focusFrame: Frame, newTarget: GuiObject, d
 	tween.Completed:Connect(function()
 		focusFrame.Position = UDim2.fromScale(0.5, 0.5)
 		focusFrame.Size = targetSize
+
+		CreateLoopTween(focusFrame, 0.6, {
+			Size = focusFrame.Size + UDim2.fromScale(0.5, 0.5),
+		})
 	end)
 end
 
@@ -321,6 +399,7 @@ function FTUEController:CreateBeamToModel(targetModel: Model)
 	end
 
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 
 	-- 1) Pega o attachment do jogador (UpperTorso > Torso > HumanoidRootPart)
 	local character = player.Character or player.CharacterAdded:Wait()
@@ -381,14 +460,6 @@ function FTUEController:CloseBeam()
 	end
 end
 
--- Helper: cria tween loop
-local function CreateLoopTween(instance, time, goal)
-	local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, -1, true)
-	local tween = TweenService:Create(instance, tweenInfo, goal)
-	tween:Play()
-	return tween
-end
-
 -- Coloca o dedo no target e centraliza pela ponta, animando o pulsar
 function FTUEController:AttachFingerToTarget(fingerFrame: Frame, targetUI: GuiObject, offset: Vector2?)
 	if not fingerFrame or not targetUI then
@@ -406,9 +477,10 @@ function FTUEController:AttachFingerToTarget(fingerFrame: Frame, targetUI: GuiOb
 	fingerFrame.Position = UDim2.fromScale(0.5 + offset.X, 0.5 + offset.Y)
 	fingerFrame.Visible = true
 
+	FTUEController:AnimateFingerBounce(fingerFrame)
 	-- Anima��o de pulsar
 	CreateLoopTween(fingerFrame, 0.6, {
-		Size = fingerFrame.Size + UDim2.fromScale(0.1, 0.1),
+		Size = fingerFrame.Size + UDim2.fromScale(0.5, 0.5),
 	})
 end
 
