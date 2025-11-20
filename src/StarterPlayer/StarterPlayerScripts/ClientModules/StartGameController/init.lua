@@ -17,6 +17,7 @@ local UpgradeController = require(Players.LocalPlayer.PlayerScripts.ClientModule
 local OfflineMoneyController = require(Players.LocalPlayer.PlayerScripts.ClientModules.OfflineMoneyController)
 local TeleportController = require(Players.LocalPlayer.PlayerScripts.ClientModules.TeleportController)
 local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
+local FTUEController = require(Players.LocalPlayer.PlayerScripts.ClientModules.FTUEController)
 
 function StartGameController:Init(data)
 	local result = bridge:InvokeServerAsync({
@@ -38,6 +39,7 @@ function StartGameController:Init(data)
 	PlotController:DeleteWaitingForCrate()
 	SoundManager:StartOrPauseBGM()
 	PlotController:ConfigureClaimeProximity()
+	FTUEController:StartFTUE(data)
 end
 
 function StartGameController:DeleteLoadingScreen()

@@ -188,6 +188,7 @@ function StockService:BuyItem(player: Player, itemName: string)
 
 	-- Verifica se o jogador tem dinheiro
 	if not MoneyService:HasMoney(player, crateEnum.Price) then
+		GameNotificationService:SendErrorNotification(player, "you Don't Have Money")
 		return
 	end
 

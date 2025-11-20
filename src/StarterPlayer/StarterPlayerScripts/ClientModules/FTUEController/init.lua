@@ -34,6 +34,7 @@ local placeAllButton
 local ftueStep
 local ftueStepText
 local buyPowerButton
+local closeFtueStep
 
 local orderedSteps = {
 	"INIT",
@@ -57,7 +58,7 @@ local currentStepKey = nil
 function FTUEController:Init(data)
 	FTUEController:CreateReferences()
 	FTUEController:InitListeners()
-	FTUEController:StartFTUE(data)
+	
 end
 
 function FTUEController:InitListeners()
@@ -90,6 +91,10 @@ function FTUEController:InitListeners()
 
 	crateShopButton.MouseButton1Click:Connect(function()
 		FTUEController:TryExecuteFTUE("GO_TO_CRATE_SHOP_UI")
+	end)
+
+	closeFtueStep.MouseButton1Click:Connect(function()
+		FTUEController:HideFTUEStep()
 	end)
 
 	buyCrateButton.MouseButton1Click:Connect(function()
@@ -306,6 +311,7 @@ function FTUEController:CreateReferences()
 	ftueStep = UIReferences:GetReference("FTUE_STEP")
 	ftueStepText = UIReferences:GetReference("FTUE_STEP_TEXT")
 	buyPowerButton = UIReferences:GetReference("BUY_POWER")
+	closeFtueStep = UIReferences:GetReference("CLOSE_FTUE_STEP")
 end
 
 -----------------------------------------------------
