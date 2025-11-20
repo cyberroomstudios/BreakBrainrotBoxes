@@ -21,7 +21,11 @@ function FTUEService:InitBridgeListener()
 		if data[actionIdentifier] == "InsertFTUEStep" then
 			local step = data.data.Step
 			PlayerDataHandler:Update(player, "ftueSteps", function(current)
-				current[step] = true
+				for _, value in current do
+					if value.Name == step then
+						value.Done = true
+					end
+				end
 				return current
 			end)
 		end

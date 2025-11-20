@@ -219,6 +219,8 @@ function WorkerService:ScaleBreaker(player: Player, scaleValue: number)
 		--// Calcula o deslocamento entre base e attachment
 		local offset = attachment.WorldPosition - basePosition
 
+		local baseNumber = player:GetAttribute("BASE")
+
 		--// Move o modelo mantendo sua rotação original
 		model:PivotTo(cf + offset)
 	end

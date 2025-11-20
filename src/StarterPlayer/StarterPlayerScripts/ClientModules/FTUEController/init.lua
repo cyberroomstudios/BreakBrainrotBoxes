@@ -151,12 +151,27 @@ function FTUEController:TryExecuteFTUE(stepName)
 		return
 	end
 
+	task.spawn(function()
+		local result = bridge:InvokeServerAsync({
+			[actionIdentifier] = "InsertFTUEStep",
+			data = {
+				Step = stepName,
+			},
+		})
+	end)
 	-- Step confirmado → vai para o próximo da lista
 	FTUEController:RunNextStep()
 end
 
 function FTUEController:StartFTUE(data)
-	-- STEPS DE VERDADE -----------
+	local function GetLastDoneStep(steps)
+		for i = #steps, 1, -1 do
+			if steps[i].Done == true then
+				return steps[i], i
+			end
+		end
+		return nil, nil
+	end
 
 	ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell", "CrateShop", "BasePart")
 
@@ -253,7 +268,29 @@ function FTUEController:StartFTUE(data)
 		end)
 	end
 
-	FTUEController:RunNextStep()
+	local lastStep, index = GetLastDoneStep(data.ftueSteps)
+
+	if lastStep then
+		if lastStep.Name == "FINISH" then
+			return
+		end
+		print("Último passo concluído:", lastStep.Name, "index:", index)
+		currentIndex = index - 1
+		currentStepKey = orderedSteps[currentIndex]
+		FTUEController:TryExecuteFTUE(lastStep.Name)
+	else
+		print("Nenhum passo concluído ainda.")
+		FTUEController:RunNextStep()
+
+		task.spawn(function()
+			local result = bridge:InvokeServerAsync({
+				[actionIdentifier] = "InsertFTUEStep",
+				data = {
+					Step = "INIT",
+				},
+			})
+		end)
+	end
 end
 
 function FTUEController:CreateReferences()

@@ -64,9 +64,35 @@ function PlotController:DeleteYourBaseIndicator()
 
 	for _, value in bases do
 		if tonumber(value.Name) ~= tonumber(baseNumber) then
-			local multiplierZone = ClientUtil:WaitForDescendants(value, "Main", "YourBase")
+			local yourBase = ClientUtil:WaitForDescendants(value, "Main", "YourBase")
 
-			multiplierZone:Destroy()
+			yourBase:Destroy()
+			continue
+		end
+
+		task.spawn(function()
+			local yourBase = ClientUtil:WaitForDescendants(value, "Main", "YourBase")
+
+			local content, isReady = Players:GetUserThumbnailAsync(
+				player.UserId,
+				Enum.ThumbnailType.HeadShot,
+				Enum.ThumbnailSize.Size420x420
+			)
+
+			yourBase.Attachment.BillboardGui.ImageLabel.Image = content
+		end)
+	end
+end
+
+function PlotController:DeleteWaitingForCrate()
+	local baseNumber = player:GetAttribute("BASE")
+	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
+
+	for _, value in bases do
+		if tonumber(value.Name) ~= tonumber(baseNumber) then
+			local nextHit = ClientUtil:WaitForDescendants(value, "Main", "BreakersArea", "NextHit")
+
+			nextHit:Destroy()
 		end
 	end
 end

@@ -104,9 +104,9 @@ ProductFunctions[DeveloperProducts:GetEnum("SOLDIER_BREAKER").Id] = function(rec
 end
 
 ProductFunctions[DeveloperProducts:GetEnum("SAHUR_BREAKER").Id] = function(receipt, player)
-	UpgradeService:BuyBreaker(player, "Sahur", false)
+	--UpgradeService:BuyBreaker(player, "Sahur", false)
 
-	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SAHUR_BREAKER").Id)
+	--ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SAHUR_BREAKER").Id)
 	return true
 end
 

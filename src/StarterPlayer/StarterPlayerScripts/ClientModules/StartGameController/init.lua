@@ -35,7 +35,7 @@ function StartGameController:Init(data)
 	PlotController:DeleteCashMultiplier()
 	PlotController:DeleteYourBaseIndicator()
 	PlotController:UpdateCashMultiplier(player:GetAttribute("CASH_MULTIPLIER") or 1)
-
+	PlotController:DeleteWaitingForCrate()
 	SoundManager:StartOrPauseBGM()
 	PlotController:ConfigureClaimeProximity()
 end

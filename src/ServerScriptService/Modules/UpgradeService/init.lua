@@ -20,6 +20,7 @@ local WorkerService = require(ServerScriptService.Modules.WorkerService)
 local Breakers = require(ReplicatedStorage.Enums.Breakers)
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
+local UtilService = require(ServerScriptService.Modules.UtilService)
 
 function UpgradeService:Init()
 	UpgradeService:InitBridgeListener()
@@ -72,7 +73,29 @@ function UpgradeService:EquipBreaker(player: Player, breakerType: string)
 	end)
 
 	UpgradeService:UpdateBreakers(player)
+
+	UpgradeService:UpdateRotation(player)
+	-- Atualiza a posição
+	print("Atualizando Posição")
+
 	return true
+end
+
+function UpgradeService:UpdateRotation(player: Player)
+	local base = BaseService:GetBase(player)
+	local breaker =
+		UtilService:WaitForDescendants(base, "Main", "BreakersArea", "Containers", "Container", "Breaker", "Breaker")
+
+	local PrimCFrame = breaker:GetPrimaryPartCFrame()
+	local yDegrees = (player:GetAttribute("BASE") and tonumber(player:GetAttribute("BASE")) <= 3) and 0 or 180
+
+	-- Converte graus para radianos
+	local yRadians = math.rad(yDegrees)
+
+	-- Mantém a posição, muda SOMENTE a rotação Y
+	local newCFrame = CFrame.new(PrimCFrame.Position) * CFrame.Angles(0, yRadians, 0)
+
+	breaker:SetPrimaryPartCFrame(newCFrame)
 end
 function UpgradeService:GetBreakersFromPlayer(player: Player)
 	local data = {
@@ -202,7 +225,7 @@ function UpgradeService:EnableCrates(player)
 	if PlayerDataHandler:Get(player, "crateBreaker").Equiped == "Sahur" then
 		local nextHit = breakersAreaFolder:WaitForChild("NextHit")
 		if nextHit then
-			nextHit.Position = Vector3.new(nextHit.Position.X, 17.98 + (capacity * 2), nextHit.Position.Z)
+			nextHit.Position = Vector3.new(nextHit.Position.X, 13.733 + (capacity * 2), nextHit.Position.Z)
 		end
 		return
 	end

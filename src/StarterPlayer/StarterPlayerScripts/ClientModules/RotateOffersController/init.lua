@@ -1,6 +1,16 @@
 local RotateOffersController = {}
 local RunService = game:GetService("RunService")
 
+-- Init Bridg Net
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("RewardService")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -9,6 +19,7 @@ local UserInputService = game:GetService("UserInputService")
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local DeveloperProductController = require(Players.LocalPlayer.PlayerScripts.ClientModules.DeveloperProductController)
+local ConfettiController = require(Players.LocalPlayer.PlayerScripts.ClientModules.ConfettiController)
 
 local rotateContent
 local startBurst
@@ -18,16 +29,19 @@ local rotateOfferCrate
 local rotateOfferSahurContent
 local rotateOfferCrateContent
 
-function RotateOffersController:Init()
+local sahurTime
+
+function RotateOffersController:Init(data)
 	RotateOffersController:CreateReferences()
-	RotateOffersController:ConfigurePosition()
+	RotateOffersController:ConfigurePosition(data)
 	RotateOffersController:ConfigureSahurAnimation()
 	RotateOffersController:ConfigureStartBurst()
 	RotateOffersController:InitButtonListerns()
 	RotateOffersController:ConfigurePulseAnimation()
+	RotateOffersController:StartSahurTime()
 end
 
-function RotateOffersController:ConfigurePosition()
+function RotateOffersController:ConfigurePosition(data)
 	local isMobile = UserInputService.TouchEnabled
 		and not UserInputService.KeyboardEnabled
 		and not UserInputService.MouseEnabled
@@ -37,11 +51,23 @@ function RotateOffersController:ConfigurePosition()
 	else
 		rotateContent.Position = UDim2.fromScale(-0.025, 0.05)
 	end
+
+	if data.rewards["SAHUR"] then
+		rotateContent.Visible = false
+	end
 end
 
 function RotateOffersController:InitButtonListerns()
 	rotateOfferSahurContent.MouseButton1Click:Connect(function()
-		DeveloperProductController:OpenPaymentRequestScreen("SAHUR_BREAKER")
+		local result = bridge:InvokeServerAsync({
+			[actionIdentifier] = "GetSahurReward",
+			data = {},
+		})
+
+		if result then
+			rotateContent.Visible = false
+			ConfettiController:CreateConfetti()
+		end
 	end)
 
 	rotateOfferCrateContent.MouseButton1Click:Connect(function()
@@ -57,6 +83,27 @@ function RotateOffersController:CreateReferences()
 
 	rotateOfferSahurContent = UIReferences:GetReference("ROTATE_OFFER_SAHUR_CONTENT")
 	rotateOfferCrateContent = UIReferences:GetReference("ROTATE_OFFER_CRATE_CONTENT")
+	sahurTime = UIReferences:GetReference("SAHUR_TIME")
+end
+
+function RotateOffersController:StartSahurTime()
+	local totalTime = 60 * 12
+	local totalTime = 30
+	local currentTime = totalTime
+
+	local function formatTime(seconds)
+		local minutes = math.floor(seconds / 60)
+		local secs = seconds % 60
+		return string.format("FREE IN: %02d:%02d", minutes, secs)
+	end
+
+	while currentTime > 0 do
+		sahurTime.Text = formatTime(currentTime)
+		task.wait(1)
+		currentTime = currentTime - 1
+	end
+
+	sahurTime.Text = "COLLECT NOW!"
 end
 
 function RotateOffersController:ConfigureStartBurst()
@@ -73,14 +120,50 @@ function RotateOffersController:ConfigurePulseAnimation()
 	task.spawn(function()
 		local uiList = {
 			rotateOfferSahurContent,
-			rotateOfferCrateContent,
+			--	rotateOfferCrateContent,
 		}
+
 		local minScale = 0.9
 		local maxScale = 1.1
 		local speed = 0.2
-		local pulseTime = 10 -- segundos que cada UI pulsa
+		local pulseTime = 10 -- segundos de pulsação
 
-		-- Deixa TODAS invisíveis antes de começar
+		-- Se só tiver 1 UI, aplica pulsação contínua e sai
+		if #uiList == 1 then
+			local ui = uiList[1]
+			ui.Visible = true
+
+			local scale = ui:FindFirstChild("UIScale")
+			if not scale then
+				scale = Instance.new("UIScale")
+				scale.Scale = 1
+				scale.Parent = ui
+			else
+				scale.Scale = 1
+			end
+
+			-- pulsar infinitamente
+			local direction = 1
+			RunService.RenderStepped:Connect(function(dt)
+				scale.Scale += direction * speed * dt
+
+				if scale.Scale >= maxScale then
+					scale.Scale = maxScale
+					direction = -1
+				elseif scale.Scale <= minScale then
+					scale.Scale = minScale
+					direction = 1
+				end
+			end)
+
+			return -- 🔥 IMPORTANTE: sai daqui, não executa o ciclo de troca
+		end
+
+		----------------------------------------------------------------
+		-- Comportamento normal se tiver 2 ou mais UIs
+		----------------------------------------------------------------
+
+		-- Deixa todas invisíveis antes
 		for _, ui in ipairs(uiList) do
 			ui.Visible = false
 
@@ -96,16 +179,11 @@ function RotateOffersController:ConfigurePulseAnimation()
 
 		while true do
 			for _, ui in ipairs(uiList) do
-				------------------------------------------
-				-- Ativar UI atual
-				------------------------------------------
 				ui.Visible = true
 				local scale = ui.UIScale
 				scale.Scale = 0
 
-				------------------------------------------
-				-- ANIMAÇÃO: crescer de 0 até 1 (aparecer)
-				------------------------------------------
+				-- aparecer
 				local appearTween = TweenService:Create(
 					scale,
 					TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -114,16 +192,13 @@ function RotateOffersController:ConfigurePulseAnimation()
 				appearTween:Play()
 				appearTween.Completed:Wait()
 
-				------------------------------------------
-				-- INICIAR PULSAÇÃO
-				------------------------------------------
+				-- pulsação temporária
 				local direction = 1
 				local timePassed = 0
 
 				local pulseConn
 				pulseConn = RunService.RenderStepped:Connect(function(dt)
 					timePassed += dt
-
 					scale.Scale += direction * speed * dt
 
 					if scale.Scale >= maxScale then
@@ -139,12 +214,9 @@ function RotateOffersController:ConfigurePulseAnimation()
 					end
 				end)
 
-				-- espera a pulsação terminar
 				task.wait(pulseTime)
 
-				------------------------------------------
-				-- ANIMAÇÃO: diminuir até 0 (sumir)
-				------------------------------------------
+				-- sumir
 				local hideTween = TweenService:Create(
 					scale,
 					TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
@@ -153,7 +225,7 @@ function RotateOffersController:ConfigurePulseAnimation()
 				hideTween:Play()
 				hideTween.Completed:Wait()
 
-				ui.Visible = false -- some após encolher
+				ui.Visible = false
 			end
 		end
 	end)

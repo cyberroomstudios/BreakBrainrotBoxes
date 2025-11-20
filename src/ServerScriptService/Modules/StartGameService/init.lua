@@ -25,6 +25,7 @@ local OfflineMoneyService = require(ServerScriptService.Modules.OfflineMoneyServ
 local GamepassManager = require(ServerScriptService.Modules.GamepassManager)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
+local RewardService = require(ServerScriptService.Modules.RewardService)
 
 local playerInitializer = {}
 
@@ -48,7 +49,7 @@ function StartGameService:InitBridgeListener()
 
 			playerInitializer[player] = true
 			StartGameService:CreatePlayerFolder(player)
-
+			RewardService:SetSahurRewardTime(player)
 			BaseService:Allocate(player)
 			BackpackService:GiveFromInit(player)
 			StartGameService:InitPlayerAttributes(player)

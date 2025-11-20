@@ -17,6 +17,11 @@ local IndexService = require(ServerScriptService.Modules.IndexService)
 local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
 
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
+local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
+
+local sahurRewardTime = {}
+local TIME_LIMIT = 15 * 60 -- 15 minutos em segundos
+local TIME_LIMIT = 30
 
 function RewardService:Init()
 	RewardService:InitBridgeListener()
@@ -26,6 +31,10 @@ function RewardService:InitBridgeListener()
 	bridge.OnServerInvoke = function(player, data)
 		if data[actionIdentifier] == "GetGroupReward" then
 			RewardService:GetGroupReward(player)
+		end
+
+		if data[actionIdentifier] == "GetSahurReward" then
+			return RewardService:GetSahurReward(player)
 		end
 	end
 end
@@ -50,6 +59,40 @@ function RewardService:GetGroupReward(player: Player)
 
 	BrainrotService:SaveBrainrotInBackpack(player, "CappuccinoAssassino", "NORMAL")
 	IndexService:Add(player, "CappuccinoAssassino", "NORMAL")
+end
+
+function RewardService:GetSahurReward(player)
+	local hasGetSahur = PlayerDataHandler:Get(player, "rewards")
+
+	if hasGetSahur["SAHUR"] then
+		return
+	end
+
+	local elapsed = tick() - sahurRewardTime[player]
+	local hasPlayerTime = elapsed >= TIME_LIMIT
+
+	if hasPlayerTime then
+		PlayerDataHandler:Update(player, "rewards", function(current)
+			current["SAHUR"] = true
+			return current
+		end)
+
+		UpgradeService:BuyBreaker(player, "Sahur", false)
+		return true
+	end
+
+	GameNotificationService:SendErrorNotification(player, "You need to play for at least 15 minutes.")
+	return false
+end
+
+function RewardService:SetSahurRewardTime(player: Player)
+	local hasGetSahur = PlayerDataHandler:Get(player, "rewards")
+
+	if hasGetSahur["SAHUR"] then
+		return
+	end
+
+	sahurRewardTime[player] = tick()
 end
 
 return RewardService

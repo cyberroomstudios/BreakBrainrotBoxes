@@ -64,7 +64,57 @@ local dataTemplate = {
 	},
 	rewards = {},
 	funnelEvents = {},
-	ftueSteps = {}
+	ftueSteps = {
+		[1] = {
+			Done = false,
+			Name = "INIT"
+		},
+		[2] = {
+			Done = false,
+			Name = "GO_TO_CRATE_SHOP_UI"
+		},
+		[3] = {
+			Done = false,
+			Name = "OPEN_SHOP_UI"
+		},
+		[4] = {
+			Done = false,
+			Name = "CLICK_SHOW_BUTTON_CRATES"
+		},
+		[5] = {
+			Done = false,
+			Name = "CLICK_BUY_BUTTON"
+		},
+		[6] = {
+			Done = false,
+			Name = "GO_TO_BASE"
+		},
+		[7] = {
+			Done = false,
+			Name = "PLACE_CRATE"
+		},
+		[8] = {
+			Done = false,
+			Name = "WAITING_FOR_BREAK_CRATE"
+		},
+		[9] = {
+			Done = false,
+			Name = "GET_MONEY"
+		},
+		[10] = {
+			Done = false,
+			Name = "GO_TO_UPGRADE"
+		},
+		[11] = {
+			Done = false,
+			Name = "SHOW_UPGRADE_UI"
+		},
+		[12] = {
+			Done = false,
+			Name = "FINISH"
+		}
+	}
+
 }
 
 local ProfileService = require(ServerScriptService.libs.ProfileService)
