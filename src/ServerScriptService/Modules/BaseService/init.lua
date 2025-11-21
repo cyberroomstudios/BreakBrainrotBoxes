@@ -1,9 +1,20 @@
 local BaseService = {}
 
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local UtilService = require(ServerScriptService.Modules.UtilService)
+
+-- Init Bridg Net
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Utility = ReplicatedStorage.Utility
+local BridgeNet2 = require(Utility.BridgeNet2)
+local bridge = BridgeNet2.ReferenceBridge("StartGameService")
+local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
+local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
+local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
+-- End Bridg Net
 
 local positionYFloor = 26
 
@@ -43,7 +54,7 @@ function BaseService:Allocate(player: Player)
 
 			BaseService:CreateCrateShopCFrameAttribute(player)
 			BaseService:CreateUpgradesCFrameAttribute(player)
-		--	BaseService:MoveToBase(player, place.Spawn)
+			--	BaseService:MoveToBase(player, place.Spawn)
 
 			break
 		end
@@ -53,7 +64,6 @@ function BaseService:Allocate(player: Player)
 
 	return true
 end
-
 
 function BaseService:GetBase(player: Player)
 	local places = workspace.Map.Plots:GetChildren()
@@ -75,7 +85,7 @@ function BaseService:CreateCrateShopCFrameAttribute(player: Player)
 end
 
 function BaseService:CreateUpgradesCFrameAttribute(player: Player)
-	local upgradeShops = UtilService:WaitForDescendants(workspace, "Map", "Upgrade")
+	local upgradeShops = UtilService:WaitForDescendants(workspace, "Map", "Booths", "Upgrades")
 
 	if upgradeShops then
 		player:SetAttribute("UPGRADE_SHOP_CFRAME", upgradeShops.Spawn.CFrame)
@@ -83,6 +93,21 @@ function BaseService:CreateUpgradesCFrameAttribute(player: Player)
 end
 
 function BaseService:CleanBase(player: Player)
+	local function cleanInfoBase(base: Model)
+		local main = base:WaitForChild("Main")
+		-- Desligando o Your Base
+		local yourBase = main:WaitForChild("YourBase"):WaitForChild("Attachment"):WaitForChild("BillboardGui")
+		yourBase.Enabled = false
+
+		-- Desligando o Waiting For Crate
+		local waitingCrate = main:WaitForChild("BreakersArea"):WaitForChild("NextHit"):WaitForChild("Waiting")
+		waitingCrate.Enabled = false
+
+		-- Desligando o Cash Multiplier
+		local cashMultiplier = main:WaitForChild("MultiplierZone"):WaitForChild("CashMultiplierBillboardGui")
+		cashMultiplier.Enabled = false
+	end
+
 	local runtimeFolder = workspace.Runtime[player.UserId]
 	if runtimeFolder then
 		runtimeFolder:Destroy()
@@ -94,8 +119,24 @@ function BaseService:CleanBase(player: Player)
 	newBase.Parent = base.Parent
 	newBase.Name = base.Name
 	newBase:SetPrimaryPartCFrame(base.PrimaryPart.CFrame)
-
 	base:Destroy()
+
+	task.spawn(function()
+		cleanInfoBase(newBase)
+	end)
 end
 
+function BaseService:UpdatePlotsFromNewPlayer(fromPlayer: Player)
+	task.spawn(function()
+		for _, player in Players:GetPlayers() do
+			if player == fromPlayer then
+				continue
+			end
+
+			bridge:Fire(player, {
+				[actionIdentifier] = "UpdatePlotsFromNewPlayer",
+			})
+		end
+	end)
+end
 return BaseService

@@ -58,7 +58,6 @@ local currentStepKey = nil
 function FTUEController:Init(data)
 	FTUEController:CreateReferences()
 	FTUEController:InitListeners()
-	
 end
 
 function FTUEController:InitListeners()
@@ -80,7 +79,8 @@ function FTUEController:InitListeners()
 	end
 
 	local function configureUpgradeListner()
-		local proximityPart = ClientUtil:WaitForDescendants(workspace, "Map", "Upgrade", "ProximityPromptPart")
+		local proximityPart =
+			ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "Upgrades", "ProximityPromptPart")
 
 		local proximityPrompt = proximityPart.ProximityPrompt
 

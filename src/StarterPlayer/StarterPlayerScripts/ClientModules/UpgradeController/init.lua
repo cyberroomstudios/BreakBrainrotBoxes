@@ -389,7 +389,7 @@ function UpgradesController:UpdateCapacityText(value: number)
 end
 
 function UpgradesController:ConfigureProximityPrompt()
-	local proximityPart = ClientUtil:WaitForDescendants(workspace, "Map", "Upgrade", "ProximityPromptPart")
+	local proximityPart = ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "Upgrades", "ProximityPromptPart")
 
 	local proximityPrompt = proximityPart.ProximityPrompt
 

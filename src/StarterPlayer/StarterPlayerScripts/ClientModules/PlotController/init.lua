@@ -40,39 +40,39 @@ function PlotController:DeleteGamepassesFolder()
 		if value.Name ~= baseNumber then
 			local gamepassesFolder = ClientUtil:WaitForDescendants(value, "Main", "Gamepasses")
 
-			gamepassesFolder:Destroy()
+			--	gamepassesFolder:Destroy()
 		end
 	end
 end
 
-function PlotController:DeleteCashMultiplier()
+function PlotController:ConfigureCashMultiplier()
 	local baseNumber = player:GetAttribute("BASE")
 	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
 
 	for _, value in bases do
 		if tonumber(value.Name) ~= tonumber(baseNumber) then
-			local multiplierZone = ClientUtil:WaitForDescendants(value, "Main", "MultiplierZone")
-
-			multiplierZone:Destroy()
+			continue
 		end
+		task.spawn(function()
+			local cashMultiplierBillboardGui =
+				ClientUtil:WaitForDescendants(value, "Main", "MultiplierZone", "CashMultiplierBillboardGui")
+			cashMultiplierBillboardGui.Enabled = true
+		end)
 	end
 end
 
-function PlotController:DeleteYourBaseIndicator()
+function PlotController:ConfigureYourBaseIndicator()
 	local baseNumber = player:GetAttribute("BASE")
 	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
 
 	for _, value in bases do
 		if tonumber(value.Name) ~= tonumber(baseNumber) then
-			local yourBase = ClientUtil:WaitForDescendants(value, "Main", "YourBase")
-
-			yourBase:Destroy()
 			continue
 		end
 
 		task.spawn(function()
 			local yourBase = ClientUtil:WaitForDescendants(value, "Main", "YourBase")
-
+			yourBase.Attachment.BillboardGui.Enabled = true
 			local content, isReady = Players:GetUserThumbnailAsync(
 				player.UserId,
 				Enum.ThumbnailType.HeadShot,
@@ -84,15 +84,13 @@ function PlotController:DeleteYourBaseIndicator()
 	end
 end
 
-function PlotController:DeleteWaitingForCrate()
+function PlotController:ConfigureWaitingForCrate()
 	local baseNumber = player:GetAttribute("BASE")
 	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
 
 	for _, value in bases do
 		if tonumber(value.Name) ~= tonumber(baseNumber) then
-			local nextHit = ClientUtil:WaitForDescendants(value, "Main", "BreakersArea", "NextHit")
-
-			nextHit:Destroy()
+			continue
 		end
 	end
 end

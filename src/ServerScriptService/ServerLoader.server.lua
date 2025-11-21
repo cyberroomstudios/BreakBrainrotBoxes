@@ -64,6 +64,24 @@ local positionsAndOrietations = {
 }
 
 local function replicatePlots()
+	local function cleanInfoBase(base: Model)
+		local main = base:WaitForChild("Main")
+		-- Desligando o Your Base
+		local yourBase = main:WaitForChild("YourBase"):WaitForChild("Attachment"):WaitForChild("BillboardGui")
+		yourBase.Enabled = false
+
+		-- Desligando o Waiting For Crate
+		local waitingCrate = main:WaitForChild("BreakersArea"):WaitForChild("NextHit"):WaitForChild("Waiting")
+		waitingCrate.Enabled = false
+
+		-- Desligando o Cash Multiplier
+		local cashMultiplier = main:WaitForChild("MultiplierZone"):WaitForChild("CashMultiplierBillboardGui")
+		cashMultiplier.Enabled = false
+		
+		
+
+	end
+
 	local plo1 = workspace:WaitForChild("Map"):WaitForChild("Plots"):WaitForChild("1")
 
 	local plotBase = plo1:Clone()
@@ -84,8 +102,14 @@ local function replicatePlots()
 
 		newPlot.Parent = workspace:WaitForChild("Map"):WaitForChild("Plots")
 		newPlot:SetPrimaryPartCFrame(cf)
+		task.spawn(function()
+			cleanInfoBase(newPlot)
+		end)
 	end
 
+	task.spawn(function()
+		cleanInfoBase(plo1)
+	end)
 	workspace:SetAttribute("CONFIGURED_PLOTS", true)
 end
 
@@ -239,7 +263,6 @@ local function configureViewPorts()
 		createCrate(viewPort, value)
 	end
 end
-
 
 configureFolders()
 

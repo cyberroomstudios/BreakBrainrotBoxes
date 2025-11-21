@@ -8,7 +8,6 @@ local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 
-
 bridge:Connect(function(response)
 	if response[actionIdentifier] ~= "PlayerLoaded" then
 		return

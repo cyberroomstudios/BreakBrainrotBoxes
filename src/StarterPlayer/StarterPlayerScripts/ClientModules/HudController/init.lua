@@ -76,7 +76,6 @@ function HudController:InitButtonListerns()
 		UIStateManager:Open("INDEX")
 	end)
 
-
 	autoCollectButton.MouseButton1Click:Connect(function()
 		MoneyController:ToggleAutoCollect()
 	end)

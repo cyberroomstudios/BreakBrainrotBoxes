@@ -51,6 +51,7 @@ function StartGameService:InitBridgeListener()
 			StartGameService:CreatePlayerFolder(player)
 			RewardService:SetSahurRewardTime(player)
 			BaseService:Allocate(player)
+			StartGameService:UpdatePlotsFromNewPlayer(player)
 			BackpackService:GiveFromInit(player)
 			StartGameService:InitPlayerAttributes(player)
 			BrainrotService:InitBrainrotInMap(player)
@@ -68,6 +69,20 @@ function StartGameService:InitBridgeListener()
 			FunnelService:AddEvent(player, "LOADING_ALL_GAME")
 		end
 	end
+end
+
+function StartGameService:UpdatePlotsFromNewPlayer(fromPlayer: Player)
+	task.spawn(function()
+		for _, player in Players:GetPlayers() do
+			if player == fromPlayer then
+				continue
+			end
+
+			bridge:Fire(player, {
+				[actionIdentifier] = "UpdatePlotsFromNewPlayer",
+			})
+		end
+	end)
 end
 
 function StartGameService:InitPlayerAttributes(player: Player)

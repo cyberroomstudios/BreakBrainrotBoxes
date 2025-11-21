@@ -8,6 +8,8 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local CrateService = require(ServerScriptService.Modules.CrateService)
 local StockService = require(ServerScriptService.Modules.StockService)
 local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
+local LuckService = require(ServerScriptService.Modules.LuckService)
+local MoneyService = require(ServerScriptService.Modules.MoneyService)
 
 ProductFunctions[DeveloperProducts:GetEnum("WOODEN_CRATE").Id] = function(receipt, player)
 	CrateService:Give(player, "Wooden")
@@ -130,6 +132,66 @@ ProductFunctions[DeveloperProducts:GetEnum("RESTOCK_THIS").Id] = function(receip
 	end
 
 	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("RESTOCK_THIS").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("SERVER_LUCK_2X").Id] = function(receipt, player)
+	LuckService:UpServerLuck(2)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SERVER_LUCK_2X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("SERVER_LUCK_4X").Id] = function(receipt, player)
+	LuckService:UpServerLuck(4)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SERVER_LUCK_4X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("SERVER_LUCK_8X").Id] = function(receipt, player)
+	LuckService:UpServerLuck(8)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SERVER_LUCK_8X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("SERVER_LUCK").Id] = function(receipt, player)
+	LuckService:UpServerLuck(nil)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("SERVER_LUCK").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_I").Id] = function(receipt, player)
+	MoneyService:GiveMoney(player, 1000, true)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_I").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_II").Id] = function(receipt, player)
+	MoneyService:GiveMoney(player, 10000, true)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_II").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_III").Id] = function(receipt, player)
+	MoneyService:GiveMoney(player, 100000, true)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_III").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_IV").Id] = function(receipt, player)
+	MoneyService:GiveMoney(player, 1000000, true)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_IV").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_V").Id] = function(receipt, player)
+	MoneyService:GiveMoney(player, 10000000, true)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_V").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_VI").Id] = function(receipt, player)
+	MoneyService:GiveMoney(player, 100000000, true)
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_VI").Id)
 	return true
 end
 
