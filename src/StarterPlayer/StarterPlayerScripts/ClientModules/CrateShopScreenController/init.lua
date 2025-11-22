@@ -195,6 +195,7 @@ function CrateShopScreenController:CreateButtonListner()
 	end)
 end
 function CrateShopScreenController:BuildScreen(stockItems)
+	print(stockItems)
 	player:SetAttribute("CRATE_SHOP_SCREEN_LOADED", false)
 
 	local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames.CRATES
@@ -222,7 +223,7 @@ function CrateShopScreenController:BuildScreen(stockItems)
 		-- Definindo a ordem
 		newItem.LayoutOrder = value.GUI.Order
 
-		if value.GUI.Order == 1 then
+		if value.GUI.Order == 1 and frameBuyCrateFTUE and frameBuyCrateFTUE.Parent then
 			frameBuyCrateFTUE.Parent = newItem
 		end
 
@@ -245,6 +246,8 @@ function CrateShopScreenController:BuildScreen(stockItems)
 
 		-- Definindo o Preço
 		newItem.Display.RarityAndPrice.Price.Text = ClientUtil:FormatToUSD(value.Price)
+		newItem.Display.RarityAndPrice.Rarity.Text = value.Rarity
+		newItem.Display.RarityAndPrice.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors[value.Rarity].Value
 
 		-- Definindo o Stock
 		if stockItems[name] and stockItems[name] > 0 then

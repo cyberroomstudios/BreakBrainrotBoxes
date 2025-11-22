@@ -10,9 +10,9 @@ local LuckService = require(ServerScriptService.Modules.LuckService)
 local CrateService = {}
 
 local mutationOdds = {
-	["NORMAL"] = 0.85,
-	["GOLDEN"] = 0.1,
-	["DIAMOND"] = 0.05,
+	["NORMAL"] = 0.94,
+	["GOLDEN"] = 0.05,
+	["DIAMOND"] = 0.01,
 }
 function CrateService:Init() end
 

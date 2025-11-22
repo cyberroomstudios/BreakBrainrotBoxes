@@ -240,11 +240,10 @@ function ThreadService:StartBreaker(player: Player)
 		pcall(function()
 			local speedFromData = Upgrades.Speed[PlayerDataHandler:Get(player, "crateBreaker").Speed].Value
 			local speedFromBreaker = Breakers[PlayerDataHandler:Get(player, "crateBreaker").Equiped].Boosts.Speed
-			print("Speed From Data:" .. speedFromData)
-			print("Speed From Breaker:" .. speedFromData)
+		
 
 			local time = speedFromData + speedFromBreaker
-			print("Time:" .. time)
+			
 			if time < 1 then
 				time = 1
 			end

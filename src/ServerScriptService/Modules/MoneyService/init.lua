@@ -69,7 +69,7 @@ end
 
 function MoneyService:GiveInitialMoney(player: Player)
 	if PlayerDataHandler:Get(player, "totalPlaytime") == 0 then
-		MoneyService:GiveMoney(player, 1000, false)
+		MoneyService:GiveMoney(player, 50, false)
 	end
 end
 

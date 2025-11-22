@@ -2,356 +2,352 @@ local Brainrots = table.freeze({
 
 	-- ########### COMMON ##############
 	-- #################################
-	["BananitaDolphinita"] = {
-		Name = "BananitaDolphinita",
-		Odd = 0.25,
-		Rarity = "COMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 100,
-		GUI = {
-			Label = "Bananita Dolphinita",
-			Order = 1,
-		},
-	},
-
-	["BanditoBobritto"] = {
-		Name = "BanditoBobritto",
-		Odd = 0.25,
-		Rarity = "COMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 110,
-		GUI = {
-			Label = "Bandito Bobritto",
-			Order = 1,
-		},
-	},
-
-	["BombardiroCrocodilo"] = {
-		Name = "BombardiroCrocodilo",
-		Odd = 0.25,
-		Rarity = "COMMON",
-		MoneyPerSecond = 25,
-		SellPrice = 120,
-		GUI = {
-			Label = "Bombardiro Crocodilo",
-			Order = 1,
-		},
-	},
-
-	["SpioniroGolubiro"] = {
-		Name = "SpioniroGolubiro",
-		Odd = 0.25,
-		Rarity = "COMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 130,
-		GUI = {
-			Label = "Spioniro Golubiro",
-			Order = 1,
-		},
-	},
-
-	-- ######### UNCOMMON ##############
-	-- #################################
-	["BombombiniGusini"] = {
-		Name = "BombombiniGusini",
-		Odd = 0.25,
-		Rarity = "UNCOMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 140,
-		GUI = {
-			Label = "Bombombini Gusini",
-			Order = 1,
-		},
-	},
-
-	["SvininaBombardino"] = {
-		Name = "SvininaBombardino",
-		Odd = 0.25,
-		Rarity = "UNCOMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 150,
-		GUI = {
-			Label = "Svinina Bombardino",
-			Order = 1,
-		},
-	},
-
-	["TaTaTaSahur"] = {
-		Name = "TaTaTaSahur",
-		Odd = 0.25,
-		Rarity = "UNCOMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 160,
-		GUI = {
-			Label = "TaTaTa Sahur",
-			Order = 1,
-		},
-	},
-
-	["BonecaAmbalabu"] = {
-		Name = "BonecaAmbalabu",
-		Odd = 0.25,
-		Rarity = "UNCOMMON",
-		MoneyPerSecond = 10,
-		SellPrice = 170,
-		GUI = {
-			Label = "Boneca Ambalabu",
-			Order = 1,
-		},
-	},
-
-	-- ############# RARE ##############
-	-- #################################
-
-	["BrrBrrPatapim"] = {
-		Name = "BrrBrrPatapim",
-		Odd = 0.2,
-		Rarity = "RARE",
-		MoneyPerSecond = 10,
-		SellPrice = 180,
-		GUI = {
-			Label = "Patapim",
-			Order = 1,
-		},
-	},
-
-	["BubarolliLuliloli"] = {
-		Name = "BubarolliLuliloli",
-		Odd = 0.2,
-		Rarity = "RARE",
-		MoneyPerSecond = 10,
-		SellPrice = 190,
-		GUI = {
-			Label = "Bubarolli Luliloli",
-			Order = 1,
-		},
-	},
-
-	["CactoHipopotamo"] = {
-		Name = "CactoHipopotamo",
-		Odd = 0.2,
-		Rarity = "RARE",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Cacto Hipopotamo",
-			Order = 1,
-		},
-	},
-
-	["TimCheese"] = {
-		Name = "TimCheese",
-		Odd = 0.2,
-		Rarity = "RARE",
-		MoneyPerSecond = 10,
-		SellPrice = 210,
-		GUI = {
-			Label = "Tim Cheese",
-			Order = 1,
-		},
-	},
-
-	["TralaleroTralala"] = {
-		Name = "TralaleroTralala",
-		Odd = 0.2,
-		Rarity = "RARE",
-		MoneyPerSecond = 10,
-		SellPrice = 220,
-		GUI = {
-			Label = "Tralalero Tralala",
-			Order = 1,
-		},
-	},
-
-	-- ######## LEGENDARY ##############
-	-- #################################
-
-	["CappuccinoAssassino"] = {
-		Name = "CappuccinoAssassino",
-		Odd = 0.2,
-		Rarity = "LEGENDARY",
-		MoneyPerSecond = 10,
-		SellPrice = 230,
-		GUI = {
-			Label = "Cappuccino Assassino",
-			Order = 1,
-		},
-	},
-
-	["CavalloVirtuoso"] = {
-		Name = "CavalloVirtuoso",
-		Odd = 0.15,
-		Rarity = "LEGENDARY",
-		MoneyPerSecond = 10,
-		SellPrice = 240,
-		GUI = {
-			Label = "Cavallo Virtuoso",
-			Order = 1,
-		},
-	},
-
-	["ChefCrabracadabra"] = {
-		Name = "ChefCrabracadabra",
-		Odd = 0.15,
-		Rarity = "LEGENDARY",
-		MoneyPerSecond = 10,
-		SellPrice = 250,
-		GUI = {
-			Label = "Chef Crabracadabra",
-			Order = 1,
-		},
-	},
-
-	["TrippiTroppi"] = {
-		Name = "TrippiTroppi",
-		Odd = 0.1,
-		Rarity = "LEGENDARY",
-		MoneyPerSecond = 10,
-		SellPrice = 260,
-		GUI = {
-			Label = "Trippi Troppi",
-			Order = 1,
-		},
-	},
-
-	["TrulimeroTrulicina"] = {
-		Name = "TrulimeroTrulicina",
-		Odd = 0.1,
-		Rarity = "LEGENDARY",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Trulimero Trulicina",
-			Order = 1,
-		},
-	},
 
 	["TungTungSahur"] = {
 		Name = "TungTungSahur",
-		Odd = 0.3,
-		Rarity = "LEGENDARY",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
+		Rarity = "COMMON",
+		MoneyPerSecond = 3,
+		Odd = 0.3237,
+		SellPrice = 75,
 		GUI = {
 			Label = "Tung Tung Sahur",
 			Order = 1,
 		},
 	},
 
-	-- ############# EPIC ##############
-	-- #################################
-
 	["ChimpanziniBananini"] = {
 		Name = "ChimpanziniBananini",
-		Odd = 0.4,
-		Rarity = "EPIC",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
+		Rarity = "COMMON",
+		MoneyPerSecond = 6,
+		Odd = 0.2289,
+		SellPrice = 150,
 		GUI = {
 			Label = "Chimpanzini Bananini",
-			Order = 1,
-		},
-	},
-
-	["CocofantoElefanto"] = {
-		Name = "CocofantoElefanto",
-		Odd = 0.4,
-		Rarity = "EPIC",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Cocofanto Elefanto",
-			Order = 1,
-		},
-	},
-
-	["Fluriflura"] = {
-		Name = "Fluriflura",
-		Odd = 0.2,
-		Rarity = "EPIC",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Fluri Flura",
-			Order = 1,
-		},
-	},
-
-	-- ########## MYTHICAL ##############
-	-- #################################
-
-	["FrigoCamelo"] = {
-		Name = "FrigoCamelo",
-		Odd = 0.4,
-		Rarity = "MYTHICAL",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Frigo Camelo",
-			Order = 1,
-		},
-	},
-
-	["GangsterFootera"] = {
-		Name = "GangsterFootera",
-		Odd = 0.4,
-		Rarity = "MYTHICAL",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Gangster Footera",
-			Order = 1,
-		},
-	},
-
-	["GlorboFruttodrillo"] = {
-		Name = "GlorboFruttodrillo",
-		Odd = 0.2,
-		Rarity = "MYTHICAL",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "Glorbo Fruttodrillo",
-			Order = 1,
-		},
-	},
-
-	-- ############ GODLY ##############
-	-- #################################
-
-	["LaVaccaSaturnoSaturnita"] = {
-		Name = "LaVaccaSaturnoSaturnita",
-		Odd = 0.4,
-		Rarity = "GODLY",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
-		GUI = {
-			Label = "La Vacca Saturno Saturnita",
-			Order = 1,
+			Order = 2,
 		},
 	},
 
 	["LirilìLarilà"] = {
 		Name = "LirilìLarilà",
-		Odd = 0.4,
-		Rarity = "GODLY",
+		Rarity = "COMMON",
 		MoneyPerSecond = 10,
-		SellPrice = 200,
+		Odd = 0.1773,
+		SellPrice = 225,
 		GUI = {
 			Label = "Lirilì Larilà",
-			Order = 1,
+			Order = 3,
+		},
+	},
+
+	["CappuccinoAssassino"] = {
+		Name = "CappuccinoAssassino",
+		Rarity = "COMMON",
+		MoneyPerSecond = 15,
+		Odd = 0.1448,
+		SellPrice = 390,
+		GUI = {
+			Label = "Cappuccino Assassino",
+			Order = 4,
+		},
+	},
+
+	["TrulimeroTrulicina"] = {
+		Name = "TrulimeroTrulicina",
+		Rarity = "COMMON",
+		MoneyPerSecond = 20,
+		Odd = 0.1254,
+		SellPrice = 600,
+		GUI = {
+			Label = "Trulimero Trulicina",
+			Order = 5,
+		},
+	},
+
+	-- ########### UNCOMMON ##############
+	-- #################################
+
+	["TimCheese"] = {
+		Name = "TimCheese",
+		Rarity = "UNCOMMON",
+		MoneyPerSecond = 21,
+		Odd = 0.2516,
+		SellPrice = 620,
+		GUI = {
+			Label = "Tim Cheese",
+			Order = 6,
+		},
+	},
+
+	["TrippiTroppi"] = {
+		Name = "TrippiTroppi",
+		Rarity = "UNCOMMON",
+		MoneyPerSecond = 22,
+		Odd = 0.2458,
+		SellPrice = 650,
+		GUI = {
+			Label = "Trippi Troppi",
+			Order = 7,
+		},
+	},
+
+	["BrrBrrPatapim"] = {
+		Name = "BrrBrrPatapim",
+		Rarity = "UNCOMMON",
+		MoneyPerSecond = 25,
+		Odd = 0.2306,
+		SellPrice = 840,
+		GUI = {
+			Label = "Patapim",
+			Order = 8,
+		},
+	},
+
+	["BubarolliLuliloli"] = {
+		Name = "BubarolliLuliloli",
+		Rarity = "UNCOMMON",
+		MoneyPerSecond = 65,
+		Odd = 0.1430,
+		SellPrice = 2015,
+		GUI = {
+			Label = "Bubarolli Luliloli",
+			Order = 9,
+		},
+	},
+
+	["BonecaAmbalabu"] = {
+		Name = "BonecaAmbalabu",
+		Rarity = "UNCOMMON",
+		MoneyPerSecond = 80,
+		Odd = 0.1289,
+		SellPrice = 2500,
+		GUI = {
+			Label = "Boneca Ambalabu",
+			Order = 10,
+		},
+	},
+
+	-- ########### RARE ##############
+	-- #################################
+
+	["Fluriflura"] = {
+		Name = "Fluriflura",
+		Rarity = "RARE",
+		MoneyPerSecond = 110,
+		Odd = 0.2811,
+		SellPrice = 4080,
+		GUI = {
+			Label = "Fluri Flura",
+			Order = 11,
+		},
+	},
+
+	["CocofantoElefanto"] = {
+		Name = "CocofantoElefanto",
+		Rarity = "RARE",
+		MoneyPerSecond = 130,
+		Odd = 0.2585,
+		SellPrice = 5000,
+		GUI = {
+			Label = "Cocofanto Elefanto",
+			Order = 12,
+		},
+	},
+
+	["BombombiniGusini"] = {
+		Name = "BombombiniGusini",
+		Rarity = "RARE",
+		MoneyPerSecond = 150,
+		Odd = 0.2407,
+		SellPrice = 4700,
+		GUI = {
+			Label = "Bombombini Gusini",
+			Order = 13,
+		},
+	},
+
+	["ChefCrabracadabra"] = {
+		Name = "ChefCrabracadabra",
+		Rarity = "RARE",
+		MoneyPerSecond = 180,
+		Odd = 0.2197,
+		SellPrice = 5600,
+		GUI = {
+			Label = "Chef Crabracadabra",
+			Order = 14,
+		},
+	},
+
+	-- ########### RARE ##############
+	-- #################################
+
+	["FrigoCamelo"] = {
+		Name = "FrigoCamelo",
+		Rarity = "EPIC",
+		MoneyPerSecond = 400,
+		Odd = 0.2489,
+		SellPrice = 12000,
+		GUI = {
+			Label = "Frigo Camelo",
+			Order = 15,
+		},
+	},
+
+	["SvininaBombardino"] = {
+		Name = "SvininaBombardino",
+		Rarity = "EPIC",
+		MoneyPerSecond = 550,
+		Odd = 0.2123,
+		SellPrice = 16000,
+		GUI = {
+			Label = "Svinina Bombardino",
+			Order = 16,
+		},
+	},
+
+	["LaVaccaSaturnoSaturnita"] = {
+		Name = "LaVaccaSaturnoSaturnita",
+		Rarity = "EPIC",
+		MoneyPerSecond = 600,
+		Odd = 0.2032,
+		SellPrice = 20000,
+		GUI = {
+			Label = "La Vacca Saturno Saturnita",
+			Order = 17,
+		},
+	},
+
+	["CavalloVirtuoso"] = {
+		Name = "CavalloVirtuoso",
+		Rarity = "EPIC",
+		MoneyPerSecond = 780,
+		Odd = 0.1782,
+		SellPrice = 27000,
+		GUI = {
+			Label = "Cavallo Virtuoso",
+			Order = 18,
+		},
+	},
+
+	["BanditoBobritto"] = {
+		Name = "BanditoBobritto",
+		Rarity = "EPIC",
+		MoneyPerSecond = 1000,
+		Odd = 0.1574,
+		SellPrice = 35000,
+		GUI = {
+			Label = "Bandito Bobritto",
+			Order = 19,
+		},
+	},
+
+	-- ########### LEGENDARY ##############
+	-- #################################
+
+	["GlorboFruttodrillo"] = {
+		Name = "GlorboFruttodrillo",
+		Rarity = "LEGENDARY",
+		MoneyPerSecond = 1200,
+		Odd = 0.3657,
+		SellPrice = 39600,
+		GUI = {
+			Label = "Glorbo Fruttodrillo",
+			Order = 20,
+		},
+	},
+
+	["SpioniroGolubiro"] = {
+		Name = "SpioniroGolubiro",
+		Rarity = "LEGENDARY",
+		MoneyPerSecond = 1500,
+		Odd = 0.3271,
+		SellPrice = 50000,
+		GUI = {
+			Label = "Spioniro Golubiro",
+			Order = 21,
+		},
+	},
+
+	["TaTaTaSahur"] = {
+		Name = "TaTaTaSahur",
+		Rarity = "LEGENDARY",
+		MoneyPerSecond = 1700,
+		Odd = 0.3072,
+		SellPrice = 66000,
+		GUI = {
+			Label = "TaTaTa Sahur",
+			Order = 22,
+		},
+	},
+
+	["CactoHipopotamo"] = {
+		Name = "CactoHipopotamo",
+		Rarity = "MYTHICAL",
+		MoneyPerSecond = 2200,
+		Odd = 0.3849,
+		SellPrice = 120000,
+		GUI = {
+			Label = "Cacto Hipopotamo",
+			Order = 23,
+		},
+	},
+
+	["BananitaDolphinita"] = {
+		Name = "BananitaDolphinita",
+		Rarity = "MYTHICAL",
+		MoneyPerSecond = 3000,
+		Odd = 0.3296,
+		SellPrice = 200000,
+		GUI = {
+			Label = "Bananita Dolphinita",
+			Order = 24,
 		},
 	},
 
 	["OdinDinDinDun"] = {
 		Name = "OdinDinDinDun",
-		Odd = 0.2,
-		Rarity = "GODLY",
-		MoneyPerSecond = 10,
-		SellPrice = 200,
+		Rarity = "MYTHICAL",
+		MoneyPerSecond = 4000,
+		Odd = 0.2855,
+		SellPrice = 500000,
 		GUI = {
 			Label = "Odin Din Din Dun",
-			Order = 1,
+			Order = 25,
+		},
+	},
+
+	["BombardiroCrocodilo"] = {
+		Name = "BombardiroCrocodilo",
+		Rarity = "GODLY",
+		MoneyPerSecond = 18000,
+		Odd = 0.3575,
+		SellPrice = 900000,
+		GUI = {
+			Label = "Bombardiro Crocodilo",
+			Order = 26,
+		},
+	},
+
+	["TralaleroTralala"] = {
+		Name = "BombardiroCrocodilo",
+		Rarity = "GODLY",
+		MoneyPerSecond = 20000,
+		Odd = 0.3392,
+		SellPrice = 1050000,
+		GUI = {
+			Label = "Tralalero Tralala",
+			Order = 27,
+		},
+	},
+
+	["GangsterFootera"] = {
+		Name = "GangsterFootera",
+		Rarity = "GODLY",
+		MoneyPerSecond = 25000,
+		Odd = 0.3033,
+		SellPrice = 1300000,
+		GUI = {
+			Label = "Gangster Footera",
+			Order = 28,
 		},
 	},
 })

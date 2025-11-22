@@ -1,51 +1,51 @@
 local Breakers = table.freeze({
 	["Noob"] = {
 		Name = "Noob",
-		Price = 10000,
+		Price = 0,
 		OnlyRobux = false,
 		Boosts = {
 			Speed = 0,
-			Power = 5,
+			Power = 1,
 		},
 	},
 
 	["Baseball"] = {
 		Name = "Baseball",
-		Price = 200000,
+		Price = 10000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = -1,
-			Power = 10,
+			Speed = -2,
+			Power = 2,
 		},
 	},
 
 	["Ninja"] = {
 		Name = "Ninja",
-		Price = 32000,
+		Price = 100000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = -2,
-			Power = 20,
+			Speed = -4,
+			Power = 5,
 		},
 	},
 
 	["Warrior"] = {
 		Name = "Warrior",
-		Price = 400000,
+		Price = 1000000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = -3,
-			Power = 10,
+			Speed = -5,
+			Power = 12,
 		},
 	},
 
 	["Soldier"] = {
 		Name = "Soldier",
-		Price = 100000,
+		Price = 10000000,
 		OnlyRobux = false,
 		Boosts = {
-			Speed = -4,
-			Power = 10,
+			Speed = -6,
+			Power = 25,
 		},
 	},
 
