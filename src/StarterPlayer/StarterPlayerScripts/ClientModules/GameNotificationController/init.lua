@@ -48,7 +48,10 @@ function GameNotificationController:InitListeners()
 		end
 
 		if response[actionIdentifier] == "ShowNewBrainrotNotificaion" then
-			GameNotificationController:ShowNewBrainrotNotification(response.data.BrainrotType)
+			GameNotificationController:ShowNewBrainrotNotification(
+				response.data.MutationType,
+				response.data.BrainrotType
+			)
 		end
 
 		if response[actionIdentifier] == "ShowCrateStoreRestocked" then
@@ -57,8 +60,9 @@ function GameNotificationController:InitListeners()
 	end)
 end
 
-function GameNotificationController:ShowNewBrainrotNotification(brainrotType: string)
+function GameNotificationController:ShowNewBrainrotNotification(mutationType: string, brainrotType: string)
 	local data = {
+		MutationType = mutationType,
 		BrainrotType = brainrotType,
 	}
 	UIStateManager:Open("NEW_GAME", data)

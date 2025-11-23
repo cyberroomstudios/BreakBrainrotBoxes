@@ -392,7 +392,7 @@ function WorkerService:GetXPOfflineCrate(player: Player, currentXP: number)
 	local breakerSpeedBost = Breakers[workerData.Equiped].Boosts.Speed
 
 	local workerSpeed = workerData.Speed + breakerSpeedBost
-	local workerPower = (workerData.Power * 10) + breakerPowerBost
+	local workerPower = (workerData.Power) + breakerPowerBost
 
 	if timeLeftGame and timeLeftGame > 0 then
 		local now = os.time()

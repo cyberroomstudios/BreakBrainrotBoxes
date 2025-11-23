@@ -5,7 +5,7 @@ local Breakers = table.freeze({
 		OnlyRobux = false,
 		Boosts = {
 			Speed = 0,
-			Power = 1,
+			Power = 0,
 		},
 	},
 

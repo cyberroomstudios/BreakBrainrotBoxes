@@ -240,16 +240,15 @@ function ThreadService:StartBreaker(player: Player)
 		pcall(function()
 			local speedFromData = Upgrades.Speed[PlayerDataHandler:Get(player, "crateBreaker").Speed].Value
 			local speedFromBreaker = Breakers[PlayerDataHandler:Get(player, "crateBreaker").Equiped].Boosts.Speed
-		
 
 			local time = speedFromData + speedFromBreaker
-			
+
+			-- garante no mínimo 1 segundo
 			if time < 1 then
 				time = 1
 			end
 
 			local nextHit = breakersAreaFolder:WaitForChild("NextHit")
-
 			local waiting = nextHit:WaitForChild("Waiting")
 			local timeBillboard = nextHit:WaitForChild("Time")
 			waiting.Enabled = false
@@ -257,22 +256,28 @@ function ThreadService:StartBreaker(player: Player)
 
 			local textLabel = timeBillboard.TextLabel
 
-			local current = time
-			local lastShown = -1 -- guarda o último valor inteiro mostrado
+			-- cronômetro mais preciso
+			local startTime = os.clock()
+			local endTime = startTime + time
 
-			while current > 0 do
-				-- mostra apenas quando o valor inteiro muda
-				local intValue = math.floor(current)
+			while true do
+				local now = os.clock()
+				local remaining = endTime - now
 
-				if intValue ~= lastShown then
-					textLabel.Text = intValue
-					lastShown = intValue
+				if remaining <= 0 then
+					break
 				end
 
-				current -= task.wait()
+				-- formatar segundos + milissegundos
+				textLabel.Text = string.format("%.2fs", remaining)
+
+				-- espera bem pequena para atualizar "rápido"
+				task.wait(0.02) -- 50 updates por segundo
 			end
 
-			textLabel.Text = 0
+			textLabel.Text = "0.000s"
+
+			return true
 		end)
 	end
 
@@ -283,6 +288,8 @@ function ThreadService:StartBreaker(player: Player)
 				local hasCrate = hasCrate()
 
 				if hasCrate then
+					UpdateNextHitbillboard()
+
 					-- Roda a animação
 					local animation = getAnimation()
 
@@ -291,8 +298,8 @@ function ThreadService:StartBreaker(player: Player)
 					end
 
 					animation:Play()
+
 					task.wait(1)
-					UpdateNextHitbillboard()
 				else
 					setWaitingForCrate()
 				end

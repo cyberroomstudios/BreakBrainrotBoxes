@@ -305,6 +305,8 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)
 
 	local function createInformations(newBrainrot: Model)
+		local mutationType = newBrainrot:GetAttribute("MUTATION_TYPE")
+
 		-- Cria o nome, preço e o tipo
 		local hrp = newBrainrot:WaitForChild("HumanoidRootPart")
 
@@ -315,11 +317,28 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			local cashPerSecond = billboard:WaitForChild("CashPerSecond")
 			local charName = billboard:WaitForChild("CharName")
 			local rarity = billboard:WaitForChild("Rarity")
+			local isGolden = billboard:WaitForChild("IsGolden")
+			local isDiamond = billboard:WaitForChild("IsDiamond")
 
 			cashPerSecond.Text = "$" .. brainrotEnum.MoneyPerSecond .. "/s"
 			charName.Text = brainrotEnum.GUI.Label
 			rarity.Text = brainrotEnum.Rarity
 			rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
+
+			if mutationType == "NORMAL" then
+				isGolden.Visible = false
+				isDiamond.Visible = false
+			end
+
+			if mutationType == "GOLDEN" then
+				isGolden.Visible = true
+				isDiamond.Visible = false
+			end
+
+			if mutationType == "DIAMOND" then
+				isGolden.Visible = false
+				isDiamond.Visible = true
+			end
 		end
 	end
 
@@ -328,7 +347,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		local animation = ReplicatedStorage.Animations.Brainrots:FindFirstChild(newBrainrot.Name)
 		if animation then
 			local track = humanoid:LoadAnimation(animation)
-		--	track:Play()
+			--	track:Play()
 		end
 	end
 

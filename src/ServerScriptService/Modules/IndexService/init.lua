@@ -54,14 +54,13 @@ function IndexService:Add(player: Player, itemName: string, mutationType: string
 		if current[itemName] then
 			GameSoundService:Play(player, itemName)
 			GameNotificationService:SendWarnNotification(player, "You Found The " .. itemEnum.GUI.Label)
-			GameNotificationService:SendNewBrainrotNotification(player, itemName)
 
 			return current
 		end
 
 		current[itemName] = true
 		GameSoundService:Play(player, itemName)
-		GameNotificationService:SendNewBrainrotNotification(player, itemName)
+		GameNotificationService:SendNewBrainrotNotification(player, mutationType, itemName)
 
 		return current
 	end)

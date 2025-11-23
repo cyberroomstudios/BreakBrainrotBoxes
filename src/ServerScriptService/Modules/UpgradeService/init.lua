@@ -185,7 +185,7 @@ function UpgradeService:InitPlayerUpgrade(player: Player)
 	local breakerPowerBost = Breakers[equipedBreaker].Boosts.Power
 	local breakerSpeedBost = Breakers[equipedBreaker].Boosts.Speed
 
-	player:SetAttribute("Power", (crateBreaker.Power * 10) + breakerPowerBost)
+	player:SetAttribute("Power", (crateBreaker.Power) + breakerPowerBost)
 	player:SetAttribute("Speed", crateBreaker.Speed + breakerSpeedBost)
 	player:SetAttribute("Capacity", crateBreaker.Capacity)
 
@@ -247,7 +247,7 @@ function UpgradeService:UpdateBreakers(player: Player)
 	local breakerPowerBost = Breakers[equipedBreaker].Boosts.Power
 	local breakerSpeedBost = Breakers[equipedBreaker].Boosts.Speed
 
-	player:SetAttribute("Power", (crateBreaker.Power * 10) + breakerPowerBost)
+	player:SetAttribute("Power", (crateBreaker.Power) + breakerPowerBost)
 	player:SetAttribute("Speed", crateBreaker.Speed + breakerSpeedBost)
 end
 

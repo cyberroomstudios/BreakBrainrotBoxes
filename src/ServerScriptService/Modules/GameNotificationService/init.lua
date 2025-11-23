@@ -40,10 +40,11 @@ function GameNotificationService:SendSuccessNotification(player: Player, message
 	})
 end
 
-function GameNotificationService:SendNewBrainrotNotification(player: Player, brainrotType: string)
+function GameNotificationService:SendNewBrainrotNotification(player: Player, mutationType, brainrotType: string)
 	bridge:Fire(player, {
 		[actionIdentifier] = "ShowNewBrainrotNotificaion",
 		data = {
+			MutationType = mutationType,
 			BrainrotType = brainrotType,
 		},
 	})

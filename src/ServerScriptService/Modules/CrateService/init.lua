@@ -10,11 +10,13 @@ local LuckService = require(ServerScriptService.Modules.LuckService)
 local CrateService = {}
 
 local mutationOdds = {
-	["NORMAL"] = 0.94,
-	["GOLDEN"] = 0.05,
+	["NORMAL"] = 0.97,
+	["GOLDEN"] = 0.02,
 	["DIAMOND"] = 0.01,
 }
-function CrateService:Init() end
+function CrateService:Init()
+	math.randomseed(tick() * 10000 % 1 * 1e7)
+end
 
 function CrateService:Give(player: Player, crateName: string)
 	if not Crate.CRATES[crateName] then
