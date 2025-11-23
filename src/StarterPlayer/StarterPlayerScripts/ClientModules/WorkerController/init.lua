@@ -14,6 +14,7 @@ local Players = game:GetService("Players")
 
 local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.ClientUtil)
 local UIReferences = require(Players.LocalPlayer.PlayerScripts.Util.UIReferences)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 
 local player = Players.LocalPlayer
 
@@ -36,6 +37,8 @@ function WorkerController:InitButtonListerns()
 		local result = bridge:InvokeServerAsync({
 			[actionIdentifier] = "PlaceAll",
 		})
+
+		SoundManager:Play("PLACE_CRATE")
 	end)
 end
 

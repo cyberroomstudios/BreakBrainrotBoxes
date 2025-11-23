@@ -19,7 +19,7 @@ local sounds = {
 	UI_OPEN_SCREEN = "",
 	MONEY_COMING_IN = "",
 	MONEY_COMING_OUT = "",
-
+	PLACE_CRATE = "",
 	BananitaDolphinita = "",
 	BanditoBobritto = "",
 	BombardiroCrocodilo = "",
@@ -57,6 +57,8 @@ function SoundManager:Init()
 	SoundManager:InitBridgeListener()
 end
 
+
+
 function SoundManager:InitRef()
 	sounds["BGM"] = SoundService.Game.BGM
 	sounds["GET_MONEY_PLOT"] = SoundService.Game.GetMoneyPlot
@@ -64,7 +66,7 @@ function SoundManager:InitRef()
 	sounds["UI_OPEN_SCREEN"] = SoundService.GUI.OpenScreen
 	sounds["MONEY_COMING_IN"] = SoundService.GUI.MoneyComingIn
 	sounds["MONEY_COMING_OUT"] = SoundService.GUI.MoneyComingOut
-
+	sounds["PLACE_CRATE"] = SoundService.Game.PlaceCrate
 	sounds["BananitaDolphinita"] = SoundService.Brainrots:FindFirstChild("BananitaDolphinita")
 	sounds["BanditoBobritto"] = SoundService.Brainrots:FindFirstChild("BanditoBobritto")
 	sounds["BombardiroCrocodilo"] = SoundService.Brainrots:FindFirstChild("BombardiroCrocodilo")

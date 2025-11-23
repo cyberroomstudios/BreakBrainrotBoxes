@@ -17,6 +17,12 @@ local animations = {}
 function ThreadService:Init() end
 
 function ThreadService:StartBrainrotsMoney(player: Player)
+	local mutationMultipliers = {
+		["NORMAL"] = 1,
+		["GOLDEN"] = 20,
+		["DIAMOND"] = 50,
+	}
+
 	local function updatePlotMoney(plotNumber: number, moneyPerSecond: number)
 		local base = BaseService:GetBase(player)
 		local main = base:WaitForChild("Main")
@@ -57,12 +63,13 @@ function ThreadService:StartBrainrotsMoney(player: Player)
 				for _, value in brainrotsFolder:GetChildren() do
 					local brainrotName = value.Name
 					local brainrotEnum = Brainrots[brainrotName]
+					local mutationType = value:GetAttribute("MUTATION_TYPE") or "NORMAL"
 
 					if brainrotEnum then
 						local slotNumber = value:GetAttribute("SLOT_NUMBER")
 						local moneyPerSecond = getMoneyMoneyPerSecond(player, brainrotEnum.MoneyPerSecond)
 
-						updatePlotMoney(slotNumber, brainrotEnum.MoneyPerSecond)
+						updatePlotMoney(slotNumber, brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType])
 					end
 				end
 			end

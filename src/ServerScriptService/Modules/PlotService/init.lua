@@ -143,6 +143,11 @@ function PlotService:RemoveBrainrot(player: Player, name: string, plotNumber)
 end
 
 function PlotService:SetBaseName(player: Player)
+	local mutationMultipliers = {
+		["NORMAL"] = 1,
+		["GOLDEN"] = 20,
+		["DIAMOND"] = 50,
+	}
 	pcall(function()
 		local playerFolder = Workspace.Runtime:FindFirstChild(player.UserId)
 		local brainrotFolder = playerFolder:FindFirstChild("Brainrots")
@@ -169,7 +174,9 @@ function PlotService:SetBaseName(player: Player)
 
 				for _, value in brainrotFolder:GetChildren() do
 					local brainrotEnum = Brainrots[value.Name]
-					totalMoney = totalMoney + brainrotEnum.MoneyPerSecond
+					local mutationType = value:GetAttribute("MUTATION_TYPE") or "NORMAL"
+
+					totalMoney = totalMoney + brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType]
 				end
 				withPlayer.Infos.PlayerMoney.Text = UtilService:FormatToUSD(totalMoney) .. "/s"
 			end
@@ -280,6 +287,12 @@ function PlotService:Set(player: Player, brainrotType: string, mutationType: str
 end
 
 function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brainrotType: string, mutationType: string)
+	local mutationMultipliers = {
+		["NORMAL"] = 1,
+		["GOLDEN"] = 20,
+		["DIAMOND"] = 50,
+	}
+
 	local mutationColors = {
 		["GOLDEN"] = {
 			[1] = Color3.fromRGB(237, 178, 0),
@@ -298,7 +311,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
 			[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
 			[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
-			[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
+			[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color		},
 		},
 	}
 
@@ -320,7 +333,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			local isGolden = billboard:WaitForChild("IsGolden")
 			local isDiamond = billboard:WaitForChild("IsDiamond")
 
-			cashPerSecond.Text = "$" .. brainrotEnum.MoneyPerSecond .. "/s"
+			cashPerSecond.Text = "$" .. (brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType]) .. "/s"
 			charName.Text = brainrotEnum.GUI.Label
 			rarity.Text = brainrotEnum.Rarity
 			rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
@@ -333,11 +346,47 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			if mutationType == "GOLDEN" then
 				isGolden.Visible = true
 				isDiamond.Visible = false
+
+				if newBrainrot:FindFirstChild("ParticleHolder") then
+					local particleHolder = newBrainrot:FindFirstChild("ParticleHolder")
+
+					if particleHolder:FindFirstChild("GOLD_ATT") then
+						local goldAtt = particleHolder:FindFirstChild("GOLD_ATT")
+
+						if goldAtt:FindFirstChild("GOLD_SHINE") then
+							local goldShine = goldAtt:FindFirstChild("GOLD_SHINE")
+							goldShine.Enabled = true
+						end
+					end
+
+					if particleHolder:FindFirstChild("GOLD_SPARKS") then
+						local goldSparks = particleHolder:FindFirstChild("GOLD_SPARKS")
+						goldSparks.Enabled = true
+					end
+				end
 			end
 
 			if mutationType == "DIAMOND" then
 				isGolden.Visible = false
 				isDiamond.Visible = true
+
+				if newBrainrot:FindFirstChild("ParticleHolder") then
+					local particleHolder = newBrainrot:FindFirstChild("ParticleHolder")
+
+					if particleHolder:FindFirstChild("DIAMOND_ATT") then
+						local diamondAtt = particleHolder:FindFirstChild("DIAMOND_ATT")
+
+						if diamondAtt:FindFirstChild("DIAMOND_SHINE") then
+							local diamondShine = diamondAtt:FindFirstChild("DIAMOND_SHINE")
+							diamondShine.Enabled = true
+						end
+					end
+
+					if particleHolder:FindFirstChild("DIAMOND_SPARKS") then
+						local diamondSparks = particleHolder:FindFirstChild("DIAMOND_SPARKS")
+						diamondSparks.Enabled = true
+					end
+				end
 			end
 		end
 	end

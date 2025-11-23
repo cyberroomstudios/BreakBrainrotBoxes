@@ -9,6 +9,7 @@ local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 local bridge = BridgeNet2.ReferenceBridge("SellService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -106,6 +107,7 @@ function SellBrainrotController:BuildScreen(items)
 		newFrame.Content.Frame.ItemName.Text = Brainrots[item.Name].GUI.Label
 		newFrame.Content.Frame.ItemPrice.Text = ClientUtil:FormatToUSD(item.Price)
 		newFrame.Content.Button.Buy.Button.MouseButton1Click:Connect(function()
+			SoundManager:Play("UI_CLICK")
 			local result = bridge:InvokeServerAsync({
 				[actionIdentifier] = "SellThis",
 				Data = {

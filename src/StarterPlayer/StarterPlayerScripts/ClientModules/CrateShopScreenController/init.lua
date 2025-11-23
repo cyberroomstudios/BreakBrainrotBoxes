@@ -22,6 +22,7 @@ local Crate = require(ReplicatedStorage.Enums.Crate)
 local UIStateManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.UIStateManager)
 local DeveloperProductController = require(Players.LocalPlayer.PlayerScripts.ClientModules.DeveloperProductController)
 local FTUEController = require(Players.LocalPlayer.PlayerScripts.ClientModules.FTUEController)
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 
 --GUI
 local screen -- Tela
@@ -259,7 +260,7 @@ function CrateShopScreenController:BuildScreen(stockItems)
 
 		newItem.MouseButton1Click:Connect(function()
 			-- Atualizando Preço
-
+			SoundManager:Play("UI_CLICK")
 			pcall(function()
 				local buy = crateScrollingFrame.Buttons.Display.Buy
 				local buyRobux = crateScrollingFrame.Buttons.Display.BuyRobux

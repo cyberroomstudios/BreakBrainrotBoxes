@@ -41,9 +41,6 @@ function NewBrainrotScreenController:GetScreen()
 end
 
 function NewBrainrotScreenController:PlayTween(mutationType: string, brainrotType: string)
-	print(mutationType)
-	print(brainrotType)
-
 	local function createImage(item)
 		local folderName = mutationType
 		if folderName then
@@ -69,6 +66,10 @@ function NewBrainrotScreenController:PlayTween(mutationType: string, brainrotTyp
 	frame.AnchorPoint = Vector2.new(0.5, 0.5)
 	frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 	frame.Size = UDim2.new(0.1, 0, 0.2, 0) -- só altura definida
+
+	if frame.Image:FindFirstChild("viewPort") then
+		frame.Image:FindFirstChild("viewPort"):Destroy()
+	end
 	createImage(frame.Image)
 
 	-- Configurações do tween

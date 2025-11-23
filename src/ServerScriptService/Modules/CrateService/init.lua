@@ -64,31 +64,30 @@ function CrateService:DrawBrainrotFromCrate(player: Player, crateType: string)
 	local luck = LuckService:GetLuckFromPlayer(player) or 1
 
 	local function chooseMutation()
-		local adjustedChances = {}
+		local adjusted = {}
 		local total = 0
 
-		-- Ajusta as chances das mutações pelo luck
 		for rarity, chance in pairs(mutationOdds) do
-			local adjustedChance = chance ^ (1 / luck)
-			adjustedChances[rarity] = adjustedChance
+			-- luck aumenta apenas chances raras
+			local adjustedChance = chance * luck
+			adjusted[rarity] = adjustedChance
 			total += adjustedChance
 		end
 
-		-- Número aleatório proporcional ao total ajustado
-		local randomValue = math.random() * total
-		local cumulative = 0
+		-- normaliza para somar 1
+		for rarity, val in pairs(adjusted) do
+			adjusted[rarity] = val / total
+		end
 
-		for rarity, adjustedChance in pairs(adjustedChances) do
-			cumulative += adjustedChance
-			if randomValue <= cumulative then
+		local r = math.random()
+		local cumulative = 0
+		for rarity, chance in pairs(adjusted) do
+			cumulative += chance
+			if r <= cumulative then
 				return rarity
 			end
 		end
-
-		-- Fallback
-		return "COMMON"
 	end
-
 	local function chooseCategory(oddsTable)
 		-- Ajusta as probabilidades com base na sorte
 		local adjustedChances = {}

@@ -23,6 +23,7 @@ local backpackButtons
 
 function UIStateManager:Init()
 	UIStateManager:ConfigureCloseButton()
+	SoundManager:ConfigureUIClick()
 end
 
 function UIStateManager:LoadModules()
@@ -153,7 +154,18 @@ function UIStateManager:ConfigureCloseButton()
 
 	for _, button in taggedObjects do
 		button.MouseButton1Click:Connect(function()
+			SoundManager:Play("UI_CLICK")
 			UIStateManager:Close(button:GetAttribute("SCREEN"))
+		end)
+	end
+end
+
+function SoundManager:ConfigureUIClick()
+	local taggedObjects = CollectionService:GetTagged("UI_CLICK")
+
+	for _, button in taggedObjects do
+		button.MouseButton1Click:Connect(function()
+			SoundManager:Play("UI_CLICK")
 		end)
 	end
 end
