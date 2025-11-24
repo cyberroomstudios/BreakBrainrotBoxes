@@ -196,7 +196,7 @@ function CrateShopScreenController:CreateButtonListner()
 	end)
 end
 function CrateShopScreenController:BuildScreen(stockItems)
-	print(stockItems)
+	
 	player:SetAttribute("CRATE_SHOP_SCREEN_LOADED", false)
 
 	local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames.CRATES

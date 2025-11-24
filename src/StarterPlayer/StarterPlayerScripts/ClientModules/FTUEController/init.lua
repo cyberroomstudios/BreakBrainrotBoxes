@@ -322,14 +322,18 @@ function FTUEController:FocusOnTarget(focusFrame: Frame, targetUI: GuiObject)
 		return
 	end
 
-	local targetSize = targetUI.Size
-	local xSize = targetSize.X.Scale * 1.2
-	local ySize = targetSize.Y.Scale * 1.2
-	local newSize = UDim2.new(xSize, targetSize.X.Offset, ySize, targetSize.Y.Offset)
+	local absSize = targetUI.AbsoluteSize
+
+	-- Fator de aumento (pode ajustar para 1.1 ou 1.15 se quiser menor no mobile)
+	local scaleFactor = 1.15
+
+	local newX = absSize.X * scaleFactor
+	local newY = absSize.Y * scaleFactor
+
+	focusFrame.Size = UDim2.fromOffset(newX, newY)
 	focusFrame.Parent = targetUI
 	focusFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	focusFrame.Position = UDim2.fromScale(0.5, 0.5)
-	focusFrame.Size = newSize
 	focusFrame.Visible = true
 end
 

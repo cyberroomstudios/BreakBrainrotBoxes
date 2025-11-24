@@ -11,6 +11,7 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local Upgrades = require(ReplicatedStorage.Enums.Upgrades)
 local Breakers = require(ReplicatedStorage.Enums.Breakers)
+local GameSoundService = require(ServerScriptService.Modules.GameSoundService)
 
 local animations = {}
 
@@ -219,6 +220,7 @@ function ThreadService:StartBreaker(player: Player)
 
 				for _, crate in ipairs(cratesFolder:GetChildren()) do
 					if crate.PrimaryPart and crate.PrimaryPart:FindFirstChild("CrateHit") then
+						GameSoundService:Play(player, "HIT")
 						crate.PrimaryPart.CrateHit:Emit(20)
 					end
 				end
