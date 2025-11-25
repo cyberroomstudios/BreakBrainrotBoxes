@@ -26,6 +26,8 @@ local GamepassManager = require(ServerScriptService.Modules.GamepassManager)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local RewardService = require(ServerScriptService.Modules.RewardService)
+local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
+local IndexService = require(ServerScriptService.Modules.IndexService)
 
 local playerInitializer = {}
 
@@ -90,7 +92,7 @@ function StartGameService:InitPlayerAttributes(player: Player)
 	player:SetAttribute("MONEY", money)
 
 	local cashMultiplier = PlayerDataHandler:Get(player, "cashMultiplier")
-	player:SetAttribute("CASH_MULTIPLIER", cashMultiplier)
+	player:SetAttribute("CASH_MULTIPLIER", string.format("%.2f", cashMultiplier))
 
 	local hasBrainrotCashMultiplier = PlayerDataHandler:Get(player, "hasBrainrotCashMultiplier")
 	player:SetAttribute("HAS_BRAINROT_CASH_MULTIPLIER", hasBrainrotCashMultiplier)

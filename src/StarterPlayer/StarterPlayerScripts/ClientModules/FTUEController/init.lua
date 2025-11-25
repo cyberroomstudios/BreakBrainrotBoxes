@@ -322,18 +322,23 @@ function FTUEController:FocusOnTarget(focusFrame: Frame, targetUI: GuiObject)
 		return
 	end
 
+	-- Percentual de espaço extra
+	local RATIO_X = 0.12 -- 12% da largura
+	local RATIO_Y = 0.12 -- 12% da altura
+
+	-- Pega o tamanho real do alvo
 	local absSize = targetUI.AbsoluteSize
 
-	-- Fator de aumento (pode ajustar para 1.1 ou 1.15 se quiser menor no mobile)
-	local scaleFactor = 1.15
+	local paddingX = absSize.X * RATIO_X
+	local paddingY = absSize.Y * RATIO_Y
 
-	local newX = absSize.X * scaleFactor
-	local newY = absSize.Y * scaleFactor
+	local newWidth = absSize.X + (paddingX * 2)
+	local newHeight = absSize.Y + (paddingY * 2)
 
-	focusFrame.Size = UDim2.fromOffset(newX, newY)
 	focusFrame.Parent = targetUI
 	focusFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	focusFrame.Position = UDim2.fromScale(0.5, 0.5)
+	focusFrame.Size = UDim2.fromOffset(newWidth, newHeight)
 	focusFrame.Visible = true
 end
 

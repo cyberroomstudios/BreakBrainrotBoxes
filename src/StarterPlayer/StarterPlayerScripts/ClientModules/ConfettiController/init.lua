@@ -1,3 +1,7 @@
+local Players = game:GetService("Players")
+
+local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
+
 local ConfettiController = {}
 
 -- Configurações
@@ -38,7 +42,7 @@ function ConfettiController:CreateConfetti()
 
 	-- Cria confetes
 	local confettiPieces = {}
-
+	SoundManager:Play("CONFETTI")
 	for i = 1, confettiSettings.amount do
 		spawn(function()
 			local sizeMultiplier = math.random(confettiSettings.minSize, confettiSettings.maxSize)

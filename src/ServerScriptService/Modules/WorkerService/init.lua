@@ -183,19 +183,19 @@ function WorkerService:CreateBrainrot(player: Player, crateType: string, ref: At
 end
 
 function WorkerService:ClearAllCrates(player: Player)
-	local plots = workspace:WaitForChild("Map"):WaitForChild("Plots")
-	local plot = plots:WaitForChild(player:GetAttribute("BASE"))
-	local desks =
-		plot:WaitForChild("Main"):WaitForChild("BreakersArea"):WaitForChild("Containers"):WaitForChild("Bases")
+	local base = BaseService:GetBase(player)
+	local main = base:FindFirstChild("Main")
+	local breakersAreaFolder = main:FindFirstChild("BreakersArea")
+	local containersFolder = breakersAreaFolder:FindFirstChild("Containers")
+	local containersModel = containersFolder:WaitForChild("Container")
+	local crateRefFolder = containersModel:WaitForChild("CrateRef")
 
-	local crate = workspace.Runtime[player.UserId].Crates
-
-	for _, value in crate:GetChildren() do
-		value:Destroy()
+	for _, value in crateRefFolder:GetChildren() do
+		value:SetAttribute("BUSY", false)
 	end
 
-	for _, value in desks:GetChildren() do
-		value:SetAttribute("BUSY", false)
+	for _, value in workspace.Runtime[player.UserId].Crates:GetChildren() do
+		value:Destroy()
 	end
 end
 
@@ -392,7 +392,7 @@ function WorkerService:GetXPOfflineCrate(player: Player, currentXP: number)
 	local breakerSpeedBost = Breakers[workerData.Equiped].Boosts.Speed
 
 	local workerSpeed = workerData.Speed + breakerSpeedBost
-	local workerPower = (workerData.Power) + breakerPowerBost
+	local workerPower = workerData.Power + breakerPowerBost
 
 	if timeLeftGame and timeLeftGame > 0 then
 		local now = os.time()

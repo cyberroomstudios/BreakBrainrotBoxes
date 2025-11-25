@@ -32,6 +32,10 @@ function RebirthService:InitBridgeListener()
 		if data[actionIdentifier] == "GetRebirth" then
 			return RebirthService:GetRebirth(player)
 		end
+
+		if data[actionIdentifier] == "GetInfoRebirth" then
+			return RebirthService:GetInfoRebirth(player)
+		end
 	end
 end
 
@@ -71,9 +75,26 @@ function RebirthService:GiveAllAwards(player: Player, rebirth)
 		if award.Type == "MONEY" then
 			MoneyService:GiveMoney(player, award.Amount, true)
 		end
+
+		if award.Type == "CASH_MULTIPLIER" then
+			MoneyService:GiveCashMultiplier(player, award.Amount)
+		end
 	end
 end
 
+function RebirthService:GetInfoRebirth(player)
+	local currentRebirth = PlayerDataHandler:Get(player, "rebirth")
+	local nextRebirth = currentRebirth + 1
+
+	if not Rebirths[nextRebirth] then
+		return false
+	end
+
+	return {
+		Requirements = Rebirths[nextRebirth].Requirements,
+		Awards = Rebirths[nextRebirth].Awards,
+	}
+end
 function RebirthService:GiveRebirthPlot(player: Player)
 	local currentRebirth = PlayerDataHandler:Get(player, "rebirth")
 	local releaseSlotIndex = PlayerDataHandler:Get(player, "releaseSlotIndex")
@@ -87,10 +108,9 @@ function RebirthService:GiveRebirthPlot(player: Player)
 end
 
 function RebirthService:ClearAllItems(player: Players)
-	PlotService:RemoveAll(player)
 	MoneyService:ConsumeAllMoney(player)
 	BrainrotService:ConsumeAllInHand(player)
-	CrateService:ConsumeAllInHand(player)
+
 	WorkerService:ClearAllCrates(player)
 end
 
@@ -123,7 +143,7 @@ function RebirthService:GetRebirth(player: Player)
 			player:SetAttribute("CURRENT_REBIRTH", currentRebirthNumber + 1)
 			GameNotificationService:SendSuccessNotification(player, "Congratulations. You've achieved a Rebirth.")
 
-			return
+			return true
 		end
 
 		GameNotificationService:SendErrorNotification(player, "You do not have all the necessary requirements")

@@ -21,6 +21,7 @@ local Breakers = require(ReplicatedStorage.Enums.Breakers)
 local BaseService = require(ServerScriptService.Modules.BaseService)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
+local GameNotificationService = require(ServerScriptService.Modules.GameNotificationService)
 
 function UpgradeService:Init()
 	UpgradeService:InitBridgeListener()
@@ -156,7 +157,8 @@ function UpgradeService:Buy(player: Player, upgradeType: string)
 	local buyValue = Upgrades[upgradeType][currentUpgrade + 1].Price
 
 	if not MoneyService:HasMoney(player, buyValue) then
-		return
+		GameNotificationService:SendErrorNotification(player, "you Don't Have Money")
+		return false
 	end
 
 	MoneyService:ConsumeMoney(player, buyValue)
@@ -185,7 +187,7 @@ function UpgradeService:InitPlayerUpgrade(player: Player)
 	local breakerPowerBost = Breakers[equipedBreaker].Boosts.Power
 	local breakerSpeedBost = Breakers[equipedBreaker].Boosts.Speed
 
-	player:SetAttribute("Power", (crateBreaker.Power) + breakerPowerBost)
+	player:SetAttribute("Power", crateBreaker.Power + breakerPowerBost)
 	player:SetAttribute("Speed", crateBreaker.Speed + breakerSpeedBost)
 	player:SetAttribute("Capacity", crateBreaker.Capacity)
 
@@ -247,7 +249,7 @@ function UpgradeService:UpdateBreakers(player: Player)
 	local breakerPowerBost = Breakers[equipedBreaker].Boosts.Power
 	local breakerSpeedBost = Breakers[equipedBreaker].Boosts.Speed
 
-	player:SetAttribute("Power", (crateBreaker.Power) + breakerPowerBost)
+	player:SetAttribute("Power", crateBreaker.Power + breakerPowerBost)
 	player:SetAttribute("Speed", crateBreaker.Speed + breakerSpeedBost)
 end
 

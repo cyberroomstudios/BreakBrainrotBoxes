@@ -87,8 +87,8 @@ function RotateOffersController:CreateReferences()
 end
 
 function RotateOffersController:StartSahurTime()
-	local totalTime = 60 * 12
-	local totalTime = 30
+	local totalTime = 60 * 15
+
 	local currentTime = totalTime
 
 	local function formatTime(seconds)

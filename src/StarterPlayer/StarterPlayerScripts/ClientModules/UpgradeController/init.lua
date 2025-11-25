@@ -292,7 +292,9 @@ function UpgradesController:InitButtonListerns()
 			[actionIdentifier] = "BuyPower",
 		})
 
-		UpgradesController:UpdatePowerText(result)
+		if result then
+			UpgradesController:UpdatePowerText(result)
+		end
 	end)
 
 	buySpeedButton.MouseButton1Click:Connect(function()
@@ -300,7 +302,9 @@ function UpgradesController:InitButtonListerns()
 			[actionIdentifier] = "BuySpeed",
 		})
 
-		UpgradesController:UpdateSpeedText(result)
+		if result then
+			UpgradesController:UpdateSpeedText(result)
+		end
 	end)
 
 	buyCapacityButton.MouseButton1Click:Connect(function()
@@ -308,7 +312,9 @@ function UpgradesController:InitButtonListerns()
 			[actionIdentifier] = "BuyCapacity",
 		})
 
-		UpgradesController:UpdateCapacityText(result)
+		if result then
+			UpgradesController:UpdateCapacityText(result)
+		end
 	end)
 
 	openUpgradesButton.MouseButton1Click:Connect(function()
@@ -340,11 +346,15 @@ function UpgradesController:UpdatePowerText(value: number)
 	end
 
 	currentPower.Text = item.Value
-	nextPower.Text = Upgrades["Speed"][value + 1].Value
-	buyPowerFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item.Price)
+	nextPower.Text = Upgrades["Power"][value + 1].Value
+	buyPowerFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(Upgrades["Power"][value + 1].Price)
 end
 
 function UpgradesController:UpdateSpeedText(value: number)
+	local function formatSpeed(value)
+		return string.format("%.1f", (tonumber(value) - 10)) .. "s"
+	end
+
 	local item = Upgrades["Speed"][value]
 
 	if not item then
@@ -361,9 +371,9 @@ function UpgradesController:UpdateSpeedText(value: number)
 		return
 	end
 
-	currentSpeed.Text = (tonumber(item.Value) - 10) .. "s"
-	nextSpeed.Text = (tonumber(Upgrades["Speed"][value + 1].Value) - 10) .. "s"
-	buySpeedFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item.Price)
+	currentSpeed.Text = formatSpeed(item.Value)
+	nextSpeed.Text = formatSpeed(Upgrades.Speed[value + 1].Value)
+	buySpeedFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(Upgrades["Speed"][value + 1].Price)
 end
 
 function UpgradesController:UpdateCapacityText(value: number)
@@ -385,7 +395,7 @@ function UpgradesController:UpdateCapacityText(value: number)
 
 	currentCapacity.Text = item.Value
 	nextCapacity.Text = Upgrades["Capacity"][value + 1].Value
-	buyCapacityFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(item.Price)
+	buyCapacityFrame.Deco.TextLabel.Text = ClientUtil:FormatToUSD(Upgrades["Capacity"][value + 1].Price)
 end
 
 function UpgradesController:ConfigureProximityPrompt()

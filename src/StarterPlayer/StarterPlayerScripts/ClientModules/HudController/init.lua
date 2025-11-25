@@ -61,6 +61,7 @@ function HudController:InitButtonListerns()
 	end)
 
 	upgradeShopButton.MouseButton1Click:Connect(function()
+		
 		TeleportController:ToUpgradeShop()
 	end)
 

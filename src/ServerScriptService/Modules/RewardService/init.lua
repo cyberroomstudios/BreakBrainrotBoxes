@@ -21,7 +21,6 @@ local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
 
 local sahurRewardTime = {}
 local TIME_LIMIT = 15 * 60 -- 15 minutos em segundos
-local TIME_LIMIT = 30
 
 function RewardService:Init()
 	RewardService:InitBridgeListener()
@@ -57,8 +56,8 @@ function RewardService:GetGroupReward(player: Player)
 		return current
 	end)
 
-	BrainrotService:SaveBrainrotInBackpack(player, "CappuccinoAssassino", "NORMAL")
-	IndexService:Add(player, "CappuccinoAssassino", "NORMAL")
+	BrainrotService:SaveBrainrotInBackpack(player, "CocofantoElefanto", "NORMAL")
+	IndexService:Add(player, "CocofantoElefanto", "NORMAL")
 end
 
 function RewardService:GetSahurReward(player)

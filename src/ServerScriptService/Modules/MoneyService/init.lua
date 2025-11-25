@@ -78,7 +78,9 @@ function MoneyService:GiveCashMultiplier(player: Player, incrementValue: number)
 		return current + incrementValue
 	end)
 
-	player:SetAttribute("CASH_MULTIPLIER", PlayerDataHandler:Get(player, "cashMultiplier"))
+	local mult = PlayerDataHandler:Get(player, "cashMultiplier")
+	local formatted = string.format("%.2f", mult)
+	player:SetAttribute("CASH_MULTIPLIER", formatted)
 end
 
 function MoneyService:GiveBrainrotCashMultiplier(player: Player)

@@ -29,7 +29,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 1.1,
+				Amount = 0.1,
 			},
 		},
 	},
@@ -71,7 +71,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 1.2,
+				Amount = 0.2,
 			},
 		},
 	},
@@ -113,7 +113,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 1.3,
+				Amount = 0.3,
 			},
 		},
 	},
@@ -155,7 +155,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 1.4,
+				Amount = 0.4,
 			},
 		},
 	},
@@ -197,7 +197,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 1.5,
+				Amount = 0.5,
 			},
 		},
 	},
@@ -239,7 +239,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 2,
+				Amount = 1,
 			},
 		},
 	},
@@ -281,7 +281,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 2.2,
+				Amount = 1.2,
 			},
 		},
 	},
@@ -323,7 +323,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 2.4,
+				Amount = 1.4,
 			},
 		},
 	},
@@ -365,7 +365,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 2.6,
+				Amount = 1.6,
 			},
 		},
 	},
@@ -407,7 +407,7 @@ local Rebirths = table.freeze({
 
 			{
 				Type = "CASH_MULTIPLIER",
-				Amount = 2.8,
+				Amount = 1.8,
 			},
 		},
 	},
