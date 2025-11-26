@@ -104,7 +104,11 @@ function SellBrainrotController:BuildScreen(items)
 			viewPort.Parent = newFrame.Content.ImageFrame
 		end
 
-		newFrame.Content.Frame.ItemName.Text = Brainrots[item.Name].GUI.Label
+		newFrame.Content.Frame.Frame.ItemName.Text = Brainrots[item.Name].GUI.Label
+		newFrame.Content.Frame.Frame.ItemRarity.Text = Brainrots[item.Name].Rarity
+		newFrame.Content.Frame.Frame.ItemRarity.TextColor3 =
+			ReplicatedStorage.GUI.RarityColors[Brainrots[item.Name].Rarity].Value
+
 		newFrame.Content.Frame.ItemPrice.Text = ClientUtil:FormatToUSD(item.Price)
 		newFrame.Content.Button.Buy.Button.MouseButton1Click:Connect(function()
 			SoundManager:Play("UI_CLICK")

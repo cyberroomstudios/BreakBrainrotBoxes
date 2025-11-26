@@ -5,8 +5,10 @@ local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.Clien
 
 local FakeBaseController = {}
 
-function FakeBaseController:Init()
-	FakeBaseController:Configure()
+function FakeBaseController:Init(data)
+	if data.totalPlaytime < 60 then
+		FakeBaseController:Configure()
+	end
 end
 
 function FakeBaseController:Configure()
@@ -35,5 +37,17 @@ function FakeBaseController:Configure()
 		track.Priority = Enum.AnimationPriority.Idle
 		track:Play()
 	end
+
+	task.spawn(function()
+		while true do
+			animator = humanoid
+			animation = animationsFolder.Attack
+			local track = animator:LoadAnimation(animation)
+			track.Looped = false
+			track.Priority = Enum.AnimationPriority.Action
+			track:Play()
+			task.wait(5)
+		end
+	end)
 end
 return FakeBaseController

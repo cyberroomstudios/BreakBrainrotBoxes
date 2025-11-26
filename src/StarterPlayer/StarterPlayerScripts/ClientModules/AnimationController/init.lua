@@ -7,6 +7,7 @@ local ClientUtil = require(Players.LocalPlayer.PlayerScripts.ClientModules.Clien
 function AnimationController:Init()
 	AnimationController:StartRigSellShopAnimation()
 	AnimationController:StartRigCrateShopAnimation()
+	AnimationController:StartChairSellShopAnimation()
 end
 
 function AnimationController:StartRigCrateShopAnimation()
@@ -36,6 +37,20 @@ function AnimationController:StartRigSellShopAnimation()
 	-- 4) Roda a animação
 	track:Play()
 	print("Rodando animçaõ")
+end
+
+function AnimationController:StartChairSellShopAnimation()
+	local function playAnimation(chair)
+		local animationController = chair:WaitForChild("AnimationController")
+		local animator = animationController:WaitForChild("Animator")
+		local animation = animationController.Animation
+
+		local animationTrack = animator:LoadAnimation(animation)
+		animationTrack:Play()
+	end
+
+	local chair = ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell", "SellShop", "Chair")
+	playAnimation(chair)
 end
 
 return AnimationController

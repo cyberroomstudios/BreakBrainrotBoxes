@@ -125,6 +125,7 @@ function IndexController:BuildScreen(items, viewType)
 		newItem.Visible = true
 		newItem.Name = name
 		newItem.Parent = viewStates[viewType]
+		newItem.LayoutOrder = Brainrots[name].GUI.Order
 
 		local viewPort = ReplicatedStorage.GUI.ViewPortFrames[viewType]:FindFirstChild(name)
 

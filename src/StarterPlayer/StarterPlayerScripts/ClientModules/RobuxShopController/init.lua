@@ -159,8 +159,8 @@ end
 function RobuxShopController:InitServerLuck()
 	local serverLuck = workspace:GetAttribute("SERVER_LUCK") or 2
 
-	currentServerLuck.Text = serverLuck
-	nextServerLuck.Text = serverLuck * 2
+	currentServerLuck.Text = serverLuck .. "x"
+	nextServerLuck.Text = (serverLuck * 2) .. "x"
 end
 
 function RobuxShopController:InitAttributeListener()

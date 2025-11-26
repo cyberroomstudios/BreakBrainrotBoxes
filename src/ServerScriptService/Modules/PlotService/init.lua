@@ -145,8 +145,8 @@ end
 function PlotService:SetBaseName(player: Player)
 	local mutationMultipliers = {
 		["NORMAL"] = 1,
-		["GOLDEN"] = 20,
-		["DIAMOND"] = 50,
+		["GOLDEN"] = 1.25,
+		["DIAMOND"] = 1.5,
 	}
 	pcall(function()
 		local playerFolder = Workspace.Runtime:FindFirstChild(player.UserId)

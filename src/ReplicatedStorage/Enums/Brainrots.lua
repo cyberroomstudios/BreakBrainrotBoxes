@@ -97,7 +97,7 @@ local Brainrots = table.freeze({
 		Odd = 0.2306,
 		SellPrice = 840,
 		GUI = {
-			Label = "Patapim",
+			Label = "Brr Brr Patapim",
 			Order = 8,
 		},
 	},

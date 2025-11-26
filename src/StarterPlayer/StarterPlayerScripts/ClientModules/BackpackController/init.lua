@@ -94,6 +94,62 @@ function BackpackController:InitButtonListerns()
 			end)
 		end
 	end
+
+	local function handlerInputService(button)
+		if button then
+			if button:GetAttribute("TOOL_ID") then
+				local isEquip = BackpackController:EquipOrUniquipTool(button:GetAttribute("TOOL_ID"))
+
+				if isEquip then
+					BackpackController:DisableAllItems()
+					button.BackgroundColor3 = ClientUtil:Color3(0, 170, 0)
+				else
+					BackpackController:DisableAllItems()
+				end
+			end
+		end
+	end
+	local UserInputService = game:GetService("UserInputService")
+
+	UserInputService.InputBegan:Connect(function(input, isTyping)
+		if isTyping then
+			return
+		end
+
+		if input.KeyCode == Enum.KeyCode.One then
+			local button = backpackButtons:FindFirstChild("1")
+			handlerInputService(button)
+			print("O jogador apertou a tecla 1!")
+		end
+
+		if input.KeyCode == Enum.KeyCode.Two then
+			local button = backpackButtons:FindFirstChild("2")
+			handlerInputService(button)
+			print("O jogador apertou a tecla 2!")
+		end
+
+		if input.KeyCode == Enum.KeyCode.Three then
+			local button = backpackButtons:FindFirstChild("3")
+			handlerInputService(button)
+			print("O jogador apertou a tecla 3!")
+		end
+
+		if input.KeyCode == Enum.KeyCode.Four then
+			local button = backpackButtons:FindFirstChild("4")
+			handlerInputService(button)
+			print("O jogador apertou a tecla 4!")
+		end
+
+		if input.KeyCode == Enum.KeyCode.Five then
+			local button = backpackButtons:FindFirstChild("5")
+			handlerInputService(button)
+			print("O jogador apertou a tecla 5!")
+		end
+
+		if input.KeyCode == Enum.KeyCode.Six then
+			backpackExpanded.Visible = not backpackExpanded.Visible
+		end
+	end)
 end
 
 -- Pega o item que ta na mão do jogador

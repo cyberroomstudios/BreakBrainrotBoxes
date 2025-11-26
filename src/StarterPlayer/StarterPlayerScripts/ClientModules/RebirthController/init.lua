@@ -128,7 +128,6 @@ function RebirthController:BuildScreen()
 			if award.Type == "PLOT" then
 				local plotFrame = ReplicatedStorage.GUI.Rebirth.Awards.UnlockPlot:Clone()
 				plotFrame:SetAttribute("TEMP", true)
-				plotFrame.TextLabel.Text = tostring(award.Number) .. "º Plot"
 				plotFrame.Parent = awardFrame
 			end
 

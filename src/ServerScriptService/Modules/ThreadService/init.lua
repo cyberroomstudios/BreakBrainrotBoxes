@@ -20,8 +20,8 @@ function ThreadService:Init() end
 function ThreadService:StartBrainrotsMoney(player: Player)
 	local mutationMultipliers = {
 		["NORMAL"] = 1,
-		["GOLDEN"] = 20,
-		["DIAMOND"] = 50,
+		["GOLDEN"] = 1.25,
+		["DIAMOND"] = 1.5,
 	}
 
 	local function updatePlotMoney(plotNumber: number, moneyPerSecond: number)

@@ -196,7 +196,6 @@ function CrateShopScreenController:CreateButtonListner()
 	end)
 end
 function CrateShopScreenController:BuildScreen(stockItems)
-	
 	player:SetAttribute("CRATE_SHOP_SCREEN_LOADED", false)
 
 	local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames.CRATES
@@ -226,6 +225,7 @@ function CrateShopScreenController:BuildScreen(stockItems)
 
 		if value.GUI.Order == 1 and frameBuyCrateFTUE and frameBuyCrateFTUE.Parent then
 			frameBuyCrateFTUE.Parent = newItem
+			newItem.ZIndex = 2
 		end
 
 		-- Definindo o ViewPort
