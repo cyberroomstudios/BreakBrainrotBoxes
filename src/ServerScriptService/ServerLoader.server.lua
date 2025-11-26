@@ -15,19 +15,21 @@ local mutationColors = {
 		[2] = Color3.fromRGB(237, 194, 86),
 		[3] = Color3.fromRGB(215, 111, 1),
 		[4] = Color3.fromRGB(139, 74, 0),
-		[5] = Color3.fromRGB(255, 164, 164),
-		[6] = Color3.fromRGB(255, 244, 190),
-	},
-
-	["DIAMOND"] = {
-		[1] = Color3.fromRGB(237, 178, 0),
-		[2] = Color3.fromRGB(237, 194, 86),
-		[3] = Color3.fromRGB(215, 111, 1),
-		[4] = Color3.fromRGB(139, 74, 0),
 		[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
 		[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
 		[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
 		[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
+	},
+
+	["DIAMOND"] = {
+		[1] = Color3.fromRGB(37, 196, 254),
+		[2] = Color3.fromRGB(116, 212, 254),
+		[3] = Color3.fromRGB(28, 137, 254),
+		[4] = Color3.fromRGB(21, 64, 254),
+		[5] = Color3.fromRGB(116, 212, 254), -- Lucky Block wings
+		[6] = Color3.fromRGB(116, 212, 254), -- Lucky Block question mark
+		[7] = Color3.fromRGB(37, 196, 254), -- Lucky Block main color
+		[8] = Color3.fromRGB(28, 137, 254), -- Brainrot God Lucky Block main color	},
 	},
 }
 
@@ -77,9 +79,6 @@ local function replicatePlots()
 		-- Desligando o Cash Multiplier
 		local cashMultiplier = main:WaitForChild("MultiplierZone"):WaitForChild("CashMultiplierBillboardGui")
 		cashMultiplier.Enabled = false
-		
-		
-
 	end
 
 	local plo1 = workspace:WaitForChild("Map"):WaitForChild("Plots"):WaitForChild("1")
@@ -92,6 +91,10 @@ local function replicatePlots()
 		local newPlot = plo1:Clone()
 		newPlot.Name = i
 
+		if i == 2 then
+			newPlot:SetAttribute("BUSY", true)
+			newPlot:SetAttribute("OWNER", 1)
+		end
 		local posData = positionsAndOrietations[i]
 		local cf = CFrame.new(posData.Position)
 			* CFrame.Angles(

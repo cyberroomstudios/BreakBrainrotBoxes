@@ -113,6 +113,10 @@ function PlotController:ConfigureClaimeProximity()
 	local bases = ClientUtil:WaitForDescendants(workspace, "Map", "Plots"):GetChildren()
 
 	for _, value in bases do
+		if value.Name == "2" then
+			continue
+		end
+
 		if tonumber(value.Name) == tonumber(baseNumber) then
 			local proximityPrompt =
 				ClientUtil:WaitForDescendants(value, "Main", "Chest", "ProximityPart", "ProximityPrompt")

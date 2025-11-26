@@ -22,19 +22,21 @@ local mutationColors = {
 		[2] = Color3.fromRGB(237, 194, 86),
 		[3] = Color3.fromRGB(215, 111, 1),
 		[4] = Color3.fromRGB(139, 74, 0),
-		[5] = Color3.fromRGB(255, 164, 164),
-		[6] = Color3.fromRGB(255, 244, 190),
-	},
-
-	["DIAMOND"] = {
-		[1] = Color3.fromRGB(237, 178, 0),
-		[2] = Color3.fromRGB(237, 194, 86),
-		[3] = Color3.fromRGB(215, 111, 1),
-		[4] = Color3.fromRGB(139, 74, 0),
 		[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
 		[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
 		[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
 		[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
+	},
+
+	["DIAMOND"] = {
+		[1] = Color3.fromRGB(37, 196, 254),
+		[2] = Color3.fromRGB(116, 212, 254),
+		[3] = Color3.fromRGB(28, 137, 254),
+		[4] = Color3.fromRGB(21, 64, 254),
+		[5] = Color3.fromRGB(116, 212, 254), -- Lucky Block wings
+		[6] = Color3.fromRGB(116, 212, 254), -- Lucky Block question mark
+		[7] = Color3.fromRGB(37, 196, 254), -- Lucky Block main color
+		[8] = Color3.fromRGB(28, 137, 254), -- Brainrot God Lucky Block main color	},
 	},
 }
 
@@ -129,6 +131,59 @@ function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainr
 		billBoard.Rarity.Text = brainrotEnum.Rarity
 		billBoard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
+		local isGolden = billBoard:WaitForChild("IsGolden")
+		local isDiamond = billBoard:WaitForChild("IsDiamond")
+
+		if mutationType == "NORMAL" then
+			isGolden.Visible = false
+			isDiamond.Visible = false
+		end
+
+		if mutationType == "GOLDEN" then
+			isGolden.Visible = true
+			isDiamond.Visible = false
+
+			if newToll:FindFirstChild("ParticleHolder") then
+				local particleHolder = newToll:FindFirstChild("ParticleHolder")
+
+				if particleHolder:FindFirstChild("GOLD_ATT") then
+					local goldAtt = particleHolder:FindFirstChild("GOLD_ATT")
+
+					if goldAtt:FindFirstChild("GOLD_SHINE") then
+						local goldShine = goldAtt:FindFirstChild("GOLD_SHINE")
+						goldShine.Enabled = true
+					end
+				end
+
+				if particleHolder:FindFirstChild("GOLD_SPARKS") then
+					local goldSparks = particleHolder:FindFirstChild("GOLD_SPARKS")
+					goldSparks.Enabled = true
+				end
+			end
+		end
+
+		if mutationType == "DIAMOND" then
+			isGolden.Visible = false
+			isDiamond.Visible = true
+
+			if newToll:FindFirstChild("ParticleHolder") then
+				local particleHolder = newToll:FindFirstChild("ParticleHolder")
+
+				if particleHolder:FindFirstChild("DIAMOND_ATT") then
+					local diamondAtt = particleHolder:FindFirstChild("DIAMOND_ATT")
+
+					if diamondAtt:FindFirstChild("DIAMOND_SHINE") then
+						local diamondShine = diamondAtt:FindFirstChild("DIAMOND_SHINE")
+						diamondShine.Enabled = true
+					end
+				end
+
+				if particleHolder:FindFirstChild("DIAMOND_SPARKS") then
+					local diamondSparks = particleHolder:FindFirstChild("DIAMOND_SPARKS")
+					diamondSparks.Enabled = true
+				end
+			end
+		end
 		billBoard.CashPerSecond.Text = UtilService:FormatToUSD(brainrotEnum.MoneyPerSecond) .. "/s"
 	end)
 
