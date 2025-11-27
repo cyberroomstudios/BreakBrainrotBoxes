@@ -99,7 +99,8 @@ function LeadboardService:UpdateLeadboard(leadboardName, items)
 		local itemTemplate = index % 2 == 0 and scrollingFrame.Template1 or scrollingFrame.Template2
 		pcall(function()
 			local newItem = itemTemplate:Clone()
-			newItem:SetAttribute("IS_ITEM")
+			newItem.LayoutOrder = index
+			newItem:SetAttribute("IS_ITEM", true)
 			newItem.Visible = true
 			newItem.Rank.Text = "#" .. index
 			newItem.PlayerName.Text = LeadboardService:GetPlayerNameById(value.playerUserId)
