@@ -8,8 +8,10 @@ function MoneyLeadboard:Init() end
 function MoneyLeadboard:RegisterEntry(playerUserId: string, value: number)
 	local success, _ = pcall(function()
 		local key = playerUserId
-		local value = value
 
+		local value = math.floor(value)
+
+		print(value)
 		store:SetAsync(key, value)
 	end)
 
@@ -26,8 +28,8 @@ function MoneyLeadboard:GetLeaderboards()
 
 		for rank, data in top do
 			local key = data.key
-			local value = data.value
 
+			local value = tonumber(data.value)
 			-- Split the key using , as the delimiter
 			local playerUserId = key
 

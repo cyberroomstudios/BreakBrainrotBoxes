@@ -23,6 +23,9 @@ local ToolService = require(ServerScriptService.Modules.ToolService)
 local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
 
+local PhysicsService = game:GetService("PhysicsService")
+local GROUP = "NoCollision"
+
 function PlotService:Init()
 	PlotService:InitBridgeListener()
 end
@@ -419,6 +422,38 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		end
 	end
 
+	-- Registra o grupo (pcall para evitar erro se já existir)
+	pcall(function()
+		PhysicsService:RegisterCollisionGroup(GROUP)
+	end)
+
+	-- Faz com que o nosso grupo NÃO colida com o Default (ou outros grupos que quiser)
+	pcall(function()
+		PhysicsService:CollisionGroupSetCollidable(GROUP, "Default", false)
+	end)
+
+	-- Função para setar todas as partes do modelo no grupo
+	local function PutModelInNoCollisionGroup(model)
+		for _, obj in ipairs(model:GetDescendants()) do
+			if obj:IsA("BasePart") then
+				-- propriedades úteis (não devem quebrar se não suportadas)
+				pcall(function()
+					obj.CanCollide = false
+				end)
+				pcall(function()
+					obj.CanTouch = false
+				end)
+				pcall(function()
+					obj.CanQuery = false
+				end)
+				-- atribui o nome do grupo diretamente (propriedade do BasePart)
+				pcall(function()
+					obj.CollisionGroup = GROUP
+				end)
+			end
+		end
+	end
+
 	if brainrotModel then
 		local base = BaseService:GetBase(player)
 		local main = base:WaitForChild("Main")
@@ -428,6 +463,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			pcall(function()
 				slot:SetAttribute("BUSY", true)
 				local newBrainrot = brainrotModel:Clone()
+
 				newBrainrot:SetAttribute("AMOUNT_MONEY", 0)
 				newBrainrot:SetAttribute("SLOT_NUMBER", slotNumber)
 				newBrainrot:SetAttribute("MUTATION_TYPE", mutationType)
@@ -442,6 +478,9 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 				newBrainrot:SetPrimaryPartCFrame(slot.Attachment.WorldCFrame)
 
 				createPlotMoneyInformation(slot)
+				task.spawn(function()
+					PutModelInNoCollisionGroup(newBrainrot)
+				end)
 			end)
 		end
 

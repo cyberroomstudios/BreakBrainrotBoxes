@@ -164,6 +164,7 @@ function FTUEController:TryExecuteFTUE(stepName)
 			},
 		})
 	end)
+
 	-- Step confirmado → vai para o próximo da lista
 	FTUEController:RunNextStep()
 end
@@ -367,7 +368,10 @@ function FTUEController:TweenToTarget(focusFrame: Frame, newTarget: GuiObject, d
 	local newParent = newTarget
 	local newParentAbsPos = newParent.AbsolutePosition
 
-	focusFrame.Parent = newParent
+	if focusFrame and focusFrame.Parent and focusFrame.Parent ~= newParent and focusFrame:IsDescendantOf(game) then
+		focusFrame.Parent = newParent
+	end
+
 	focusFrame.Position = UDim2.fromOffset(oldAbsPos.X - newParentAbsPos.X, oldAbsPos.Y - newParentAbsPos.Y)
 	focusFrame.Size = UDim2.fromOffset(oldAbsSize.X, oldAbsSize.Y)
 
@@ -522,7 +526,9 @@ function FTUEController:AttachFingerToTarget(fingerFrame: Frame, targetUI: GuiOb
 	-- Offset padr�o (sem ajuste)
 	offset = offset or Vector2.new(0, 0)
 
-	fingerFrame.Parent = targetUI
+	if fingerFrame and fingerFrame.Parent and fingerFrame:IsDescendantOf(game) then
+		fingerFrame.Parent = targetUI
+	end
 	fingerFrame.AnchorPoint = fingerFrame.AnchorPoint or Vector2.new(0.5, 0.5)
 
 	-- Centraliza com o offset (permite alinhar a ponta)

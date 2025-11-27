@@ -4,6 +4,7 @@ local StartGameService = {}
 local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TeleportService = game:GetService("TeleportService")
 local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local bridge = BridgeNet2.ReferenceBridge("StartGameService")
@@ -68,6 +69,7 @@ function StartGameService:InitBridgeListener()
 			GamepassManager:InitGamePassesFromPlayer(player)
 			MoneyService:GiveInitialMoney(player)
 			PlotService:SetBaseName(player)
+			StartGameService:InitAntAFK(player)
 			FunnelService:AddEvent(player, "LOADING_ALL_GAME")
 		end
 	end
@@ -129,6 +131,18 @@ function StartGameService:CreatePlayerFolder(player: Player)
 	local BrainrotsFromCrateFolder = Instance.new("Folder")
 	BrainrotsFromCrateFolder.Name = "BrainrotsFromCrate"
 	BrainrotsFromCrateFolder.Parent = playerFolder
+end
+
+function StartGameService:InitAntAFK(player: Player)
+	
+	-- Caio
+	if player.UserId == 6449479 then
+		task.delay(60 * 5, function()
+			if player.Parent then
+				TeleportService:Teleport(game.PlaceId, player)
+			end
+		end)
+	end
 end
 
 return StartGameService

@@ -45,10 +45,12 @@ function OfflineMoneyService:StartOfflineMoney(player: Player)
 
 		for _, value in brainrotsMap do
 			local brainrotName = value.BrainrotName
-			local moneyPerSecond = Brainrots[brainrotName].MoneyPerSecond
+			if Brainrots[brainrotName] then
+				local moneyPerSecond = Brainrots[brainrotName].MoneyPerSecond
 
-			local totalMoneyBrainrot = moneyPerSecond * secondsPassed
-			totalMoney = totalMoney + totalMoneyBrainrot
+				local totalMoneyBrainrot = moneyPerSecond * secondsPassed
+				totalMoney = totalMoney + totalMoneyBrainrot
+			end
 		end
 
 		totalMoney = totalMoney * cashMultiplier
