@@ -35,7 +35,6 @@ function LuckService:UpServerLuck(nextServerLuck)
 	end
 
 	serverLuck = nextServerLuck
-	print("Novo luck do servidor:", nextServerLuck)
 	workspace:SetAttribute("SERVER_LUCK", nextServerLuck)
 
 	-- Novo token

@@ -384,7 +384,10 @@ function PlotController:StartTouchGetMoney()
 				emitter:Emit(20)
 			end
 
-			FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
+			local oldCollectMoney = Players.LocalPlayer:GetAttribute("COLLECT_MONEY") or 0
+			Players.LocalPlayer:SetAttribute("COLLECT_MONEY", oldCollectMoney + result)
+
+		--	FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
 
 			task.delay(2, function()
 				cooldowns[value.TouchPart] = false

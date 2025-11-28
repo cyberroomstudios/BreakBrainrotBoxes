@@ -11,7 +11,7 @@ function MoneyLeadboard:RegisterEntry(playerUserId: string, value: number)
 
 		local value = math.floor(value)
 
-		print(value)
+		
 		store:SetAsync(key, value)
 	end)
 

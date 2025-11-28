@@ -36,7 +36,6 @@ function AnimationController:StartRigSellShopAnimation()
 
 	-- 4) Roda a animação
 	track:Play()
-	print("Rodando animçaõ")
 end
 
 function AnimationController:StartChairSellShopAnimation()

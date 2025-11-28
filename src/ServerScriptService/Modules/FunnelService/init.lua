@@ -99,7 +99,6 @@ function FunnelService:AddEvent(player: Player, eventName: string)
 	end
 
 	FunnelService:UpgradeData(player, eventName)
-	print("Event: " .. eventName)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, steps[eventName].Id, steps[eventName].Name)
 end
 

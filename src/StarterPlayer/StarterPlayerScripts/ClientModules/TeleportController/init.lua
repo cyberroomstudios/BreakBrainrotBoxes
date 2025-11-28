@@ -90,6 +90,8 @@ function TeleportController:ToUpgradeShop()
 	if spawnCFrame and character and character:FindFirstChild("HumanoidRootPart") then
 		character.HumanoidRootPart.CFrame = spawnCFrame
 		TeleportController:SendFunnelEvent("TO_UPGRADE")
+	else
+		warn("Não Conseguiu ir para o Upgrade Area")
 	end
 end
 

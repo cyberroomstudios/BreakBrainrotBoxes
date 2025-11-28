@@ -121,9 +121,10 @@ function FTUEController:InitListeners()
 	configureUpgradeListner()
 end
 
-function FTUEController:ShowFTUEStep(text: string)
+function FTUEController:ShowFTUEStep(text: string, showCounter)
 	ftueStepText.Text = text
 	ftueStep.Visible = true
+	ftueStep.Counter.Visible = showCounter
 end
 
 function FTUEController:HideFTUEStep()
@@ -135,7 +136,6 @@ function FTUEController:RunNextStep()
 
 	currentStepKey = orderedSteps[currentIndex]
 	if not currentStepKey then
-		print("FTUE concluído")
 		return
 	end
 
@@ -179,10 +179,12 @@ function FTUEController:StartFTUE(data)
 		return nil, nil
 	end
 
+	FTUEController:InitMoneyListner()
+
 	ClientUtil:WaitForDescendants(workspace, "Map", "Booths", "CrateAndSell", "CrateShop", "BasePart")
 
 	steps["INIT"] = function()
-		FTUEController:ShowFTUEStep("Go To Crate Shop")
+		FTUEController:ShowFTUEStep("Go To Crate Shop", false)
 		FTUEController:FocusOnTarget(ftueFocus, crateShopButton)
 
 		FTUEController:AttachFingerToTarget(ftueFinger, crateShopButton, Vector2.new(0.2, 0.9))
@@ -193,7 +195,7 @@ function FTUEController:StartFTUE(data)
 	end
 
 	steps["GO_TO_CRATE_SHOP_UI"] = function()
-		FTUEController:ShowFTUEStep("Open Shop")
+		FTUEController:ShowFTUEStep("Open Shop", false)
 		FTUEController:CloseFocus(ftueFocus)
 		FTUEController:StopFingerAnimations(ftueFinger)
 	end
@@ -218,13 +220,13 @@ function FTUEController:StartFTUE(data)
 	end
 
 	steps["GO_TO_BASE"] = function()
-		FTUEController:ShowFTUEStep("Go To Your Base")
+		FTUEController:ShowFTUEStep("Go To Your Base", false)
 		FTUEController:FocusOnTarget(ftueFocus, myBaseButton)
 		FTUEController:AttachFingerToTarget(ftueFinger, myBaseButton, Vector2.new(0.2, 0.7))
 	end
 
 	steps["PLACE_CRATE"] = function()
-		FTUEController:ShowFTUEStep("Place A Crate")
+		FTUEController:ShowFTUEStep("Place A Crate", false)
 		local baseNumber = player:GetAttribute("BASE")
 		local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
 		local proximityPart = ClientUtil:WaitForDescendants(base, "Main", "BreakersArea", "ProximityPart")
@@ -237,13 +239,13 @@ function FTUEController:StartFTUE(data)
 	end
 
 	steps["WAITING_FOR_BREAK_CRATE"] = function()
-		FTUEController:ShowFTUEStep("Waiting for break Crate")
+		FTUEController:ShowFTUEStep("Waiting for break Crate", false)
 		FTUEController:StopFingerAnimations(ftueFinger)
 		FTUEController:CloseBeam()
 	end
 
 	steps["GET_MONEY"] = function()
-		FTUEController:ShowFTUEStep("Collect Money!")
+		FTUEController:ShowFTUEStep("Collect Money!", true)
 		local baseNumber = player:GetAttribute("BASE")
 		local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
 		local plot = ClientUtil:WaitForDescendants(base, "Main", "BrainrotPlots", "1")
@@ -251,7 +253,7 @@ function FTUEController:StartFTUE(data)
 	end
 
 	steps["GO_TO_UPGRADE"] = function()
-		FTUEController:ShowFTUEStep("Make a Upgrade!")
+		FTUEController:ShowFTUEStep("Make a Upgrade!", false)
 		FTUEController:CloseBeam()
 		FTUEController:FocusOnTarget(ftueFocus, upgradeShopButton)
 		FTUEController:AttachFingerToTarget(ftueFinger, upgradeShopButton, Vector2.new(0.2, 0.9))
@@ -264,7 +266,7 @@ function FTUEController:StartFTUE(data)
 	end
 
 	steps["FINISH"] = function()
-		FTUEController:ShowFTUEStep("You're Ready! Enjoy The Game!")
+		FTUEController:ShowFTUEStep("You're Ready! Enjoy The Game!", false)
 		UIStateManager:Close("UPGRADES")
 		FTUEController:CloseFocus(ftueFocus)
 		FTUEController:StopFingerAnimations(ftueFinger)
@@ -280,12 +282,10 @@ function FTUEController:StartFTUE(data)
 		if lastStep.Name == "FINISH" then
 			return
 		end
-		print("Último passo concluído:", lastStep.Name, "index:", index)
 		currentIndex = index - 1
 		currentStepKey = orderedSteps[currentIndex]
 		FTUEController:TryExecuteFTUE(lastStep.Name)
 	else
-		print("Nenhum passo concluído ainda.")
 		FTUEController:RunNextStep()
 
 		task.spawn(function()
@@ -313,6 +313,31 @@ function FTUEController:CreateReferences()
 	ftueStepText = UIReferences:GetReference("FTUE_STEP_TEXT")
 	buyPowerButton = UIReferences:GetReference("BUY_POWER")
 	closeFtueStep = UIReferences:GetReference("CLOSE_FTUE_STEP")
+end
+
+function FTUEController:InitMoneyListner()
+	local target = 500
+	player:GetAttributeChangedSignal("COLLECT_MONEY"):Connect(function()
+		local money = player:GetAttribute("COLLECT_MONEY")
+
+		if money then
+			print(money)
+			ftueStep.Counter.TextLabel.Text = ClientUtil:FormatToUSD(money) .. "/" .. "$500"
+			-- Calcula o progresso (0 a 1)
+			local progress = math.clamp(money / target, 0, 1)
+
+			-- Atualiza o tamanho X do Content
+			ftueStep.Counter.Content.Size = UDim2.new(
+				progress, -- SCALE no eixo X
+				0,
+				ftueStep.Counter.Content.Size.Y.Scale,
+				ftueStep.Counter.Content.Size.Y.Offset
+			)
+			if money >= 500 then
+				FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
+			end
+		end
+	end)
 end
 
 -----------------------------------------------------

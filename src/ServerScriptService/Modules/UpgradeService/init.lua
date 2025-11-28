@@ -77,7 +77,6 @@ function UpgradeService:EquipBreaker(player: Player, breakerType: string)
 
 	UpgradeService:UpdateRotation(player)
 	-- Atualiza a posição
-	print("Atualizando Posição")
 
 	return true
 end

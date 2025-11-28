@@ -53,10 +53,21 @@ function LeadboardService:UpdateEveryTime()
 			LeadboardService:UpdateDataStore()
 		end)
 
-		LeadboardService:UpdateLeadboard("PlaytimeLeadboard", playtimeLeadboardModule:GetLeaderboards())
-		LeadboardService:UpdateLeadboard("RebirthLeadboard", rebirthLeadboardModule:GetLeaderboards())
-		LeadboardService:UpdateLeadboard("MoneyLeaderboad", moneyLeadboardModule:GetLeaderboards())
-		LeadboardService:UpdateLeadboard("RobuxLeadboard", robuxLeadboardModule:GetLeaderboards())
+		task.spawn(function()
+			LeadboardService:UpdateLeadboard("PlaytimeLeadboard", playtimeLeadboardModule:GetLeaderboards())
+		end)
+
+		task.spawn(function()
+			LeadboardService:UpdateLeadboard("RebirthLeadboard", rebirthLeadboardModule:GetLeaderboards())
+		end)
+
+		task.spawn(function()
+			LeadboardService:UpdateLeadboard("MoneyLeaderboad", moneyLeadboardModule:GetLeaderboards())
+		end)
+
+		task.spawn(function()
+			LeadboardService:UpdateLeadboard("RobuxLeadboard", robuxLeadboardModule:GetLeaderboards())
+		end)
 
 		task.wait(60 * 5)
 	end

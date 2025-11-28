@@ -119,31 +119,26 @@ function BackpackController:InitButtonListerns()
 		if input.KeyCode == Enum.KeyCode.One then
 			local button = backpackButtons:FindFirstChild("1")
 			handlerInputService(button)
-			print("O jogador apertou a tecla 1!")
 		end
 
 		if input.KeyCode == Enum.KeyCode.Two then
 			local button = backpackButtons:FindFirstChild("2")
 			handlerInputService(button)
-			print("O jogador apertou a tecla 2!")
 		end
 
 		if input.KeyCode == Enum.KeyCode.Three then
 			local button = backpackButtons:FindFirstChild("3")
 			handlerInputService(button)
-			print("O jogador apertou a tecla 3!")
 		end
 
 		if input.KeyCode == Enum.KeyCode.Four then
 			local button = backpackButtons:FindFirstChild("4")
 			handlerInputService(button)
-			print("O jogador apertou a tecla 4!")
 		end
 
 		if input.KeyCode == Enum.KeyCode.Five then
 			local button = backpackButtons:FindFirstChild("5")
 			handlerInputService(button)
-			print("O jogador apertou a tecla 5!")
 		end
 
 		if input.KeyCode == Enum.KeyCode.Six then
