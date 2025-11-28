@@ -335,6 +335,7 @@ function WorkerService:ChangeWorker(player: Player)
 		--	newBreaker:SetPrimaryPartCFrame(worker.Breaker.Attachment.WorldCFrame)
 		newBreaker.Name = "Breaker"
 		newBreaker:SetAttribute("BREAKER_NAME", currentBreaker)
+		newBreaker:PivotTo(breaker:GetPivot())
 
 		-- Tirando nome
 		local humanoid = newBreaker:FindFirstChildOfClass("Humanoid")
