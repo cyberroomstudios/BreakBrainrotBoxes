@@ -1,7 +1,7 @@
 local Upgrades = table.freeze({
 	["Power"] = {
 		[1] = { Value = 1, Price = 0 },
-		[2] = { Value = 2, Price = 0 },
+		[2] = { Value = 2, Price = 200 },
 		[3] = { Value = 3, Price = 1000 },
 		[4] = { Value = 4, Price = 3000 },
 		[5] = { Value = 5, Price = 15000 },

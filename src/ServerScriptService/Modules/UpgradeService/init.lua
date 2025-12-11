@@ -217,8 +217,6 @@ function UpgradeService:EnableCrates(player)
 
 	for i = 1, capacity do
 		WorkerService:EnableCrate(player, i)
-		if i > 1 then
-		end
 	end
 
 	WorkerService:ScaleBreaker(player, getScale())
@@ -233,7 +231,7 @@ function UpgradeService:EnableCrates(player)
 
 	local nextHit = breakersAreaFolder:WaitForChild("NextHit")
 	if nextHit then
-		nextHit.Position = Vector3.new(nextHit.Position.X, 14.98 + capacity, nextHit.Position.Z)
+		nextHit.Position = Vector3.new(nextHit.Position.X, 6.50 + capacity, nextHit.Position.Z)
 	end
 end
 

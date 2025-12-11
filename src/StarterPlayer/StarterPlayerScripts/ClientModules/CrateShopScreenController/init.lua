@@ -103,6 +103,12 @@ function CrateShopScreenController:ConfigureProximityPrompt()
 
 	local proximityPrompt = proximityPart.ProximityPrompt
 
+	proximityPrompt.Triggered:Connect(function()
+		CrateShopScreenController:SendFunnelEvent("OPEN_CRATE_SHOP_UI")
+
+		UIStateManager:Open("CRATES")
+	end)
+
 	proximityPrompt.PromptShown:Connect(function()
 		CrateShopScreenController:SendFunnelEvent("OPEN_CRATE_SHOP_UI")
 

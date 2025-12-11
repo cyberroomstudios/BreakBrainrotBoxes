@@ -49,15 +49,7 @@ function RebirthService:HasAllRequeriments(player: Player, rebirth)
 		end
 
 		if requirement.Type == "BRAINROT" then
-			local brainrotsMap = PlayerDataHandler:Get(player, "brainrotsMap")
-			local hasBrainrot = false
-			for _, value in brainrotsMap do
-				if value.BrainrotName == requirement.Name then
-					hasBrainrot = true
-				end
-			end
-
-			if not hasBrainrot then
+			if not RebirthService:HasBrainrot(player, requirement.Name) then
 				return false
 			end
 		end
@@ -93,7 +85,24 @@ function RebirthService:GetInfoRebirth(player)
 	return {
 		Requirements = Rebirths[nextRebirth].Requirements,
 		Awards = Rebirths[nextRebirth].Awards,
+		Ready = RebirthService:GetReadyInfoRebirth(player, Rebirths[nextRebirth].Requirements),
 	}
+end
+
+function RebirthService:GetReadyInfoRebirth(player, requirements)
+	local readyList = {}
+
+	for _, requirement in requirements do
+		if requirement.Type == "MONEY" then
+			readyList["MONEY"] = MoneyService:HasMoney(player, requirement.Amount)
+		end
+
+		if requirement.Type == "BRAINROT" then
+			readyList[requirement.Name] = RebirthService:HasBrainrot(player, requirement.Name)
+		end
+	end
+
+	return readyList
 end
 function RebirthService:GiveRebirthPlot(player: Player)
 	local currentRebirth = PlayerDataHandler:Get(player, "rebirth")
@@ -153,6 +162,25 @@ end
 function RebirthService:InitRebirth(player: Player)
 	player:SetAttribute("CURRENT_REBIRTH", PlayerDataHandler:Get(player, "rebirth"))
 	PlotService:InitRebirth(player)
+end
+
+function RebirthService:HasBrainrot(player: Player, brainrotName)
+	local brainrotsMap = PlayerDataHandler:Get(player, "brainrotsMap")
+	local brainrotsBackpack = PlayerDataHandler:Get(player, "brainrotsBackpack")
+
+	for _, value in brainrotsMap do
+		if value.BrainrotName == brainrotName then
+			return true
+		end
+	end
+
+	for _, value in brainrotsBackpack do
+		if value.BrainrotName == brainrotName then
+			return true
+		end
+	end
+
+	return false
 end
 
 return RebirthService

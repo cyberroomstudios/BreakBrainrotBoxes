@@ -73,26 +73,23 @@ function UtilService:FormatNumberToSuffixes(n)
 end
 
 function UtilService:FormatToUSD(number)
-	-- Se for inteiro, formata sem casas decimais
-	local formatted
-	if number % 1 == 0 then
-		formatted = string.format("%d", number)
-	else
-		formatted = string.format("%.2f", number)
+	-- Arredonda o número (use math.floor se quiser truncar)
+	number = math.floor(number + 0.5)
+
+	-- Converte para string sem decimais
+	local formatted = string.format("%d", number)
+
+	-- Adiciona vírgulas a cada 3 dígitos
+	formatted = formatted:reverse():gsub("(%d%d%d)", "%1,"):reverse()
+
+	-- Remove vírgula no início, se aparecer
+	if formatted:sub(1, 1) == "," then
+		formatted = formatted:sub(2)
 	end
 
-	local beforeDecimal, afterDecimal = formatted:match("^(%-?%d+)%.*(%d*)$")
-	beforeDecimal = beforeDecimal:reverse():gsub("(%d%d%d)", "%1,"):reverse()
-	if beforeDecimal:sub(1, 1) == "," then
-		beforeDecimal = beforeDecimal:sub(2)
-	end
-
-	if afterDecimal ~= "" then
-		return "$" .. beforeDecimal .. "." .. afterDecimal
-	else
-		return "$" .. beforeDecimal
-	end
+	return "$" .. formatted
 end
+
 
 function UtilService:GetThumb(playerId: number)
 	local thumbType = Enum.ThumbnailType.HeadShot

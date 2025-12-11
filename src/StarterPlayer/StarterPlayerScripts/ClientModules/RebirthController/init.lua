@@ -82,13 +82,16 @@ function RebirthController:BuildScreen()
 			end
 		end
 	end
-	local function buildRequirement(requirements)
+	local function buildRequirement(requirements, readyList)
 		local currentBrainrotIndex = 1
 		local viewPortFolder = ReplicatedStorage.GUI.ViewPortFrames:FindFirstChild("NORMAL")
 
 		for _, requirement in requirements do
 			if requirement.Type == "MONEY" then
 				rebirthMoney.Text = ClientUtil:FormatToUSD(requirement.Amount)
+				rebirthMoney.Parent.YES.Visible = readyList["MONEY"]
+				rebirthMoney.Parent.NO.Visible = not readyList["MONEY"]
+
 				continue
 			end
 			local brainrotFrame = rebirthBrainrots:FindFirstChild(currentBrainrotIndex)
@@ -114,6 +117,9 @@ function RebirthController:BuildScreen()
 				brainrotContaner.Parent = brainrotFrame
 
 				brainrotFrame.Visible = true
+
+				brainrotFrame.Content.YES.Visible = readyList[requirement.Name]
+				brainrotFrame.Content.NO.Visible = not readyList[requirement.Name]
 			end
 
 			currentBrainrotIndex = currentBrainrotIndex + 1
@@ -161,9 +167,10 @@ function RebirthController:BuildScreen()
 
 	local requirements = result.Requirements
 	local awards = result.Awards
+	local ready = result.Ready
 
 	cleanScreen()
-	buildRequirement(requirements)
+	buildRequirement(requirements, ready)
 	buildAwards(awards)
 end
 

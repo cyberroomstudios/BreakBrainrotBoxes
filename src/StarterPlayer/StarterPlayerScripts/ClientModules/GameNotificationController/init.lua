@@ -18,6 +18,8 @@ local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.Sou
 local notificationScreen
 local notificationsTemplate
 
+local activeNotifications = {}
+
 function GameNotificationController:Init()
 	GameNotificationController:CreateReferences()
 	GameNotificationController:InitListeners()
@@ -77,13 +79,51 @@ function GameNotificationController:ShowNotification(notificationType: string, m
 		return
 	end
 
+	-- Se a mesma mensagem já estiver ativa
+	if activeNotifications[message] then
+		local notif = activeNotifications[message]
+		notif.count = notif.count + 1
+
+		-- Atualizar texto com contador
+		notif.gui.Text = string.format("%s (x%d)", message, notif.count)
+
+		-- Reiniciar o timer
+		notif.cancelDestroy() -- cancela o destroy anterior
+		notif.cancelDestroy = self:_scheduleDestroy(notif.gui, message)
+
+		return
+	end
+
+	-- Criar nova notificação
 	local template = notificationsTemplate[notificationType]:Clone()
 	template.Text = message
 	template.Parent = notificationScreen
 
-	task.delay(1.5, function()
-		template:Destroy()
-	end)
+	-- Guardar como ativa
+	activeNotifications[message] = {
+		gui = template,
+		count = 1,
+		cancelDestroy = nil,
+	}
+
+	-- Agendar destruição
+	activeNotifications[message].cancelDestroy = self:_scheduleDestroy(template, message)
 end
 
+-- Função auxiliar para remover com capacidade de cancelar
+function GameNotificationController:_scheduleDestroy(guiObject, message)
+	local alive = true
+
+	task.delay(2, function()
+		if alive then
+			guiObject:Destroy()
+			activeNotifications[message] = nil
+		end
+	end)
+
+	-- Retorna função que cancela este destroy
+	return function()
+		alive = false
+	end
+end
 return GameNotificationController

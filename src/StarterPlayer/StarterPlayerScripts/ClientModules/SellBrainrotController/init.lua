@@ -48,6 +48,10 @@ function SellBrainrotController:InitProximity()
 
 	local proximityPrompt = proximityPart.ProximityPrompt
 
+	proximityPrompt.Triggered:Connect(function()
+		UIStateManager:Open("SELL")
+	end)
+
 	proximityPrompt.PromptShown:Connect(function()
 		UIStateManager:Open("SELL")
 	end)

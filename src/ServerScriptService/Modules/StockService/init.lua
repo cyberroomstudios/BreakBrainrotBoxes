@@ -22,7 +22,7 @@ local globalStock = {}
 local playerStock = {}
 local playerRestockIntention = {}
 
-local TIME_TO_RESTOCK = 60 * 5
+local TIME_TO_RESTOCK = 60 * 2
 local currentTime = TIME_TO_RESTOCK
 local stockUpdateIndex = 1
 

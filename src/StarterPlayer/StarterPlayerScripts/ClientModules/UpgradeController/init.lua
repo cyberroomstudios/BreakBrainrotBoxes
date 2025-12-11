@@ -403,6 +403,10 @@ function UpgradesController:ConfigureProximityPrompt()
 
 	local proximityPrompt = proximityPart.ProximityPrompt
 
+	proximityPrompt.Triggered:Connect(function()
+		UIStateManager:Open("UPGRADES")
+	end)
+
 	proximityPrompt.PromptShown:Connect(function()
 		UIStateManager:Open("UPGRADES")
 	end)

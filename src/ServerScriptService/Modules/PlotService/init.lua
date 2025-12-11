@@ -196,6 +196,7 @@ function PlotService:SetBaseName(player: Player)
 		end)
 	end)
 end
+
 function PlotService:RelesePlot(player: Player, plotNumber: number)
 	local base = BaseService:GetBase(player)
 	local main = base:WaitForChild("Main")
@@ -204,11 +205,33 @@ function PlotService:RelesePlot(player: Player, plotNumber: number)
 	local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
 
 	if slot then
-		slot:SetAttribute("BUSY", false)
+		slot:SetAttribute("BUSY", PlotService:HasBraintInitPlot(player, plotNumber))
 		slot:SetAttribute("UNLOCK", true)
 		slot.TouchPart.Color = slotBase.TouchPart.Color
 		slot.StandingPart.BillboardGui.Enabled = false
 	end
+end
+
+function PlotService:PlotIsBusy(player: Player, plotNumber: number)
+	local base = BaseService:GetBase(player)
+	local main = base:WaitForChild("Main")
+
+	local slotBase = main.BrainrotPlots:FindFirstChild(1)
+
+	local slot = main.BrainrotPlots:FindFirstChild(plotNumber)
+	return slot:GetAttribute("BUSY")
+end
+
+function PlotService:HasBraintInitPlot(player: Player, plotNumber: number)
+	for _, value in PlayerDataHandler:Get(player, "brainrotsMap") do
+		local brainrotName = value.BrainrotName
+		local slotNumber = value.SlotNumber
+		if slotNumber == plotNumber then
+			return true
+		end
+	end
+
+	return false
 end
 
 function PlotService:InitRebirth(player: Player)
@@ -290,10 +313,14 @@ function PlotService:Set(player: Player, brainrotType: string, mutationType: str
 end
 
 function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brainrotType: string, mutationType: string)
+	if PlotService:PlotIsBusy(player, slotNumber) then
+		return
+	end
+
 	local mutationMultipliers = {
 		["NORMAL"] = 1,
-		["GOLDEN"] = 20,
-		["DIAMOND"] = 50,
+		["GOLDEN"] = 1.25,
+		["DIAMOND"] = 1.5,
 	}
 
 	local mutationColors = {
@@ -338,7 +365,9 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			local isGolden = billboard:WaitForChild("IsGolden")
 			local isDiamond = billboard:WaitForChild("IsDiamond")
 
-			cashPerSecond.Text = "$" .. (brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType]) .. "/s"
+			cashPerSecond.Text = UtilService:FormatToUSD(
+				brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType]
+			) .. "/s"
 			charName.Text = brainrotEnum.GUI.Label
 			rarity.Text = brainrotEnum.Rarity
 			rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value

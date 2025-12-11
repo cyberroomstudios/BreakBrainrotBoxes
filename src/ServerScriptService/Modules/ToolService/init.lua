@@ -16,6 +16,12 @@ local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
 local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 -- End Bridg Net
 
+local mutationMultipliers = {
+	["NORMAL"] = 1,
+	["GOLDEN"] = 1.25,
+	["DIAMOND"] = 1.5,
+}
+
 local mutationColors = {
 	["GOLDEN"] = {
 		[1] = Color3.fromRGB(237, 178, 0),
@@ -184,7 +190,9 @@ function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainr
 				end
 			end
 		end
-		billBoard.CashPerSecond.Text = UtilService:FormatToUSD(brainrotEnum.MoneyPerSecond) .. "/s"
+		billBoard.CashPerSecond.Text = UtilService:FormatToUSD(
+			brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType]
+		) .. "/s"
 	end)
 
 	newToll:SetAttribute("ORIGINAL_NAME", brainrotName)

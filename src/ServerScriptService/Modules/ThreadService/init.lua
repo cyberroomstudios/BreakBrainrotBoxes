@@ -151,6 +151,11 @@ function ThreadService:StartBreaker(player: Player)
 			return
 		end
 
+		while player:GetAttribute("OPENING_CRATE") do
+			task.wait(1)
+		end
+		player:SetAttribute("OPENING_CRATE", true)
+
 		local workerPower = player:GetAttribute("Power")
 
 		local crates = workspace.Runtime[player.UserId].Crates
@@ -176,6 +181,8 @@ function ThreadService:StartBreaker(player: Player)
 				continue
 			end
 		end
+
+		player:SetAttribute("OPENING_CRATE", false)
 	end
 
 	local function getAnimation()

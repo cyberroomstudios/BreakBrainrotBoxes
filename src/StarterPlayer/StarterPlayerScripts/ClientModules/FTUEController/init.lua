@@ -316,13 +316,13 @@ function FTUEController:CreateReferences()
 end
 
 function FTUEController:InitMoneyListner()
-	local target = 500
+	local target = 200
 	player:GetAttributeChangedSignal("COLLECT_MONEY"):Connect(function()
 		local money = player:GetAttribute("COLLECT_MONEY")
 
 		if money then
-			print(money)
-			ftueStep.Counter.TextLabel.Text = ClientUtil:FormatToUSD(money) .. "/" .. "$500"
+			
+			ftueStep.Counter.TextLabel.Text = ClientUtil:FormatToUSD(money) .. "/" .. "$200"
 			-- Calcula o progresso (0 a 1)
 			local progress = math.clamp(money / target, 0, 1)
 
@@ -333,7 +333,7 @@ function FTUEController:InitMoneyListner()
 				ftueStep.Counter.Content.Size.Y.Scale,
 				ftueStep.Counter.Content.Size.Y.Offset
 			)
-			if money >= 500 then
+			if money >= target then
 				FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
 			end
 		end
