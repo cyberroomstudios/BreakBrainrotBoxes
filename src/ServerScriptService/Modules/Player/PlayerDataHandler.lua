@@ -61,6 +61,7 @@ local dataTemplate = {
 	gameSettings = {
 		backgroundMusic = true,
 		soundEffect = true,
+		acceptGift = true,
 	},
 	rewards = {},
 	funnelEvents = {},

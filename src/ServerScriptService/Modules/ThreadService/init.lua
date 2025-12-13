@@ -169,14 +169,17 @@ function ThreadService:StartBreaker(player: Player)
 			if crate:GetAttribute("CURRENT_XP") <= 0 then
 				local crateType = crate:GetAttribute("CRATE_TYPE")
 				local positionNumber = crate:GetAttribute("POSITION_NUMBER")
-				local crateRefPosition = crateRefFolder:FindFirstChild(positionNumber)
+				crate:Destroy()
 
-				if crateRefPosition then
-					crateRefPosition:SetAttribute("BUSY", false)
-					crate:Destroy()
-					WorkerService:CreateBrainrot(player, crateType, crateRefPosition)
-					FunnelService:AddEvent(player, "OPEN_CRATE")
-				end
+				task.spawn(function()
+					local crateRefPosition = crateRefFolder:FindFirstChild(positionNumber)
+
+					if crateRefPosition then
+						crateRefPosition:SetAttribute("BUSY", false)
+						WorkerService:CreateBrainrot(player, crateType, crateRefPosition)
+						FunnelService:AddEvent(player, "OPEN_CRATE")
+					end
+				end)
 
 				continue
 			end

@@ -29,11 +29,16 @@ local rotateOfferCrate
 local rotateOfferSahurContent
 local rotateOfferCrateContent
 
+local textOPCrate
+local opCrateFrame
+local opCrateButton
+local containerOpCrate
 local sahurTime
 
 function RotateOffersController:Init(data)
 	RotateOffersController:CreateReferences()
 	RotateOffersController:ConfigurePosition(data)
+	RotateOffersController:ConfigureOPCrate()
 	RotateOffersController:ConfigureSahurAnimation()
 	RotateOffersController:ConfigureStartBurst()
 	RotateOffersController:InitButtonListerns()
@@ -47,13 +52,15 @@ function RotateOffersController:ConfigurePosition(data)
 		and not UserInputService.MouseEnabled
 
 	if isMobile then
-		rotateContent.Position = UDim2.fromScale(0.785, 0.211)
+		rotateContent.Position = UDim2.fromScale(0.785, 0.1)
+		containerOpCrate.Position = UDim2.fromScale(0.106, 0.18)
 	else
 		rotateContent.Position = UDim2.fromScale(-0.025, 0.05)
 	end
 
 	if data.rewards["SAHUR"] then
 		rotateContent.Visible = false
+		containerOpCrate.Position = UDim2.fromScale(0.923, 0.1)
 	end
 end
 
@@ -84,6 +91,10 @@ function RotateOffersController:CreateReferences()
 	rotateOfferSahurContent = UIReferences:GetReference("ROTATE_OFFER_SAHUR_CONTENT")
 	rotateOfferCrateContent = UIReferences:GetReference("ROTATE_OFFER_CRATE_CONTENT")
 	sahurTime = UIReferences:GetReference("SAHUR_TIME")
+	textOPCrate = UIReferences:GetReference("TEXT_OP_CRATE")
+	opCrateFrame = UIReferences:GetReference("OP_CRATE_FRAME")
+	opCrateButton = UIReferences:GetReference("OP_CRATE_BUTTON")
+	containerOpCrate = UIReferences:GetReference("CONTAINER_OP_CRATE")
 end
 
 function RotateOffersController:StartSahurTime()
@@ -113,6 +124,67 @@ function RotateOffersController:ConfigureStartBurst()
 		if startBurst.Rotation >= 360 then
 			startBurst.Rotation = startBurst.Rotation - 360
 		end
+	end)
+end
+
+function RotateOffersController:ConfigureOPCrate()
+	opCrateButton.MouseButton1Click:Connect(function()
+		DeveloperProductController:OpenPaymentRequestScreen("OP_CRATE_STORM")
+	end)
+
+	local frame = opCrateFrame
+	task.spawn(function()
+		textOPCrate.Text = utf8.char(0xE002) .. "9"
+
+		local TweenService = game:GetService("TweenService")
+
+		-- Store original position
+		local originalPos = frame.Position
+
+		-- Settings
+		local shakeAmount = 3 -- how much it shakes left/right
+		local shakeSpeed = 0.08 -- speed of each shake movement
+		local interval = 2 -- how often the shake effect happens
+
+		local function shake()
+			for i = 1, 6 do
+				-- Move right
+				local t1 = TweenService:Create(frame, TweenInfo.new(shakeSpeed, Enum.EasingStyle.Linear), {
+					Position = UDim2.new(
+						originalPos.X.Scale,
+						originalPos.X.Offset + shakeAmount,
+						originalPos.Y.Scale,
+						originalPos.Y.Offset
+					),
+				})
+
+				-- Move left
+				local t2 = TweenService:Create(frame, TweenInfo.new(shakeSpeed, Enum.EasingStyle.Linear), {
+					Position = UDim2.new(
+						originalPos.X.Scale,
+						originalPos.X.Offset - shakeAmount,
+						originalPos.Y.Scale,
+						originalPos.Y.Offset
+					),
+				})
+
+				t1:Play()
+				t1.Completed:Wait()
+				t2:Play()
+				t2.Completed:Wait()
+			end
+
+			-- Return to original position
+			TweenService:Create(frame, TweenInfo.new(shakeSpeed, Enum.EasingStyle.Linear), { Position = originalPos })
+				:Play()
+		end
+
+		task.spawn(function()
+			while true do
+				shake()
+				task.wait(interval)
+			end
+		end)
 	end)
 end
 

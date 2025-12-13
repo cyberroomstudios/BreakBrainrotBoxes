@@ -18,12 +18,14 @@ local OfflineMoneyController = require(Players.LocalPlayer.PlayerScripts.ClientM
 local TeleportController = require(Players.LocalPlayer.PlayerScripts.ClientModules.TeleportController)
 local SoundManager = require(Players.LocalPlayer.PlayerScripts.ClientModules.SoundManager)
 local FTUEController = require(Players.LocalPlayer.PlayerScripts.ClientModules.FTUEController)
+local GiftToPlayerController = require(Players.LocalPlayer.PlayerScripts.ClientModules.GiftToPlayerController)
 
 function StartGameController:Init(data)
 	local result = bridge:InvokeServerAsync({
 		[actionIdentifier] = "Start",
 		data = {},
 	})
+	GiftToPlayerController:RemoveProximity()
 	TeleportController:ToBase(false)
 	StartGameController:DeleteLoadingScreen()
 

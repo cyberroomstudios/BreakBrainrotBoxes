@@ -239,45 +239,47 @@ function PlotController:ConfigureGamepasses()
 end
 
 function PlotController:ConfigureInsertItemProximityPrompt()
-	local baseNumber = player:GetAttribute("BASE")
-	local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
-	local main = ClientUtil:WaitForDescendants(base, "Main")
-	local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
+	pcall(function()
+		local baseNumber = player:GetAttribute("BASE")
+		local base = ClientUtil:WaitForDescendants(workspace, "Map", "Plots", baseNumber)
+		local main = ClientUtil:WaitForDescendants(base, "Main")
+		local brainrotsPlots = ClientUtil:WaitForDescendants(main, "BrainrotPlots")
 
-	for _, value in brainrotsPlots:GetChildren() do
-		local touchPart = ClientUtil:WaitForDescendants(value, "TouchPart")
-		if touchPart then
-			touchPart.InsertItemProximityPart.Triggered:Connect(function(player)
-				local result = bridge:InvokeServerAsync({
-					[actionIdentifier] = "InsertBrainrot",
-					data = {
-						PlotName = value.Name,
-					},
-				})
+		for _, value in brainrotsPlots:GetChildren() do
+			local touchPart = ClientUtil:WaitForDescendants(value, "TouchPart")
+			if touchPart then
+				touchPart.InsertItemProximityPart.Triggered:Connect(function(player)
+					local result = bridge:InvokeServerAsync({
+						[actionIdentifier] = "InsertBrainrot",
+						data = {
+							PlotName = value.Name,
+						},
+					})
 
-				if result then
-					touchPart.InsertItemProximityPart.Enabled = false
-				end
-			end)
+					if result then
+						touchPart.InsertItemProximityPart.Enabled = false
+					end
+				end)
+			end
 		end
-	end
 
-	local result = bridge:InvokeServerAsync({
-		[actionIdentifier] = "GetItemsToActivateInsertItemProximityPrompt",
-	})
+		local result = bridge:InvokeServerAsync({
+			[actionIdentifier] = "GetItemsToActivateInsertItemProximityPrompt",
+		})
 
-	if result then
-		for _, value in result do
-			local plot = brainrotsPlots:FindFirstChild(value)
+		if result then
+			for _, value in result do
+				local plot = brainrotsPlots:FindFirstChild(value)
 
-			if plot then
-				local touchPart = ClientUtil:WaitForDescendants(plot, "TouchPart")
-				if touchPart then
-					touchPart.InsertItemProximityPart.Enabled = true
+				if plot then
+					local touchPart = ClientUtil:WaitForDescendants(plot, "TouchPart")
+					if touchPart then
+						touchPart.InsertItemProximityPart.Enabled = true
+					end
 				end
 			end
 		end
-	end
+	end)
 end
 
 function PlotController:EnableInsertItemProximityPrompt(plotNumber: number)
@@ -387,7 +389,7 @@ function PlotController:StartTouchGetMoney()
 			local oldCollectMoney = Players.LocalPlayer:GetAttribute("COLLECT_MONEY") or 0
 			Players.LocalPlayer:SetAttribute("COLLECT_MONEY", oldCollectMoney + result)
 
-		--	FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
+			--	FTUEController:TryExecuteFTUE("GO_TO_UPGRADE")
 
 			task.delay(2, function()
 				cooldowns[value.TouchPart] = false

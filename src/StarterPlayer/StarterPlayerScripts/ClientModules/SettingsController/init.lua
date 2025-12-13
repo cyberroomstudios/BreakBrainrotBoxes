@@ -20,6 +20,7 @@ local screen
 
 local backgroundMusicButtons = {}
 local soundEffectButtons = {}
+local acceptGift = {}
 
 function SettingsController:Init(data)
 	SettingsController:CreateReferences()
@@ -35,6 +36,9 @@ function SettingsController:CreateReferences()
 
 	soundEffectButtons[true] = UIReferences:GetReference("SOUND_EFFECT_ON")
 	soundEffectButtons[false] = UIReferences:GetReference("SOUND_EFFECT_OFF")
+
+	acceptGift[true] = UIReferences:GetReference("ACCEPT_GIFT_ON")
+	acceptGift[false] = UIReferences:GetReference("ACCEPT_GIFT_OFF")
 end
 
 function SettingsController:ConfigureView(data)
@@ -45,6 +49,9 @@ function SettingsController:ConfigureView(data)
 
 	soundEffectButtons[true].Visible = gameSettings.soundEffect
 	soundEffectButtons[false].Visible = not soundEffectButtons[true].Visible
+
+	acceptGift[true].Visible = gameSettings.acceptGift
+	acceptGift[false].Visible = not acceptGift[true].Visible
 end
 
 function SettingsController:InitAttributeListener()
@@ -54,6 +61,26 @@ function SettingsController:InitAttributeListener()
 end
 
 function SettingsController:InitButtonListerns()
+	local function configureAcceptGift()
+		acceptGift[true].Button.MouseButton1Click:Connect(function()
+			acceptGift[true].Visible = false
+			acceptGift[false].Visible = true
+
+			local result = bridge:InvokeServerAsync({
+				[actionIdentifier] = "ToggleAcceptGift",
+			})
+		end)
+
+		acceptGift[false].Button.MouseButton1Click:Connect(function()
+			acceptGift[true].Visible = true
+			acceptGift[false].Visible = false
+
+			local result = bridge:InvokeServerAsync({
+				[actionIdentifier] = "ToggleAcceptGift",
+			})
+		end)
+	end
+
 	local function configureBackgroudButtons()
 		backgroundMusicButtons[true].Button.MouseButton1Click:Connect(function()
 			backgroundMusicButtons[true].Visible = false
@@ -96,6 +123,7 @@ function SettingsController:InitButtonListerns()
 
 	configureBackgroudButtons()
 	configureSoundEffectButtons()
+	configureAcceptGift()
 end
 
 function SettingsController:Open(data)

@@ -118,6 +118,12 @@ ProductFunctions[DeveloperProducts:GetEnum("OP_CRATE").Id] = function(receipt, p
 	return true
 end
 
+ProductFunctions[DeveloperProducts:GetEnum("OP_CRATE_STORM").Id] = function(receipt, player)
+	CrateService:Give(player, "Storm")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("OP_CRATE_STORM").Id)
+	return true
+end
+
 ProductFunctions[DeveloperProducts:GetEnum("RESTOCK_ALL").Id] = function(receipt, player)
 	StockService:BuyRestockAll()
 	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("RESTOCK_ALL").Id)

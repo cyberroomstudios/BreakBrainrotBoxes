@@ -94,6 +94,11 @@ DeveloperProducts.ENUM = {
 		Id = 3455930719,
 	},
 
+	OP_CRATE_STORM = {
+		Name = "OP_CRATE",
+		Id = 3477076441,
+	},
+
 	-- SERVER LUCKS
 	SERVER_LUCK_2X = {
 		Name = "SERVER_LUCK_2X",

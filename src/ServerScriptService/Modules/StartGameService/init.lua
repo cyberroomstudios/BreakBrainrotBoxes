@@ -29,6 +29,7 @@ local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local RewardService = require(ServerScriptService.Modules.RewardService)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local IndexService = require(ServerScriptService.Modules.IndexService)
+local GiftToPlayerService = require(ServerScriptService.Modules.GiftToPlayerService)
 
 local playerInitializer = {}
 
@@ -54,6 +55,7 @@ function StartGameService:InitBridgeListener()
 			StartGameService:CreatePlayerFolder(player)
 			RewardService:SetSahurRewardTime(player)
 			BaseService:Allocate(player)
+			StartGameService:FixCapacity(player)
 			StartGameService:UpdatePlotsFromNewPlayer(player)
 			BackpackService:GiveFromInit(player)
 			StartGameService:InitPlayerAttributes(player)
@@ -67,12 +69,23 @@ function StartGameService:InitBridgeListener()
 			OfflineMoneyService:StartOfflineMoney(player)
 			ThreadService:StartBreaker(player)
 			GamepassManager:InitGamePassesFromPlayer(player)
+			GiftToPlayerService:AddProximity(player)
 			MoneyService:GiveInitialMoney(player)
 			PlotService:SetBaseName(player)
 			StartGameService:InitAntAFK(player)
 			FunnelService:AddEvent(player, "LOADING_ALL_GAME")
 		end
 	end
+end
+
+function StartGameService:FixCapacity(player: Player)
+	PlayerDataHandler:Update(player, "crateBreaker", function(current)
+		if current.Capacity > 10 then
+			current.Capacity = 10
+		end
+
+		return current
+	end)
 end
 
 function StartGameService:UpdatePlotsFromNewPlayer(fromPlayer: Player)
@@ -134,7 +147,6 @@ function StartGameService:CreatePlayerFolder(player: Player)
 end
 
 function StartGameService:InitAntAFK(player: Player)
-	
 	-- Caio
 	if player.UserId == 6449479 then
 		task.delay(60 * 5, function()

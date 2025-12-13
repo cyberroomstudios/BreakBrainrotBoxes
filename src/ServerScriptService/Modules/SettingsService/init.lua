@@ -25,6 +25,10 @@ function SettingsService:InitBridgeListener()
 		if data[actionIdentifier] == "ToggleSoundEffect" then
 			SettingsService:ToggleSoundEffect(player)
 		end
+
+		if data[actionIdentifier] == "ToggleAcceptGift" then
+			SettingsService:ToggleAcceptGift(player)
+		end
 	end
 end
 
@@ -45,6 +49,17 @@ function SettingsService:ToggleSoundEffect(player: Player)
 		current.soundEffect = newValue
 
 		player:SetAttribute("SETTINGS_SOUND_EFFECT", newValue)
+		return current
+	end)
+end
+
+function SettingsService:ToggleAcceptGift(player: Player)
+	PlayerDataHandler:Update(player, "gameSettings", function(current)
+		local oldValue = current.acceptGift
+		local newValue = not oldValue
+		current.acceptGift = newValue
+
+		player:SetAttribute("SETTINGS_ACCEPT_GIFT", newValue)
 		return current
 	end)
 end
