@@ -24,6 +24,7 @@ local FunnelService = require(ServerScriptService.Modules.FunnelService)
 local UtilService = require(ServerScriptService.Modules.UtilService)
 
 local PhysicsService = game:GetService("PhysicsService")
+local Mutations = require(ReplicatedStorage.Enums.Mutations)
 local GROUP = "NoCollision"
 
 function PlotService:Init()
@@ -150,6 +151,7 @@ function PlotService:SetBaseName(player: Player)
 		["NORMAL"] = 1,
 		["GOLDEN"] = 1.25,
 		["DIAMOND"] = 1.5,
+		["CANDY_CANE"] = 5,
 	}
 	pcall(function()
 		local playerFolder = Workspace.Runtime:FindFirstChild(player.UserId)
@@ -279,6 +281,18 @@ function PlotService:GetMoneyFromBrainrotPlot(player: Player, plotNumber: number
 	MoneyService:GiveMoney(player, value, false)
 
 	FunnelService:AddEvent(player, "COLLECT_MONEY")
+
+	local offlineMoney = slot:GetAttribute("OFFLINE_MONEY")
+
+	if offlineMoney and offlineMoney > 0 then
+		slot:SetAttribute("OFFLINE_MONEY", 0)
+		local touchPart = slot:WaitForChild("TouchPart")
+		local billBoard = touchPart:WaitForChild("BillBoard")
+		local offlineText = billBoard:WaitForChild("Offline")
+		offlineText.Visible = false
+		MoneyService:GiveMoney(player, offlineMoney, false)
+	end
+
 	return value
 end
 
@@ -321,30 +335,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 		["NORMAL"] = 1,
 		["GOLDEN"] = 1.25,
 		["DIAMOND"] = 1.5,
-	}
-
-	local mutationColors = {
-		["GOLDEN"] = {
-			[1] = Color3.fromRGB(237, 178, 0),
-			[2] = Color3.fromRGB(237, 194, 86),
-			[3] = Color3.fromRGB(215, 111, 1),
-			[4] = Color3.fromRGB(139, 74, 0),
-			[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
-			[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
-			[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
-			[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
-		},
-
-		["DIAMOND"] = {
-			[1] = Color3.fromRGB(37, 196, 254),
-			[2] = Color3.fromRGB(116, 212, 254),
-			[3] = Color3.fromRGB(28, 137, 254),
-			[4] = Color3.fromRGB(21, 64, 254),
-			[5] = Color3.fromRGB(116, 212, 254), -- Lucky Block wings
-			[6] = Color3.fromRGB(116, 212, 254), -- Lucky Block question mark
-			[7] = Color3.fromRGB(37, 196, 254), -- Lucky Block main color
-			[8] = Color3.fromRGB(28, 137, 254), -- Brainrot God Lucky Block main color	},
-		},
+		["CANDY_CANE"] = 5,
 	}
 
 	local brainrotModel = ReplicatedStorage.Brainrots:FindFirstChild(brainrotType)
@@ -362,8 +353,7 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			local cashPerSecond = billboard:WaitForChild("CashPerSecond")
 			local charName = billboard:WaitForChild("CharName")
 			local rarity = billboard:WaitForChild("Rarity")
-			local isGolden = billboard:WaitForChild("IsGolden")
-			local isDiamond = billboard:WaitForChild("IsDiamond")
+			local rarityType = billboard:WaitForChild("RarityType")
 
 			cashPerSecond.Text = UtilService:FormatToUSD(
 				brainrotEnum.MoneyPerSecond * mutationMultipliers[mutationType]
@@ -373,13 +363,30 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
 			if mutationType == "NORMAL" then
-				isGolden.Visible = false
-				isDiamond.Visible = false
+				rarityType.Visible = false
+				billboard.Rarity.Text = brainrotEnum.Rarity
+				billboard.Rarity.TextColor3 =
+					ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
+			end
+
+			if mutationType == "CANDY_CANE" then
+				rarityType.TextColor3 = ReplicatedStorage.GUI.MutationsColors["CANDY_CANE"].Value
+				rarityType.Visible = true
+				rarityType.Text = "[CANDY CANE]"
+
+				billboard.Rarity.Text = "Exclusive"
+				billboard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild("EXCLUSIVE").Value
 			end
 
 			if mutationType == "GOLDEN" then
-				isGolden.Visible = true
-				isDiamond.Visible = false
+				rarityType.TextColor3 = ReplicatedStorage.GUI.MutationsColors["GOLDEN"].Value
+
+				rarityType.Visible = true
+				rarityType.Text = "[GOLDEN]"
+
+				billboard.Rarity.Text = brainrotEnum.Rarity
+				billboard.Rarity.TextColor3 =
+					ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
 				if newBrainrot:FindFirstChild("ParticleHolder") then
 					local particleHolder = newBrainrot:FindFirstChild("ParticleHolder")
@@ -401,8 +408,13 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 			end
 
 			if mutationType == "DIAMOND" then
-				isGolden.Visible = false
-				isDiamond.Visible = true
+				rarityType.TextColor3 = ReplicatedStorage.GUI.MutationsColors["DIAMOND"].Value
+				rarityType.Visible = true
+				rarityType.Text = "[DIAMOND]"
+
+				billboard.Rarity.Text = brainrotEnum.Rarity
+				billboard.Rarity.TextColor3 =
+					ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
 				if newBrainrot:FindFirstChild("ParticleHolder") then
 					local particleHolder = newBrainrot:FindFirstChild("ParticleHolder")
@@ -442,10 +454,10 @@ function PlotService:SetWithPlotNumber(player: Player, slotNumber: number, brain
 	end
 
 	local function applyMutation(brainrot: Model)
-		if mutationType == "GOLDEN" or mutationType == "DIAMOND" then
+		if mutationType ~= "NORMAL" then
 			for _, value in brainrot:GetDescendants() do
 				if value:GetAttribute("Color") then
-					value.Color = mutationColors[mutationType][value:GetAttribute("Color")]
+					value.Color = Mutations.Colors[mutationType][value:GetAttribute("Color")]
 				end
 			end
 		end

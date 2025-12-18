@@ -10,6 +10,7 @@ local Utility = ReplicatedStorage.Utility
 local BridgeNet2 = require(Utility.BridgeNet2)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
 local UtilService = require(ServerScriptService.Modules.UtilService)
+local Mutations = require(ReplicatedStorage.Enums.Mutations)
 local bridge = BridgeNet2.ReferenceBridge("BackpackService")
 local actionIdentifier = BridgeNet2.ReferenceIdentifier("action")
 local statusIdentifier = BridgeNet2.ReferenceIdentifier("status")
@@ -20,30 +21,6 @@ local mutationMultipliers = {
 	["NORMAL"] = 1,
 	["GOLDEN"] = 1.25,
 	["DIAMOND"] = 1.5,
-}
-
-local mutationColors = {
-	["GOLDEN"] = {
-		[1] = Color3.fromRGB(237, 178, 0),
-		[2] = Color3.fromRGB(237, 194, 86),
-		[3] = Color3.fromRGB(215, 111, 1),
-		[4] = Color3.fromRGB(139, 74, 0),
-		[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
-		[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
-		[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
-		[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
-	},
-
-	["DIAMOND"] = {
-		[1] = Color3.fromRGB(37, 196, 254),
-		[2] = Color3.fromRGB(116, 212, 254),
-		[3] = Color3.fromRGB(28, 137, 254),
-		[4] = Color3.fromRGB(21, 64, 254),
-		[5] = Color3.fromRGB(116, 212, 254), -- Lucky Block wings
-		[6] = Color3.fromRGB(116, 212, 254), -- Lucky Block question mark
-		[7] = Color3.fromRGB(37, 196, 254), -- Lucky Block main color
-		[8] = Color3.fromRGB(28, 137, 254), -- Brainrot God Lucky Block main color	},
-	},
 }
 
 function ToolService:Init() end
@@ -123,8 +100,8 @@ function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainr
 	local brainrotEnum = Brainrots[brainrotName]
 
 	for _, value in newToll:GetDescendants() do
-		if value:GetAttribute("Color") and mutationColors[mutationType] then
-			value.Color = mutationColors[mutationType][value:GetAttribute("Color")]
+		if value:GetAttribute("Color") and Mutations.Colors[mutationType] then
+			value.Color = Mutations.Colors[mutationType][value:GetAttribute("Color")]
 		end
 	end
 
@@ -134,20 +111,32 @@ function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainr
 		local attachment = handler:WaitForChild("Attachment")
 		local billBoard = attachment:WaitForChild("NPCBillBoard")
 		billBoard.CharName.Text = brainrotEnum.GUI.Label
-		billBoard.Rarity.Text = brainrotEnum.Rarity
-		billBoard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
-		local isGolden = billBoard:WaitForChild("IsGolden")
-		local isDiamond = billBoard:WaitForChild("IsDiamond")
+		local rarityType = billBoard:WaitForChild("RarityType")
 
 		if mutationType == "NORMAL" then
-			isGolden.Visible = false
-			isDiamond.Visible = false
+			rarityType.Visible = false
+			billBoard.Rarity.Text = brainrotEnum.Rarity
+			billBoard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
+		end
+
+		if mutationType == "CANDY_CANE" then
+			rarityType.TextColor3 = ReplicatedStorage.GUI.MutationsColors["CANDY_CANE"].Value
+			rarityType.Visible = true
+			rarityType.Text = "[CANDY CANE]"
+
+			billBoard.Rarity.Text = "Exclusive"
+			billBoard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild("EXCLUSIVE").Value
 		end
 
 		if mutationType == "GOLDEN" then
-			isGolden.Visible = true
-			isDiamond.Visible = false
+			rarityType.TextColor3 = ReplicatedStorage.GUI.MutationsColors["GOLDEN"].Value
+
+			rarityType.Visible = true
+			rarityType.Text = "[GOLDEN]"
+
+			billBoard.Rarity.Text = brainrotEnum.Rarity
+			billBoard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
 			if newToll:FindFirstChild("ParticleHolder") then
 				local particleHolder = newToll:FindFirstChild("ParticleHolder")
@@ -169,8 +158,12 @@ function ToolService:GiveBrainrotTool(player: Player, brainrotId: number, brainr
 		end
 
 		if mutationType == "DIAMOND" then
-			isGolden.Visible = false
-			isDiamond.Visible = true
+			rarityType.TextColor3 = ReplicatedStorage.GUI.MutationsColors["DIAMOND"].Value
+			rarityType.Visible = true
+			rarityType.Text = "[DIAMOND]"
+
+			billBoard.Rarity.Text = brainrotEnum.Rarity
+			billBoard.Rarity.TextColor3 = ReplicatedStorage.GUI.RarityColors:FindFirstChild(brainrotEnum.Rarity).Value
 
 			if newToll:FindFirstChild("ParticleHolder") then
 				local particleHolder = newToll:FindFirstChild("ParticleHolder")

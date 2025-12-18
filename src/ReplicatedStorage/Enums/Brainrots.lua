@@ -328,7 +328,7 @@ local Brainrots = table.freeze({
 	},
 
 	["TralaleroTralala"] = {
-		Name = "BombardiroCrocodilo",
+		Name = "TralaleroTralala",
 		Rarity = "GODLY",
 		MoneyPerSecond = 20000,
 		Odd = 0.3392,

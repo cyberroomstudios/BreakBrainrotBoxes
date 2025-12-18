@@ -15,6 +15,8 @@ local messageIdentifier = BridgeNet2.ReferenceIdentifier("message")
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
 local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataHandler)
 local Brainrots = require(ReplicatedStorage.Enums.Brainrots)
+local BaseService = require(ServerScriptService.Modules.BaseService)
+local UtilService = require(ServerScriptService.Modules.UtilService)
 
 function OfflineMoneyService:Init()
 	OfflineMoneyService:InitBridgeListener()
@@ -33,6 +35,28 @@ function OfflineMoneyService:InitBridgeListener()
 	end
 end
 
+function OfflineMoneyService:SetMoneyIntoSlot(player: Player, slotNumber: number, money: number)
+	task.spawn(function()
+		if money > 0 then
+			local base = BaseService:GetBase(player)
+			local brainrotPlots = base:WaitForChild("Main"):WaitForChild("BrainrotPlots")
+
+			if brainrotPlots then
+				local plot = brainrotPlots:WaitForChild(slotNumber)
+
+				if plot then
+					local biilboard = plot:WaitForChild("TouchPart"):WaitForChild("BillBoard")
+					local offlineText = biilboard:WaitForChild("Offline")
+
+					offlineText.Text = UtilService:FormatToUSD(money) .. "- Offline"
+					offlineText.Visible = true
+					plot:SetAttribute("OFFLINE_MONEY", money)
+				end
+			end
+		end
+	end)
+end
+
 function OfflineMoneyService:StartOfflineMoney(player: Player)
 	local timeLeftGame = PlayerDataHandler:Get(player, "timeLeftGame")
 	if timeLeftGame and timeLeftGame > 0 then
@@ -49,12 +73,9 @@ function OfflineMoneyService:StartOfflineMoney(player: Player)
 				local moneyPerSecond = Brainrots[brainrotName].MoneyPerSecond
 
 				local totalMoneyBrainrot = moneyPerSecond * secondsPassed
-				totalMoney = totalMoney + totalMoneyBrainrot
+				OfflineMoneyService:SetMoneyIntoSlot(player, value.SlotNumber, totalMoneyBrainrot)
 			end
 		end
-
-		totalMoney = totalMoney * cashMultiplier
-		player:SetAttribute("OFFLINE_MONEY", totalMoney)
 	end
 end
 

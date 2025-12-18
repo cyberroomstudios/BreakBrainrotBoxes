@@ -10,6 +10,7 @@ local StockService = require(ServerScriptService.Modules.StockService)
 local UpgradeService = require(ServerScriptService.Modules.UpgradeService)
 local LuckService = require(ServerScriptService.Modules.LuckService)
 local MoneyService = require(ServerScriptService.Modules.MoneyService)
+local GiftRobuxService = require(ServerScriptService.Modules.GiftRobuxService)
 
 ProductFunctions[DeveloperProducts:GetEnum("WOODEN_CRATE").Id] = function(receipt, player)
 	CrateService:Give(player, "Wooden")
@@ -198,6 +199,90 @@ end
 ProductFunctions[DeveloperProducts:GetEnum("MONEY_PACK_VI").Id] = function(receipt, player)
 	MoneyService:GiveMoney(player, 100000000, true)
 	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("MONEY_PACK_VI").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("EXCLUSIVE_BRAINROT_PACK_1X").Id] = function(receipt, player)
+	print("1x")
+	CrateService:Give(player, "CandyCane")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("EXCLUSIVE_BRAINROT_PACK_1X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("EXCLUSIVE_BRAINROT_PACK_5X").Id] = function(receipt, player)
+	print("5x")
+
+	for i = 1, 5, 1 do
+		CrateService:Give(player, "CandyCane")
+	end
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("EXCLUSIVE_BRAINROT_PACK_5X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("EXCLUSIVE_BRAINROT_PACK_10X").Id] = function(receipt, player)
+	for i = 1, 10, 1 do
+		CrateService:Give(player, "CandyCane")
+	end
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("EXCLUSIVE_BRAINROT_PACK_10X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("GIT_EXCLUSIVE_BRAINROT_PACK_1X").Id] = function(receipt, player)
+	GiftRobuxService:GiveGift(player, "GIT_EXCLUSIVE_BRAINROT_PACK_1X")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("GIT_EXCLUSIVE_BRAINROT_PACK_1X").Id)
+
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("GIT_EXCLUSIVE_BRAINROT_PACK_5X").Id] = function(receipt, player)
+	GiftRobuxService:GiveGift(player, "GIT_EXCLUSIVE_BRAINROT_PACK_5X")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("GIT_EXCLUSIVE_BRAINROT_PACK_5X").Id)
+
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("GIT_EXCLUSIVE_BRAINROT_PACK_10X").Id] = function(receipt, player)
+	GiftRobuxService:GiveGift(player, "GIT_EXCLUSIVE_BRAINROT_PACK_10X")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("GIT_EXCLUSIVE_BRAINROT_PACK_10X").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("LUCKY_CHESTS_MYTHICAL").Id] = function(receipt, player)
+	CrateService:Give(player, "LuckyChestsMythical")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("LUCKY_CHESTS_MYTHICAL").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("LUCKY_CHESTS_GODLY").Id] = function(receipt, player)
+	CrateService:Give(player, "LuckyChestsGodly")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("LUCKY_CHESTS_GODLY").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("LUCKY_CHESTS_SECRET").Id] = function(receipt, player)
+	CrateService:Give(player, "LuckyChestsSecret")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("LUCKY_CHESTS_SECRET").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("GIFT_LUCKY_CHESTS_MYTHICAL").Id] = function(receipt, player)
+	GiftRobuxService:GiveGift(player, "GIFT_LUCKY_CHESTS_MYTHICAL")
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("GIFT_LUCKY_CHESTS_MYTHICAL").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("GIFT_LUCKY_CHESTS_GODLY").Id] = function(receipt, player)
+	GiftRobuxService:GiveGift(player, "GIFT_LUCKY_CHESTS_GODLY")
+
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("GIFT_LUCKY_CHESTS_GODLY").Id)
+	return true
+end
+
+ProductFunctions[DeveloperProducts:GetEnum("GIFT_LUCKY_CHESTS_SECRET").Id] = function(receipt, player)
+	GiftRobuxService:GiveGift(player, "GIFT_LUCKY_CHESTS_SECRET")
+	ProductFunctions:AddRobuxSpent(player, DeveloperProducts:GetEnum("GIFT_LUCKY_CHESTS_SECRET").Id)
 	return true
 end
 

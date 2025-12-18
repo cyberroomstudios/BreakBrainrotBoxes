@@ -22,6 +22,12 @@ local backgroundMusicButtons = {}
 local soundEffectButtons = {}
 local acceptGift = {}
 
+local settingsFrame
+local updateLogFrame
+
+local settingsButton
+local updateLogButton
+
 function SettingsController:Init(data)
 	SettingsController:CreateReferences()
 	SettingsController:InitButtonListerns()
@@ -39,6 +45,12 @@ function SettingsController:CreateReferences()
 
 	acceptGift[true] = UIReferences:GetReference("ACCEPT_GIFT_ON")
 	acceptGift[false] = UIReferences:GetReference("ACCEPT_GIFT_OFF")
+
+	settingsFrame = UIReferences:GetReference("SETTINGS_FRAME")
+	updateLogFrame = UIReferences:GetReference("UPDATE_LOG_FRAME")
+
+	settingsButton = UIReferences:GetReference("SETTINGS_BUTTON")
+	updateLogButton = UIReferences:GetReference("UPDATE_LOG_BUTTON")
 end
 
 function SettingsController:ConfigureView(data)
@@ -121,6 +133,19 @@ function SettingsController:InitButtonListerns()
 		end)
 	end
 
+	local function configureButtons()
+		settingsButton.MouseButton1Click:Connect(function()
+			settingsFrame.Visible = true
+			updateLogFrame.Visible = false
+		end)
+
+		updateLogButton.MouseButton1Click:Connect(function()
+			settingsFrame.Visible = false
+			updateLogFrame.Visible = true
+		end)
+	end
+
+	configureButtons()
 	configureBackgroudButtons()
 	configureSoundEffectButtons()
 	configureAcceptGift()

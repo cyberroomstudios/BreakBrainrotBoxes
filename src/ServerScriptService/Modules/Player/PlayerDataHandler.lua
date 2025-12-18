@@ -40,6 +40,7 @@ local dataTemplate = {
 	normalIndex = {},
 	goldenIndex = {},
 	diamondIndex = {},
+	exclusiveIndex = {},
 	releaseSlotIndex = 10,
 	timeLeftGame = 0,
 	crateBreaker = {

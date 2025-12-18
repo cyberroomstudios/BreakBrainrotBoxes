@@ -244,6 +244,7 @@ function BackpackController:InsertIntoExpanded(itemId: number, itemType: string,
 		NORMAL_BRAINROT = "NORMAL",
 		DIAMOND_BRAINROT = "DIAMOND",
 		GOLDEN_BRAINROT = "GOLDEN",
+		CANDY_CANE_BRAINROT = "CANDY_CANE",
 	}
 
 	local item = ReplicatedStorage.GUI.Backpack.Template:Clone()

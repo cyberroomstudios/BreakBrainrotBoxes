@@ -94,6 +94,7 @@ function MoneyService:GiveOpAutoCollect(player: Player)
 	PlayerDataHandler:Set(player, "opAutoCollect", true)
 	player:SetAttribute("HAS_OP_AUTO_COLLECT", true)
 end
+
 function MoneyService:CollectBrainrotMoney(player: Player, base)
 	local main = base:WaitForChild("Main")
 	local slots = main.BrainrotPlots:GetChildren()

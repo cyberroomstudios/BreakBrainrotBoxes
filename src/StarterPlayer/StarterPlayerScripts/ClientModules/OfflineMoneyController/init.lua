@@ -22,7 +22,6 @@ local getMoneyButton
 
 function OfflineMoneyController:Init()
 	OfflineMoneyController:CreateReferences()
-	OfflineMoneyController:InitButtonListerns()
 end
 
 function OfflineMoneyController:CreateReferences()
@@ -34,18 +33,8 @@ end
 function OfflineMoneyController:Open()
 	if player:GetAttribute("OFFLINE_MONEY") then
 		offlineAmount.Text = ClientUtil:FormatToUSD(player:GetAttribute("OFFLINE_MONEY"))
-		screen.Visible = true
+		--	screen.Visible = true
 	end
-end
-
-function OfflineMoneyController:InitButtonListerns()
-	getMoneyButton.MouseButton1Click:Connect(function()
-		screen.Visible = false
-
-		local result = bridge:InvokeServerAsync({
-			[actionIdentifier] = "GetOfflineMoney",
-		})
-	end)
 end
 
 return OfflineMoneyController

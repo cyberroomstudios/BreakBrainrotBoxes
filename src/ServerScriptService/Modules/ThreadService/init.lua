@@ -22,6 +22,7 @@ function ThreadService:StartBrainrotsMoney(player: Player)
 		["NORMAL"] = 1,
 		["GOLDEN"] = 1.25,
 		["DIAMOND"] = 1.5,
+		["CANDY_CANE"] = 5,
 	}
 
 	local function updatePlotMoney(plotNumber: number, moneyPerSecond: number)

@@ -97,6 +97,7 @@ local Crate = table.freeze({
 			Rarity = "COMMON",
 			XPToOpen = 1,
 			Odd = 1,
+			Exclusive = false,
 			GUI = {
 				Name = "Wooden Crate",
 				Order = 1,
@@ -112,6 +113,7 @@ local Crate = table.freeze({
 			Price = 200,
 			Rarity = "COMMON",
 			XPToOpen = 2,
+			Exclusive = false,
 			Odd = 1,
 			GUI = {
 				Name = "Bronze Crate",
@@ -129,6 +131,7 @@ local Crate = table.freeze({
 			Rarity = "UNCOMMON",
 			XPToOpen = 5,
 			Odd = 1,
+			Exclusive = false,
 			GUI = {
 				Name = "Grass Crate",
 				Order = 3,
@@ -145,6 +148,7 @@ local Crate = table.freeze({
 			Rarity = "UNCOMMON",
 			XPToOpen = 10,
 			Odd = 0.8,
+			Exclusive = false,
 			GUI = {
 				Name = "Stone Crate",
 				Order = 4,
@@ -161,6 +165,7 @@ local Crate = table.freeze({
 			Rarity = "RARE",
 			XPToOpen = 18,
 			Odd = 0.5,
+			Exclusive = false,
 			GUI = {
 				Name = "Lava Crate",
 				Order = 5,
@@ -177,6 +182,7 @@ local Crate = table.freeze({
 			Rarity = "RARE",
 			XPToOpen = 37,
 			Odd = 0.5,
+			Exclusive = false,
 			GUI = {
 				Name = "Ice Crate",
 				Order = 6,
@@ -193,6 +199,7 @@ local Crate = table.freeze({
 			Rarity = "LEGENDARY",
 			XPToOpen = 75,
 			Odd = 0.4,
+			Exclusive = false,
 			GUI = {
 				Name = "Tech Crate",
 				Order = 7,
@@ -209,6 +216,7 @@ local Crate = table.freeze({
 			Rarity = "EPIC",
 			XPToOpen = 150,
 			Odd = 0.4,
+			Exclusive = false,
 			GUI = {
 				Name = "Storm Crate",
 				Order = 8,
@@ -225,6 +233,7 @@ local Crate = table.freeze({
 			Rarity = "MYTHICAL",
 			XPToOpen = 400,
 			Odd = 0.2,
+			Exclusive = false,
 			GUI = {
 				Name = "Golden Crate",
 				Order = 9,
@@ -241,6 +250,7 @@ local Crate = table.freeze({
 			Rarity = "GODLY",
 			XPToOpen = 350,
 			Odd = 0.1,
+			Exclusive = false,
 			GUI = {
 				Name = "Diamond Crate",
 				Order = 10,
@@ -248,6 +258,82 @@ local Crate = table.freeze({
 			Stock = {
 				Min = 1,
 				Max = 1,
+			},
+		},
+
+		["CandyCane"] = {
+			Name = "CandyCane",
+			Price = 10000000,
+			Rarity = "GODLY",
+			XPToOpen = 1,
+			Odd = 0.1,
+			Exclusive = true,
+			ExclusiveMutation = "CANDY_CANE",
+			GUI = {
+				Name = "Candy Cane",
+				Order = 10,
+			},
+			Stock = {
+				Min = 1,
+				Max = 1,
+			},
+			ExclusiveBrainrots = {
+				{
+					Name = "BombardiroCrocodilo",
+					Odd = 0.5,
+				},
+
+				{
+					Name = "TralaleroTralala",
+					Odd = 0.3,
+				},
+
+				{
+					Name = "GangsterFootera",
+					Odd = 0.2,
+				},
+			},
+		},
+
+		["LuckyChestsMythical"] = {
+			Name = "LuckyChestsMythical",
+			XPToOpen = 1,
+			LuckyCrate = true,
+			GUI = {
+				Name = "Lucky Chests Mythical",
+			},
+			Brainrots = {
+				"CactoHipopotamo",
+				"BananitaDolphinita",
+				"OdinDinDinDun",
+			},
+		},
+
+		["LuckyChestsGodly"] = {
+			Name = "LuckyChestsGodly",
+			XPToOpen = 1,
+			LuckyCrate = true,
+			GUI = {
+				Name = "Lucky Chests Godly",
+			},
+			Brainrots = {
+				"BombardiroCrocodilo",
+				"TralaleroTralala",
+				"GangsterFootera",
+			},
+		},
+
+		["LuckyChestsSecret"] = {
+			Name = "LuckyChestsSecret",
+			XPToOpen = 1,
+			LuckyCrate = true,
+			GUI = {
+				Name = "Lucky Chests Secret",
+			},
+			Brainrots = {
+				"BombardiroCrocodilo",
+				"TralaleroTralala",
+				"GangsterFootera",
 			},
 		},
 	},

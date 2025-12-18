@@ -6,32 +6,9 @@ local PlayerDataHandler = require(ServerScriptService.Modules.Player.PlayerDataH
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local BridgeNet2 = require(ReplicatedStorage.Utility.BridgeNet2)
+local Mutations = require(ReplicatedStorage.Enums.Mutations)
 
 PlayerDataHandler:Init()
-
-local mutationColors = {
-	["GOLDEN"] = {
-		[1] = Color3.fromRGB(237, 178, 0),
-		[2] = Color3.fromRGB(237, 194, 86),
-		[3] = Color3.fromRGB(215, 111, 1),
-		[4] = Color3.fromRGB(139, 74, 0),
-		[5] = Color3.fromRGB(237, 194, 86), -- Lucky Block wings
-		[6] = Color3.fromRGB(255, 251, 131), -- Lucky Block question mark
-		[7] = Color3.fromRGB(255, 178, 0), -- Lucky Block main color
-		[8] = Color3.fromRGB(215, 111, 1), -- Brainrot God Lucky Block main color
-	},
-
-	["DIAMOND"] = {
-		[1] = Color3.fromRGB(37, 196, 254),
-		[2] = Color3.fromRGB(116, 212, 254),
-		[3] = Color3.fromRGB(28, 137, 254),
-		[4] = Color3.fromRGB(21, 64, 254),
-		[5] = Color3.fromRGB(116, 212, 254), -- Lucky Block wings
-		[6] = Color3.fromRGB(116, 212, 254), -- Lucky Block question mark
-		[7] = Color3.fromRGB(37, 196, 254), -- Lucky Block main color
-		[8] = Color3.fromRGB(28, 137, 254), -- Brainrot God Lucky Block main color	},
-	},
-}
 
 local positionsAndOrietations = {
 	[1] = {
@@ -202,7 +179,7 @@ local function configureViewPorts()
 
 		for _, value in newItem:GetDescendants() do
 			if value:GetAttribute("Color") then
-				value.Color = mutationColors["GOLDEN"][value:GetAttribute("Color")]
+				value.Color = Mutations.Colors["GOLDEN"][value:GetAttribute("Color")]
 			end
 		end
 
@@ -224,7 +201,29 @@ local function configureViewPorts()
 
 		for _, value in newItem:GetDescendants() do
 			if value:GetAttribute("Color") then
-				value.Color = mutationColors["DIAMOND"][value:GetAttribute("Color")]
+				value.Color = Mutations.Colors["DIAMOND"][value:GetAttribute("Color")]
+			end
+		end
+
+		EnquadrarModel(newViewPort, newItem)
+	end
+
+	local function createCandyCane(viewPort, brainrot)
+		local newViewPort = viewPort:Clone()
+		newViewPort.Name = brainrot.Name
+		newViewPort.Parent = ReplicatedStorage.GUI.ViewPortFrames.CANDY_CANE
+
+		local newItem = brainrot:Clone()
+		local rotation = CFrame.Angles(0, math.rad(130), 0)
+
+		newItem:SetPrimaryPartCFrame(CFrame.new(Vector3.new(0, -3, 0)))
+		newItem:SetPrimaryPartCFrame(newItem.PrimaryPart.CFrame * rotation)
+
+		newItem.Parent = newViewPort
+
+		for _, value in newItem:GetDescendants() do
+			if value:GetAttribute("Color") then
+				value.Color = Mutations.Colors["CANDY_CANE"][value:GetAttribute("Color")]
 			end
 		end
 
@@ -260,6 +259,7 @@ local function configureViewPorts()
 		createNormal(viewPort, value)
 		createGolden(viewPort, value)
 		createDiamond(viewPort, value)
+		createCandyCane(viewPort, value)
 	end
 
 	for _, value in cratesFolder:GetChildren() do

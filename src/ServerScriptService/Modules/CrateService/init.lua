@@ -60,6 +60,33 @@ function CrateService:ConsumeAllInHand(player: Player)
 	ToolService:ConsumeAllCrates(player, "CRATE")
 end
 
+function CrateService:DrawBrainrotFromExclusiveCrate(crateType: string)
+	local crateDef = Crate.CRATES[crateType]
+
+	local brainrots = crateDef.ExclusiveBrainrots
+
+	local randomValue = math.random()
+	local cumulative = 0
+
+	for _, item in ipairs(brainrots) do
+		cumulative += item.Odd
+		if randomValue <= cumulative then
+			return item.Name, crateDef.ExclusiveMutation
+		end
+	end
+end
+
+function CrateService:DrawLuckyChests(crateType: string)
+	math.randomseed(os.clock() * 1000000)
+
+	local crateDef = Crate.CRATES[crateType]
+
+	local brainrots = crateDef.Brainrots
+
+	local index = math.random(1, #brainrots)
+	return brainrots[index], "NORMAL"
+end
+
 function CrateService:DrawBrainrotFromCrate(player: Player, crateType: string)
 	local luck = LuckService:GetLuckFromPlayer(player) or 1
 
@@ -88,6 +115,7 @@ function CrateService:DrawBrainrotFromCrate(player: Player, crateType: string)
 			end
 		end
 	end
+
 	local function chooseCategory(oddsTable)
 		-- Ajusta as probabilidades com base na sorte
 		local adjustedChances = {}
@@ -112,12 +140,20 @@ function CrateService:DrawBrainrotFromCrate(player: Player, crateType: string)
 		end
 
 		-- Caso algo dê errado
-		return "COMMON"
+		return "NORMAL"
 	end
 
 	local crateDef = Crate.CRATES[crateType]
 
 	if crateType then
+		if crateDef.Exclusive then
+			return CrateService:DrawBrainrotFromExclusiveCrate(crateType)
+		end
+
+		if crateDef.LuckyCrate then
+			return CrateService:DrawLuckyChests(crateType)
+		end
+
 		-- Pega a definição de todas as raridades
 		local crateRarity = crateDef.Rarity
 

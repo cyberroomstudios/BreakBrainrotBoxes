@@ -44,7 +44,12 @@ function IndexService:Add(player: Player, itemName: string, mutationType: string
 		["NORMAL"] = "normalIndex",
 		["GOLDEN"] = "goldenIndex",
 		["DIAMOND"] = "diamondIndex",
+		["EXLUSIVE"] = "exclusiveIndex",
 	}
+
+	if not playerDataKey[mutationType] then
+		mutationType = "EXLUSIVE"
+	end
 
 	if not itemName then
 		return
